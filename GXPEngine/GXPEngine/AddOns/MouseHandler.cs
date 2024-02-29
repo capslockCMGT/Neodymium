@@ -116,6 +116,7 @@ namespace GXPEngine
 		}
 
 		//contains offset from mouse to target on click
+		//TODO: fix this.
 		public Vector3 offsetToTarget {
 			get { return _offset;}
 		}
