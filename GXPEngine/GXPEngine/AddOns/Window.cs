@@ -140,11 +140,11 @@ namespace GXPEngine {
 		}
 
 		void SetRenderRange() {
-			Vector2[] worldSpaceCorners = new Vector2[4];
-			worldSpaceCorners[0] = camera.TransformPoint(-_width/2, -_height/2);
-			worldSpaceCorners[1] = camera.TransformPoint(-_width/2,  _height/2);
-			worldSpaceCorners[2] = camera.TransformPoint( _width/2,  _height/2);
-			worldSpaceCorners[3] = camera.TransformPoint( _width/2, -_height/2);
+			Vector3[] worldSpaceCorners = new Vector3[4];
+			worldSpaceCorners[0] = camera.TransformPoint(-_width/2, -_height/2, 0);
+			worldSpaceCorners[1] = camera.TransformPoint(-_width/2,  _height/2, 0);
+			worldSpaceCorners[2] = camera.TransformPoint( _width/2,  _height/2, 0);
+			worldSpaceCorners[3] = camera.TransformPoint( _width/2, -_height/2, 0);
 
 			float maxX = float.MinValue;
 			float maxY = float.MinValue;
