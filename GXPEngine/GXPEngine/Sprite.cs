@@ -166,19 +166,8 @@ namespace GXPEngine
 		//------------------------------------------------------------------------------------------------------------------------
 		override protected void RenderSelf(GLContext glContext) {
 			if (game != null) {
-				Vector2[] bounds = GetExtents();
-				float maxX = float.MinValue;
-				float maxY = float.MinValue;
-				float minX = float.MaxValue;
-				float minY = float.MaxValue;
-				for (int i=0; i<4; i++) {
-					if (bounds[i].x > maxX) maxX = bounds[i].x;
-					if (bounds[i].x < minX) minX = bounds[i].x;
-					if (bounds[i].y > maxY) maxY = bounds[i].y;
-					if (bounds[i].y < minY) minY = bounds[i].y;
-				}
-				bool test = (maxX < game.RenderRange.left) || (maxY < game.RenderRange.top) || (minX >= game.RenderRange.right) || (minY >= game.RenderRange.bottom);
-				if (test == false) {
+				
+				if (OnScreen()) {
 					if (blendMode != null) blendMode.enable ();
 					_texture.Bind();
 					glContext.SetColor((byte)((_color >> 16) & 0xFF), 
@@ -192,11 +181,38 @@ namespace GXPEngine
 				}
 			}
 		}
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														GetArea()
-		//------------------------------------------------------------------------------------------------------------------------
-		internal float[] GetArea() {
+
+        // TODO: fix this.
+        //------------------------------------------------------------------------------------------------------------------------
+        //														OnScreen
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Painfully, this is NOT as trivial in 3D as in 2D. 
+        /// Returns True for the time being.
+        /// </summary>
+        protected bool OnScreen()
+		{
+			/*
+			Vector2[] bounds = GetExtents();
+			float maxX = float.MinValue;
+			float maxY = float.MinValue;
+			float minX = float.MaxValue;
+			float minY = float.MaxValue;
+			for (int i=0; i<4; i++) {
+				if (bounds[i].x > maxX) maxX = bounds[i].x;
+				if (bounds[i].x < minX) minX = bounds[i].x;
+				if (bounds[i].y > maxY) maxY = bounds[i].y;
+				if (bounds[i].y < minY) minY = bounds[i].y;
+			}
+			return !( (maxX < game.RenderRange.left) || (maxY < game.RenderRange.top) || (minX >= game.RenderRange.right) || (minY >= game.RenderRange.bottom));
+			*/
+			return true;
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														GetArea()
+        //------------------------------------------------------------------------------------------------------------------------
+        internal float[] GetArea() {
 			return new float[8] {
 				_bounds.left, _bounds.top,
 				_bounds.right, _bounds.top,
@@ -209,33 +225,33 @@ namespace GXPEngine
 		//														GetExtents()
 		//------------------------------------------------------------------------------------------------------------------------
 		/// <summary>
-		/// Gets the four corners of this object as a set of 4 Vector2s.
+		/// Gets the four corners of this object as a set of 4 Vector3s.
 		/// </summary>
 		/// <returns>
 		/// The extents.
 		/// </returns>
-		public Vector2[] GetExtents() {
-			Vector2[] ret = new Vector2[4];
-			ret[0] = TransformPoint(_bounds.left, _bounds.top);
-			ret[1] = TransformPoint(_bounds.right, _bounds.top);
-			ret[2] = TransformPoint(_bounds.right, _bounds.bottom);
-			ret[3] = TransformPoint(_bounds.left, _bounds.bottom);
+		public Vector3[] GetExtents() {
+			Vector3[] ret = new Vector3[4];
+			ret[0] = TransformPoint(_bounds.left, _bounds.top, 0);
+			ret[1] = TransformPoint(_bounds.right, _bounds.top, 0);
+			ret[2] = TransformPoint(_bounds.right, _bounds.bottom, 0);
+			ret[3] = TransformPoint(_bounds.left, _bounds.bottom, 0);
 			return ret;			
 		}
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														SetOrigin()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Sets the origin, the pivot point of this Sprite in pixels.
-		/// </summary>
-		/// <param name='x'>
-		/// The x coordinate.
-		/// </param>
-		/// <param name='y'>
-		/// The y coordinate.
-		/// </param>
-		public void SetOrigin(float x, float y) {
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														SetOrigin()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Sets the origin, the pivot point of this Sprite in pixels.
+        /// </summary>
+        /// <param name='x'>
+        /// The x coordinate.
+        /// </param>
+        /// <param name='y'>
+        /// The y coordinate.
+        /// </param>
+        public void SetOrigin(float x, float y) {
 			_bounds.x = -x;
 			_bounds.y = -y;
 		}
