@@ -6,12 +6,12 @@
 	public class Collision 
 	{
 		public GameObject self,other;
-		public Vector2 normal;
-		public Vector2 point;
+		public Vector3 normal;
+		public Vector3 point;
 		public float timeOfImpact;
 		public float penetrationDepth;
 
-		public Collision(GameObject pSelf, GameObject pOther, Vector2 pNormal, Vector2 pPoint, float pTimeOfImpact, float pPenetrationDepth) 
+		public Collision(GameObject pSelf, GameObject pOther, Vector3 pNormal, Vector3 pPoint, float pTimeOfImpact, float pPenetrationDepth) 
 		{
 			self = pSelf;
 			other = pOther;
@@ -21,12 +21,12 @@
 			penetrationDepth = pPenetrationDepth;
 		}
 
-		public Collision(GameObject pSelf, GameObject pOther, Vector2 pNormal, float pTimeOfImpact) :
-			this (pSelf, pOther, pNormal, new Vector2 (0, 0), pTimeOfImpact, 0)
+		public Collision(GameObject pSelf, GameObject pOther, Vector3 pNormal, float pTimeOfImpact) :
+			this (pSelf, pOther, pNormal, new Vector3 (0, 0, 0), pTimeOfImpact, 0)
 		{
 		}
 
-		public Collision(GameObject pSelf, GameObject pOther, Vector2 pNormal, Vector2 pPoint, float pPenetrationDepth) :
+		public Collision(GameObject pSelf, GameObject pOther, Vector3 pNormal, Vector3 pPoint, float pPenetrationDepth) :
 			this (pSelf, pOther, pNormal, pPoint, 0, pPenetrationDepth)
 		{
 		}			

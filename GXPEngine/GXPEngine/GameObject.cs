@@ -500,21 +500,24 @@ namespace GXPEngine
 			return MoveUntilCollision (vx, vy, vz, overlaps);
 		}
 
-		//------------------------------------------------------------------------------------------------------------------------
-		//														HitTestPoint()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Returns <c>true</c> if a 2D point (given in global / screen space) overlaps with this object.
-		/// You could use this for instance to check if the mouse (Input.mouseX, Input.mouseY) is over the object.
-		/// </summary>
-		/// <param name='x'>
-		/// The x coordinate to test.
-		/// </param>
-		/// <param name='y'>
-		/// The y coordinate to test.
-		/// </param>
-		virtual public bool HitTestPoint(float x, float y) {
-			return _collider != null && _collider.HitTestPoint(x, y);
+        //------------------------------------------------------------------------------------------------------------------------
+        //														HitTestPoint()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Returns <c>true</c> if a 2D point (given in global / screen space) overlaps with this object.
+        /// You could use this for instance to check if the mouse (Input.mouseX, Input.mouseY) is over the object.
+        /// </summary>
+        /// <param name='x'>
+        /// The x coordinate to test.
+        /// </param>
+        /// <param name='y'>
+        /// The y coordinate to test.
+        /// </param>
+        /// <param name='z'>
+        /// The z coordinate to transform.
+        /// </param>
+        virtual public bool HitTestPoint(float x, float y, float z) {
+			return _collider != null && _collider.HitTestPoint(x, y, z);
 		}
 
         //------------------------------------------------------------------------------------------------------------------------

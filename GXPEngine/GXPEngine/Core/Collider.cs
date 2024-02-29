@@ -34,7 +34,7 @@ namespace GXPEngine.Core
 		/// <summary>
 		/// Returns <c>true</c> if this collider is currently overlapping with the point x,y.
 		/// </summary>
-		public virtual bool HitTestPoint (float x, float y) {
+		public virtual bool HitTestPoint (float x, float y, float vz) {
 			return false;
 		}
 
@@ -50,8 +50,8 @@ namespace GXPEngine.Core
 		/// <param name="vx">x velocity or translation amount.</param>
 		/// <param name="vy">y velocity or translation amount.</param>
 		/// <param name="normal">The collision normal.</param>
-		public virtual float TimeOfImpact (Collider other, float vx, float vy, out Vector2 normal) {
-			normal = new Vector2 ();
+		public virtual float TimeOfImpact (Collider other, float vx, float vy, float vz, out Vector3 normal) {
+			normal = new Vector3 ();
 			return float.MaxValue;
 		}
 
