@@ -85,7 +85,7 @@ namespace GXPEngine
 		public void DrawSprite(Sprite sprite) {
 			float wd = sprite.texture.width;
 			float ht = sprite.texture.height;
-			Vector2[] corners = sprite.GetExtents();
+			Vector3[] corners = sprite.GetExtents();
 			destPoints[0] = new PointF(corners[0].x, corners[0].y);
 			destPoints[1] = new PointF(corners[1].x, corners[1].y);
 			destPoints[2] = new PointF(corners[3].x, corners[3].y);

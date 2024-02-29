@@ -41,9 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GXPEngine\AddOns\BufferRenderer.cs" />
     <Compile Include="GXPEngine\AddOns\Gizmos.cs" />
     <Compile Include="GXPEngine\AddOns\SpriteBatch.cs" />
-    <Compile Include="GXPEngine\AddOns\TiledLoader.cs" />
     <Compile Include="GXPEngine\Core\Quaternion.cs" />
     <Compile Include="GXPEngine\Core\Vector3.cs" />
     <Compile Include="MyGame.cs" />
@@ -76,7 +76,6 @@
     <Compile Include="GXPEngine\AddOns\Camera.cs" />
     <Compile Include="GXPEngine\Managers\HierarchyManager.cs" />
     <Compile Include="GXPEngine\AddOns\Settings.cs" />
-    <Compile Include="GXPEngine\AddOns\TiledMapParser.cs" />
     <Compile Include="GXPEngine\AddOns\Window.cs" />
     <Compile Include="GXPEngine\EasyDraw.cs" />
     <Compile Include="GXPEngine\Core\Collision.cs" />
