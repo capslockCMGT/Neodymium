@@ -15,254 +15,342 @@ namespace GXPEngine
 			0.0f, 0.0f, 1.0f, 0.0f,
 			0.0f, 0.0f, 0.0f, 1.0f };
 			
-		protected float _rotation = 0.0f;
-		protected float _scaleX = 1.0f;
+		protected Quaternion _rotation = Quaternion.Identity;
+        protected bool _rotationMatrixIsUpToDate = true;
+        protected float _scaleX = 1.0f;
 		protected float _scaleY = 1.0f;
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														Transform()
-		//------------------------------------------------------------------------------------------------------------------------
-		public Transformable () {
+        protected float _scaleZ = 1.0f;
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														Transform()
+        //------------------------------------------------------------------------------------------------------------------------
+        public Transformable () {
 		}
 
-		//------------------------------------------------------------------------------------------------------------------------
-		//														GetMatrix()
-		//------------------------------------------------------------------------------------------------------------------------		
-		/// <summary>
-		/// Returns the gameobject's 4x4 matrix.
-		/// </summary>
-		/// <value>
-		/// The matrix.
-		/// </value>
-		public float[] matrix {
-			get {
-				float[] matrix = (float[])_matrix.Clone();
-				matrix[0] *= _scaleX;
-				matrix[1] *= _scaleX;
-				matrix[4] *= _scaleY;
-				matrix[5] *= _scaleY;
-				return matrix;
-			}
-		}
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														x
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Gets or sets the x position.
-		/// </summary>
-		/// <value>
-		/// The x.
-		/// </value>
-		public float x {
+        //------------------------------------------------------------------------------------------------------------------------
+        //														GetMatrix()
+        //------------------------------------------------------------------------------------------------------------------------		
+        /// <summary>
+        /// Returns the gameobject's 4x4 matrix.
+        /// </summary>
+        /// <value>
+        /// The matrix.
+        /// </value>
+        public float[] matrix
+        {
+            get
+            {
+                UpdateRotationMatrix();
+                float[] matrix = (float[])_matrix.Clone();
+                matrix[0] *= _scaleX;
+                matrix[1] *= _scaleX;
+                matrix[2] *= _scaleX;
+                matrix[4] *= _scaleY;
+                matrix[5] *= _scaleY;
+                matrix[6] *= _scaleY;
+                matrix[8] *= _scaleZ;
+                matrix[9] *= _scaleZ;
+                matrix[10] *= _scaleZ;
+                return matrix;
+            }
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														position
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets or sets the position.
+        /// </summary>
+        /// <value>
+        /// All of it.
+        /// </value>
+        public Vector3 position
+        {
+            get { return new Vector3(x, y, z); } 
+            set { x = value.x; y = value.y; z = value.z;}
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														x
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets or sets the x position.
+        /// </summary>
+        /// <value>
+        /// The x.
+        /// </value>
+        public float x {
 			get { return _matrix[12]; }
 			set { _matrix[12] = value; }
 		}
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														y
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Gets or sets the y position.
-		/// </summary>
-		/// <value>
-		/// The y.
-		/// </value>
-		public float y {
-			get { return _matrix[13]; }
-			set { _matrix[13] = value; }
-		}
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														SetXY
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Sets the X and Y position.
-		/// </summary>
-		/// <param name='x'>
-		/// The x coordinate.
-		/// </param>
-		/// <param name='y'>
-		/// The y coordinate.
-		/// </param>
-		public void SetXY(float x, float y) {
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														y
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets or sets the y position.
+        /// </summary>
+        /// <value>
+        /// The y.
+        /// </value>
+        public float y
+        {
+            get { return _matrix[13]; }
+            set { _matrix[13] = value; }
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														z
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets or sets the z position.
+        /// </summary>
+        /// <value>
+        /// The z.
+        /// </value>
+        public float z
+        {
+            get { return _matrix[14]; }
+            set { _matrix[14] = value; }
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														SetXY
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Sets the X, Y and Z position.
+        /// </summary>
+        /// <param name='x'>
+        /// The x coordinate.
+        /// </param>
+        /// <param name='y'>
+        /// The y coordinate.
+        /// </param>
+        /// <param name='z'>
+        /// The z coordinate.
+        /// </param>
+        public void SetXY(float x, float y, float z) {
 			_matrix[12] = x;
 			_matrix[13] = y;
+			_matrix[14] = z;
 		}
 
-		//------------------------------------------------------------------------------------------------------------------------
-		//													InverseTransformPoint()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Transforms the point from the game's global space to this object's local space.
-		/// </summary>
-		/// <returns>
-		/// The point.
-		/// </returns>
-		/// <param name='x'>
-		/// The x coordinate.
-		/// </param>
-		/// <param name='y'>
-		/// The y coordinate.
-		/// </param>
-		public virtual Vector2 InverseTransformPoint (float x, float y)
-		{
-			Vector2 ret = new Vector2 ();
-			x -= _matrix [12];
-			y -= _matrix [13];
-			if (_scaleX != 0) ret.x = ((x * _matrix[0] + y * _matrix[1]) / _scaleX); else ret.x = 0;
-			if (_scaleY != 0) ret.y = ((x * _matrix[4] + y * _matrix[5]) / _scaleY); else ret.y = 0;
-			return ret;
-		}
+        //------------------------------------------------------------------------------------------------------------------------
+        //													InverseTransformPoint()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Transforms the point from the game's global space to this object's local space.
+        /// </summary>
+        /// <returns>
+        /// The point.
+        /// </returns>
+        /// <param name='x'>
+        /// The x coordinate.
+        /// </param>
+        /// <param name='y'>
+        /// The y coordinate.
+        /// </param>
+        /// <param name='z'>
+        /// The z coordinate.
+        /// </param>
+        public virtual Vector3 InverseTransformPoint(float x, float y, float z)
+        {
+            Vector3 ret = new Vector3();
+            x -= _matrix[12];
+            y -= _matrix[13];
+            z -= _matrix[14];
+            UpdateRotationMatrix();
+            if (_scaleX != 0) ret.x = ((x * _matrix[0] + y * _matrix[1] + z * _matrix[2]) / _scaleX); else ret.x = 0;
+            if (_scaleY != 0) ret.y = ((x * _matrix[4] + y * _matrix[5] + z * _matrix[6]) / _scaleY); else ret.y = 0;
+            if (_scaleZ != 0) ret.z = ((x * _matrix[8] + y * _matrix[9] + z * _matrix[10]) / _scaleZ); else ret.z = 0;
+            return ret;
+        }
 
-		/// <summary>
-		/// Transforms the direction vector (x,y) from the game's global space to this object's local space.
+        /// <summary>
+		/// Transforms the direction vector (x,y,z) from the game's global space to this object's local space.
 		/// This means that rotation and scaling is applied, but translation is not.
 		/// </summary>
-		public virtual Vector2 InverseTransformDirection (float x, float y)
-		{
-			Vector2 ret = new Vector2 ();
-			if (_scaleX != 0) ret.x = ((x * _matrix[0] + y * _matrix[1]) / _scaleX); else ret.x = 0;
-			if (_scaleY != 0) ret.y = ((x * _matrix[4] + y * _matrix[5]) / _scaleY); else ret.y = 0;
-			return ret;
-		}
+		public virtual Vector3 InverseTransformDirection(float x, float y, float z)
+        {
+            Vector3 ret = new Vector3();
+            UpdateRotationMatrix();
+            if (_scaleX != 0) ret.x = ((x * _matrix[0] + y * _matrix[1] + z * _matrix[2]) / _scaleX); else ret.x = 0;
+            if (_scaleY != 0) ret.y = ((x * _matrix[4] + y * _matrix[5] + z * _matrix[6]) / _scaleY); else ret.y = 0;
+            if (_scaleZ != 0) ret.z = ((x * _matrix[8] + y * _matrix[9] + z * _matrix[10]) / _scaleZ); else ret.z = 0;
+            return ret;
+        }
 
-		//------------------------------------------------------------------------------------------------------------------------
-		//														DistanceTo()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Returns the distance to another Transformable
-		/// </summary>
-		public float DistanceTo (Transformable other)
-		{
-			float dx = other.x - x;
-			float dy = other.y - y;
-			return Mathf.Sqrt(dx * dx + dy * dy);
-		}
 
-				
-		//------------------------------------------------------------------------------------------------------------------------
-		//														TransformPoint()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Transforms the point from this object's local space to the game's global space.
-		/// </summary>
-		/// <returns>
-		/// The point.
-		/// </returns>
-		/// <param name='x'>
-		/// The x coordinate.
-		/// </param>
-		/// <param name='y'>
-		/// The y coordinate.
-		/// </param>
-		public virtual Vector2 TransformPoint(float x, float y) {
-			Vector2 ret = new Vector2();
-			ret.x = (_matrix[0] * x * _scaleX + _matrix[4] * y * _scaleY + _matrix[12]);
-			ret.y = (_matrix[1] * x * _scaleX + _matrix[5] * y * _scaleY + _matrix[13]);
-			return ret;
-		}
+        //------------------------------------------------------------------------------------------------------------------------
+        //														TransformPoint()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Transforms the point from this object's local space to the game's global space.
+        /// </summary>
+        /// <returns>
+        /// The point.
+        /// </returns>
+        /// <param name='x'>
+        /// The x coordinate.
+        /// </param>
+        /// <param name='y'>
+        /// The y coordinate.
+        /// </param>
+        /// <param name='z'>
+        /// The z coordinate.
+        /// </param> 
+        public virtual Vector3 TransformPoint(float x, float y, float z)
+        {
+            Vector3 ret = new Vector3();
+            UpdateRotationMatrix();
+            ret.x = (_matrix[0] * x * _scaleX + _matrix[4] * y * _scaleY + _matrix[8] * z * _scaleZ + _matrix[12]);
+            ret.y = (_matrix[1] * x * _scaleX + _matrix[5] * y * _scaleY + _matrix[9] * z * _scaleZ + _matrix[13]);
+            ret.z = (_matrix[2] * x * _scaleX + _matrix[6] * y * _scaleY + _matrix[10] * z * _scaleZ + _matrix[14]);
+            return ret;
+        }
 
-		/// <summary>
-		/// Transforms a direction vector (x,y) from this object's local space to the game's global space. 
+        /// <summary>
+		/// Transforms a direction vector (x,y,z) from this object's local space to the game's global space. 
 		/// This means that rotation and scaling is applied, but translation is not.
 		/// </summary>
-		public virtual Vector2 TransformDirection(float x, float y) {
-			Vector2 ret = new Vector2();
-			ret.x = (_matrix[0] * x * _scaleX + _matrix[4] * y * _scaleY);
-			ret.y = (_matrix[1] * x * _scaleX + _matrix[5] * y * _scaleY);
-			return ret;
-		}
+		public virtual Vector3 TransformDirection(float x, float y, float z)
+        {
+            Vector3 ret = new Vector3();
+            UpdateRotationMatrix();
+            ret.x = (_matrix[0] * x * _scaleX + _matrix[4] * y * _scaleY + _matrix[8] * z * _scaleZ);
+            ret.y = (_matrix[1] * x * _scaleX + _matrix[5] * y * _scaleY + _matrix[9] * z * _scaleZ);
+            ret.z = (_matrix[2] * x * _scaleX + _matrix[6] * y * _scaleY + _matrix[10] * z * _scaleZ);
+            return ret;
+        }
 
-		//------------------------------------------------------------------------------------------------------------------------
-		//														Rotation
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Gets or sets the object's rotation in degrees.
-		/// </summary>
-		/// <value>
-		/// The rotation.
-		/// </value>
-		public float rotation {
+        //------------------------------------------------------------------------------------------------------------------------
+        //														Rotation
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets or sets the object's rotation in degrees.
+        /// </summary>
+        /// <value>
+        /// The rotation.
+        /// </value>
+        public Quaternion rotation {
 			get { return _rotation; }
-			set {
-				_rotation = value;
-				float r = _rotation * Mathf.PI / 180.0f;
-				float cs = Mathf.Cos (r);
-				float sn = Mathf.Sin (r);
-				_matrix[0] = cs;
-				_matrix[1] = sn;
-				_matrix[4] = -sn;
-				_matrix[5] = cs;
-			}
-		}
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														Turn()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Turn the specified object with a certain angle in degrees.
-		/// </summary>
-		/// <param name='angle'>
-		/// Angle.
-		/// </param>
-		public void Turn (float angle) {
-			rotation = _rotation + angle;
-		}
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														Move()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Move the object, based on its current rotation.
-		/// </summary>
-		/// <param name='stepX'>
-		/// Step x.
-		/// </param>
-		/// <param name='stepY'>
+			set
+            {
+                _rotation = value;
+                _rotationMatrixIsUpToDate = false;
+            }
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														UpdateRotationMatrix
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Internal function to update the rotation matrix.
+        /// </summary>
+        /// <value>
+        /// The rotation.
+        /// </value>
+        private void UpdateRotationMatrix()
+        {
+            if (_rotationMatrixIsUpToDate) return;
+
+            //as seen in https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Rotation_matrices
+            _matrix[0] = 1f - 2f * (_rotation.j * _rotation.j + _rotation.k * _rotation.k);
+            _matrix[1] = 2f * (_rotation.i * _rotation.j - _rotation.r * _rotation.k);
+            _matrix[2] = 2f * (_rotation.r * _rotation.j + _rotation.i * _rotation.k);
+
+            _matrix[4] = 2f * (_rotation.i * _rotation.j + _rotation.r * _rotation.k);
+            _matrix[5] = 1f - 2f * (_rotation.i * _rotation.i + _rotation.k * _rotation.k);
+            _matrix[6] = 2f * (_rotation.j * _rotation.k - _rotation.r * _rotation.i);
+
+            _matrix[8] = 2f * (_rotation.i * _rotation.k - _rotation.r * _rotation.j);
+            _matrix[9] = 2f * (_rotation.r * _rotation.i + _rotation.j * _rotation.k);
+            _matrix[10] = 1f - 2f * (_rotation.r * _rotation.r + _rotation.j * _rotation.j);
+            //the sludge is real
+            _rotationMatrixIsUpToDate = true;
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														Rotate()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Rotate the object in question by a quaternion.
+        /// </summary>
+        /// <param name='q'>
+        /// Quaternion to rotate by.
+        /// </param>
+        public void Rotate(Quaternion q)
+        {
+            _rotation *= q;
+            _rotationMatrixIsUpToDate = false;
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														Move()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Move the object, based on its current rotation.
+        /// </summary>
+        /// <param name='stepX'>
+        /// Step x.
+        /// </param>
+        /// <param name='stepY'>
+        /// Step y.
+        /// </param>
+		/// <param name='stepZ'>
 		/// Step y.
 		/// </param>
-		public void Move (float stepX, float stepY) {
-			float r = _rotation * Mathf.PI / 180.0f;
-			float cs = Mathf.Cos (r);
-			float sn = Mathf.Sin (r);
-			_matrix[12] = (_matrix[12] + cs * stepX - sn * stepY);
-			_matrix[13] = (_matrix[13] + sn * stepX + cs * stepY);
-		}
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														Translate()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Move the object, in world space. (Object rotation is ignored)
-		/// </summary>
-		/// <param name='stepX'>
-		/// Step x.
+        public void Move(float stepX, float stepY, float stepZ)
+        {
+            Vector3 step = TransformDirection(stepX, stepY, stepZ);
+            _matrix[12] += step.x;
+            _matrix[13] += step.y;
+            _matrix[14] += step.z;
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														Translate()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Move the object, in world space. (Object rotation is ignored)
+        /// </summary>
+        /// <param name='stepX'>
+        /// Step x.
+        /// </param>
+        /// <param name='stepY'>
+        /// Step y.
+        /// </param>
+		/// <param name='stepZ'>
+		/// Step z.
 		/// </param>
-		/// <param name='stepY'>
-		/// Step y.
-		/// </param>
-		public void Translate (float stepX, float stepY) {
-			_matrix[12] += stepX;
+        public void Translate(float stepX, float stepY, float stepZ)
+        {
+            _matrix[12] += stepX;
 			_matrix[13] += stepY;
-		}
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														SetScaleXY()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Sets the object's scaling
-		/// </summary>
-		/// <param name='scaleX'>
-		/// Scale x.
-		/// </param>
-		/// <param name='scaleY'>
-		/// Scale y.
-		/// </param>
-		public void SetScaleXY(float scaleX, float scaleY) {
-			_scaleX = scaleX;
-			_scaleY = scaleY;
-		}
+            _matrix[14] += stepZ;
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														SetScaleXYZ()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Sets the object's scaling.
+        /// </summary>
+        /// <param name='scaleX'>
+        /// Scale x.
+        /// </param>
+        /// <param name='scaleY'>
+        /// Scale y.
+        /// </param>
+        /// <param name='scaleZ'>
+        /// Scale z.
+        /// </param>
+        public void SetScaleXYZ(float scaleX, float scaleY, float scaleZ)
+        {
+            _scaleX = scaleX;
+            _scaleY = scaleY;
+            _scaleZ = scaleZ;
+        }
 
 		//------------------------------------------------------------------------------------------------------------------------
 		//														SetScale()
@@ -306,44 +394,55 @@ namespace GXPEngine
 			set { _scaleY = value; }
 		}
 
-		//------------------------------------------------------------------------------------------------------------------------
-		//														scale
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Sets the object's x-axis and y-axis scale
-		/// Note: This getter/setter is included for convenience only
-		/// Reading this value will return scaleX, not scaleY!!
-		/// </summary>
-		/// <value>
-		/// The scale.
-		/// </value>
-		public float scale {
-			get { 
-				return _scaleX; 
-			}
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														scaleZ
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Sets the object's z-axis scale
+        /// </summary>
+        /// <value>
+        /// The scale z.
+        /// </value>
+        public float scaleZ
+        {
+            get { return _scaleZ; }
+            set { _scaleZ = value; }
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														scale
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Sets the object's x-axis, y-axis and z-axis scale
+        /// </summary>
+        /// <value>
+        /// The scale.
+        /// </value>
+        public float scale {
 			set { 
 				_scaleX = value;
 				_scaleY = value; 
+                _scaleZ = value;
 			}
 		}
 
 		/// <summary>
 		/// Returns the inverse matrix transformation, if it exists.
 		/// (Use this e.g. for cameras used by sub windows)
+        /// WARNING : REMAINS UNTESTED.
 		/// </summary>
 		public Transformable Inverse() {
-			Transformable inv=new Transformable();
-			if (scaleX == 0 || scaleY == 0)
+			if (scaleX == 0 || scaleY == 0 || scaleZ == 0)
 				throw new Exception ("Cannot invert a transform with scale 0");
-			float cs = _matrix [0];
-			float sn = _matrix [1];
-			inv._matrix [0] = cs / scaleX;
-			inv._matrix [1] = -sn / scaleY;
-			inv._matrix [4] = sn / scaleX;
-			inv._matrix [5] = cs / scaleY;
-			inv.x = (-x * cs - y * sn) / scaleX;
-			inv.y = (x * sn - y * cs) / scaleY;
-			return inv;
+			Transformable inv=new Transformable();
+            Vector3 localTranslation = InverseTransformPoint(0, 0, 0);
+            inv.rotation = _rotation.Inverse();
+            inv.scaleX = 1/_scaleX;
+            inv.scaleY = 1/_scaleY;
+            inv.scaleZ = 1/_scaleZ;
+            inv.position = -localTranslation;
+            return inv;
 		}
 	}
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 //SHIIIIIIIIIIIT
 namespace GXPEngine.Core
 {
-    public class Quaternion
+    public struct Quaternion
     {
         public float r;
         public float i;
@@ -125,6 +125,10 @@ namespace GXPEngine.Core
                 q1.r * q2.k + q1.k * q2.r + q1.j * q2.i - q1.i * q2.j
                 );
         }
+        static public Quaternion operator * (Quaternion q1, Quaternion q2)
+        {
+            return Multiply(q1, q2);
+        }
 
         //------------------------------------------------------------------------------------------------------------------------
         //													Dot()
@@ -178,9 +182,6 @@ namespace GXPEngine.Core
         /// <summary>
         /// Returns the inverse rotation of the quaternion in question.
         /// </summary>
-        /// <returns>
-        /// yup that sure is the inverse
-        /// </returns>
         public Quaternion Inverse()
         {
             return new Quaternion( r, -i, -j, -k);
