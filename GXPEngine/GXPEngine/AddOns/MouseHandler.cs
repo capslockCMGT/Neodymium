@@ -56,7 +56,7 @@ namespace GXPEngine
 		//position.Set (Input.mouseX, Input.mouseY);
 		//you can do
 		//position.Set (Input.mouseX + _mouseHandler.offsetToTarget.x, Input.mouseY + _mouseHandler.offsetToTarget.y);
-		private Vector2 _offset = new Vector2();
+		private Vector3 _offset = new Vector3();
 
 		/// <summary>
 		/// Create a new MouseHandler for the given target.
@@ -77,7 +77,7 @@ namespace GXPEngine
 		void HandleOnStep ()
 		{
 			//mouse can enter/leave target without moving (the target may move!)
-			bool isOnTarget = _target.HitTestPoint (Input.mouseX, Input.mouseY);
+			bool isOnTarget = _target.HitTestPoint (Input.mouseX, Input.mouseY, 0);
 			if (isOnTarget  && !_wasOnTarget) {
 				if (OnMouseOverTarget != null) OnMouseOverTarget (_target, MouseEventType.MouseOverTarget);
 			} else if (!isOnTarget  && _wasOnTarget) {
@@ -91,7 +91,7 @@ namespace GXPEngine
 				_wasMouseDown = true;
 				_wasMouseDownOnTarget = isOnTarget;
 
-				_offset = _target.TransformPoint (0, 0);
+				_offset = _target.TransformPoint (0, 0, 0);
 				_offset.x = _offset.x - Input.mouseX;
 				_offset.y = _offset.y - Input.mouseY;
 
@@ -116,7 +116,7 @@ namespace GXPEngine
 		}
 
 		//contains offset from mouse to target on click
-		public Vector2 offsetToTarget {
+		public Vector3 offsetToTarget {
 			get { return _offset;}
 		}
 

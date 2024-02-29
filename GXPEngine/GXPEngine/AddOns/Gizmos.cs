@@ -13,15 +13,17 @@ namespace GXPEngine {
 	/// </summary>
 	public class Gizmos {
 		struct DrawLineCall {
-			public float x1, y1, x2, y2;
+			public float x1, y1, z1, x2, y2, z2;
 			public byte width;
 			public uint color;
 
-			public DrawLineCall(float x1, float y1, float x2, float y2, uint color, byte width) {
+			public DrawLineCall(float x1, float y1, float z1, float x2, float y2, float z2, uint color, byte width) {
 				this.x1 = x1;
 				this.y1 = y1;
+				this.z1 = z1;
 				this.x2 = x2;
 				this.y2 = y2;
+				this.z2 = z2;
 				this.color = color;
 				this.width = width;
 			}
@@ -69,14 +71,14 @@ namespace GXPEngine {
 		}
 
 		/// <summary>
-		/// You can call this method from anywhere. A (debug) line will be drawn from (x1,y1) to (x2,y2),
+		/// You can call this method from anywhere. A (debug) line will be drawn from (x1,y1,z1) to (x2,y2,z2),
 		/// in the space of the given game object. 
 		/// If no game object is given, it will be drawn in screen space.
 		/// The line will be drawn after drawing all other game objects.
 		/// You can give color and line width. If no values are given (=0), the default values are
 		/// used. These can be set using SetStyle, SetColor and SetWidth.
 		/// </summary>
-		public static void DrawLine(float x1, float y1, float x2 = 0, float y2 = 0, GameObject space = null, uint color = 0, byte width = 0) {
+		public static void DrawLine(float x1, float y1, float z1, float x2 = 0, float y2 = 0, float z2 = 0, GameObject space = null, uint color = 0, byte width = 0) {
 			if (Game.main == null) {
 				throw new Exception("Cannot draw lines before creating a game");
 			}
@@ -91,37 +93,40 @@ namespace GXPEngine {
 			}
 
 			if (space == null) {
-				Instance.drawCalls.Add(new DrawLineCall(x1, y1, x2, y2, color, width));
+				Instance.drawCalls.Add(new DrawLineCall(x1, y1, z1, x2, y2, z2, color, width));
 			} else {
 				// transform to the given parent space:
-				Vector2 start = space.TransformPoint(x1, y1);
-				Vector2 end = space.TransformPoint(x2, y2);
+				Vector3 start = space.TransformPoint(x1, y1, z1);
+				Vector3 end = space.TransformPoint(x2, y2, z2);
 
-				Instance.drawCalls.Add(new DrawLineCall(start.x, start.y, end.x, end.y, color, width));
+				Instance.drawCalls.Add(new DrawLineCall(start.x, start.y, start.z, end.x, end.y, end.z, color, width));
 			}
 		}
 
 		/// <summary>
-		/// Draws a plus shape centered at the point x,y, with given radius, using DrawLine.
+		/// Draws a plus shape centered at the point x,y,z, with given radius, using DrawLine.
 		/// </summary>
-		public static void DrawPlus(float x, float y, float radius, GameObject space = null, uint color = 0, byte width = 0) {
-			DrawLine(x - radius, y, x + radius, y, space, color, width);
-			DrawLine(x, y - radius, x, y + radius, space, color, width);
-		}
+		public static void DrawPlus(float x, float y, float z, float radius, GameObject space = null, uint color = 0, byte width = 0) {
+			DrawLine(x - radius, y, z, x + radius, y, z, space, color, width);
+			DrawLine(x, y - radius, z, x, y + radius, z, space, color, width);
+			DrawLine(x, y, z - radius, x, y, z - radius, space, color, width);
+        }
 
-		/// <summary>
-		/// Draws a cross shape centered at the point x,y, with given radius, using DrawLine.
-		/// </summary>
-		public static void DrawCross(float x, float y, float radius, GameObject space = null, uint color = 0, byte width = 0) {
+        /// <summary>
+        /// Draws a cross shape centered at the point x,y,z, with given radius, using DrawLine.
+        /// </summary>
+        public static void DrawCross(float x, float y, float z, float radius, GameObject space = null, uint color = 0, byte width = 0) {
+			//im not implementing this
+			/*
 			DrawLine(x - radius, y - radius, x + radius, y + radius, space, color, width);
-			DrawLine(x - radius, y + radius, x + radius, y - radius, space, color, width);
+			DrawLine(x - radius, y + radius, x + radius, y - radius, space, color, width);*/
 		}
 
 		/// <summary>
-		/// Draws a line segment from (x,y) to (x+dx, y+dy), using DrawLine.
+		/// Draws a line segment from (x,y,z) to (x+dx, y+dy, z+dz), using DrawLine.
 		/// </summary>
-		public static void DrawRay(float x, float y, float dx, float dy, GameObject space = null, uint color = 0, byte width = 0) {
-			DrawLine(x, y, x + dx, y + dy, space, color, width);
+		public static void DrawRay(float x, float y, float z, float dx, float dy, float dz, GameObject space = null, uint color = 0, byte width = 0) {
+			DrawLine(x, y, z, x + dx, y + dy, z + dz, space, color, width);
 		}
 
 		/// <summary>
@@ -129,9 +134,11 @@ namespace GXPEngine {
 		/// using DrawLine.
 		/// </summary>
 		public static void DrawRayAngle(float x, float y, float angleDegrees, float length, GameObject space = null, uint color = 0, byte width = 0) {
+			//not implementing this either
+			/*
 			float dx = Mathf.Cos(angleDegrees * Mathf.PI / 180) * length;
 			float dy = Mathf.Sin(angleDegrees * Mathf.PI / 180) * length;
-			DrawLine(x, y, x + dx, y + dy, space, color, width);
+			DrawLine(x, y, x + dx, y + dy, space, color, width);*/
 		}
 
 		/// <summary>
@@ -139,9 +146,11 @@ namespace GXPEngine {
 		/// The relativeArrowSize is the size of the arrow head compared to the arrow length.
 		/// </summary>
 		public static void DrawArrow(float x, float y, float dx, float dy, float relativeArrowSize = 0.25f, GameObject space = null, uint color = 0, byte width = 0) {
+			//seriously? who is using this?
+			/*
 			DrawLine(x, y, x + dx, y + dy, space, color, width);
 			DrawLine(x + dx, y + dy, x + dx * (1 - relativeArrowSize) - dy * relativeArrowSize, y + dy * (1 - relativeArrowSize) + dx * relativeArrowSize, space, color, width);
-			DrawLine(x + dx, y + dy, x + dx * (1 - relativeArrowSize) + dy * relativeArrowSize, y + dy * (1 - relativeArrowSize) - dx * relativeArrowSize, space, color, width);
+			DrawLine(x + dx, y + dy, x + dx * (1 - relativeArrowSize) + dy * relativeArrowSize, y + dy * (1 - relativeArrowSize) - dx * relativeArrowSize, space, color, width);*/
 		}
 
 		/// <summary>
@@ -150,41 +159,56 @@ namespace GXPEngine {
 		/// The relativeArrowSize is the size of the arrow head compared to the arrow length.
 		/// </summary>
 		public static void DrawArrowAngle(float x, float y, float angleDegrees, float length, float relativeArrowSize = 0.25f, GameObject space = null, uint color = 0, byte width = 0) {
+			//not implementing this
+			/*
 			float dx = Mathf.Cos(angleDegrees * Mathf.PI / 180) * length;
 			float dy = Mathf.Sin(angleDegrees * Mathf.PI / 180) * length;
-			DrawArrow(x, y, dx, dy, relativeArrowSize, space, color, width);
+			DrawArrow(x, y, dx, dy, relativeArrowSize, space, color, width);*/
 		}
 
 		/// <summary>
-		/// Draws an axis-aligned rectangle centered at a given point, with given width and height,
+		/// Draws an axis-aligned box centered at a given point, with given width, height and depth,
 		/// using DrawLine.
 		/// </summary>
-		public static void DrawRectangle(float xCenter, float yCenter, float width, float height, GameObject space = null, uint color = 0, byte lineWidth = 0) {
-			DrawLine(xCenter - width / 2, yCenter - height / 2, xCenter + width / 2, yCenter - height / 2, space, color, lineWidth);
-			DrawLine(xCenter - width / 2, yCenter + height / 2, xCenter + width / 2, yCenter + height / 2, space, color, lineWidth);
-			DrawLine(xCenter - width / 2, yCenter - height / 2, xCenter - width / 2, yCenter + height / 2, space, color, lineWidth);
-			DrawLine(xCenter + width / 2, yCenter - height / 2, xCenter + width / 2, yCenter + height / 2, space, color, lineWidth);
-		}
+		public static void DrawBox(float xCenter, float yCenter, float zCenter, float width, float height, float depth, GameObject space = null, uint color = 0, byte lineWidth = 0) {
+			width *= .5f;
+			height *= .5f;
+			depth *= .5f;
+			DrawLine(xCenter - width, yCenter - height, zCenter - depth, xCenter + width, yCenter - height, zCenter - depth, space, color, lineWidth);
+			DrawLine(xCenter - width, yCenter + height, zCenter - depth, xCenter + width, yCenter + height, zCenter - depth, space, color, lineWidth);
+			DrawLine(xCenter - width, yCenter - height, zCenter + depth, xCenter + width, yCenter - height, zCenter + depth, space, color, lineWidth);
+			DrawLine(xCenter - width, yCenter + height, zCenter + depth, xCenter + width, yCenter + height, zCenter + depth, space, color, lineWidth);
 
-		/// <summary>
-		/// This method should typically be called from the RenderSelf method of a GameObject,
-		/// or from the game's OnAfterRender event.
-		/// The line from (x1,y1) to (x2,y2) is then drawn immediately, 
-		/// behind objects that are drawn later.
-		/// It is drawn in the space of the game object itself if called from RenderSelf with 
-		/// pGlobalCoords=false, and in screen space otherwise.
-		/// You can give color and line width. If no values are given (=0), the default values are
-		/// used. These can be set using SetStyle, SetColor and SetWidth.
-		/// </summary>
-		public static void RenderLine(float x1, float y1, float x2, float y2, uint pColor = 0xffffffff, uint pLineWidth = 1, bool pGlobalCoords = false) {
+			DrawLine(xCenter - width, yCenter - height, zCenter - depth, xCenter - width, yCenter + height, zCenter - depth, space, color, lineWidth);
+			DrawLine(xCenter + width, yCenter - height, zCenter - depth, xCenter + width, yCenter + height, zCenter - depth, space, color, lineWidth);
+			DrawLine(xCenter - width, yCenter - height, zCenter + depth, xCenter - width, yCenter + height, zCenter + depth, space, color, lineWidth);
+			DrawLine(xCenter + width, yCenter - height, zCenter + depth, xCenter + width, yCenter + height, zCenter + depth, space, color, lineWidth);
+
+			DrawLine(xCenter - width, yCenter - height, zCenter - depth, xCenter - width, yCenter - height, zCenter + depth, space, color, lineWidth);
+			DrawLine(xCenter + width, yCenter - height, zCenter - depth, xCenter + width, yCenter - height, zCenter + depth, space, color, lineWidth);
+			DrawLine(xCenter - width, yCenter + height, zCenter - depth, xCenter - width, yCenter + height, zCenter + depth, space, color, lineWidth);
+			DrawLine(xCenter + width, yCenter + height, zCenter - depth, xCenter + width, yCenter + height, zCenter + depth, space, color, lineWidth);
+        }
+
+        /// <summary>
+        /// This method should typically be called from the RenderSelf method of a GameObject,
+        /// or from the game's OnAfterRender event.
+        /// The line from (x1,y1) to (x2,y2) is then drawn immediately, 
+        /// behind objects that are drawn later.
+        /// It is drawn in the space of the game object itself if called from RenderSelf with 
+        /// pGlobalCoords=false, and in screen space otherwise.
+        /// You can give color and line width. If no values are given (=0), the default values are
+        /// used. These can be set using SetStyle, SetColor and SetWidth.
+        /// </summary>
+        public static void RenderLine(float x1, float y1, float z1, float x2, float y2, float z2, uint pColor = 0xffffffff, uint pLineWidth = 1, bool pGlobalCoords = false) {
 			if (pGlobalCoords) GL.LoadIdentity();
 			GL.Disable(GL.TEXTURE_2D);
 			GL.LineWidth(pLineWidth);
 			GL.Color4ub((byte)((pColor >> 16) & 0xff), (byte)((pColor >> 8) & 0xff), (byte)((pColor) & 0xff), (byte)((pColor >> 24) & 0xff));
-			float[] vertices = new float[] { x1, y1, x2, y2 };
+			float[] vertices = new float[] { x1, y1, z1, x2, y2, z2};
 			GL.EnableClientState(GL.VERTEX_ARRAY);
-			GL.VertexPointer(2, GL.FLOAT, 0, vertices);
-			GL.DrawArrays(GL.LINES, 0, 2);
+			GL.VertexPointer(3, GL.FLOAT, 0, vertices);
+			GL.DrawArrays(GL.LINES, 0, 3);
 			GL.DisableClientState(GL.VERTEX_ARRAY);
 			GL.Enable(GL.TEXTURE_2D);
 		}
@@ -192,7 +216,7 @@ namespace GXPEngine {
 		void DrawLines(GLContext glContext) {
 			if (drawCalls.Count > 0) {
 				foreach (var dc in drawCalls) {
-					RenderLine(dc.x1, dc.y1, dc.x2, dc.y2, dc.color, dc.width, true);
+					RenderLine(dc.x1, dc.y1, dc.z1, dc.x2, dc.y2, dc.z2, dc.color, dc.width, true);
 				}
 				drawCalls.Clear();
 			}
