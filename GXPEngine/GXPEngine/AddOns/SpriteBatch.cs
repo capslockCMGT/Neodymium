@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GXPEngine.Core;
-using GXPEngine.OpenGL;
 
 namespace GXPEngine {
 	/// <summary>
@@ -53,10 +52,10 @@ namespace GXPEngine {
 
 					BufferRenderer rend = renderers[tile.texture];
 
-					Vector2[] bounds = tile.GetExtents();
+					Vector3[] bounds = tile.GetExtents();
 					float[] uvs = tile.GetUVs(false);
 					for (int corner = 0; corner < 4; corner++) {
-						rend.AddVert(bounds[corner].x, bounds[corner].y);
+						rend.AddVert(bounds[corner].x, bounds[corner].y, 0);
 						rend.AddUv(uvs[corner * 2], uvs[corner * 2 + 1]);
 
 						if (bounds[corner].x < boundsMinX) boundsMinX = bounds[corner].x;
@@ -78,17 +77,17 @@ namespace GXPEngine {
 		}
 
 		/// <summary>
-		/// Gets the four corners of this object as a set of 4 Vector2s.
+		/// Gets the four corners of this object as a set of 4 Vector3s.
 		/// </summary>
 		/// <returns>
 		/// The extents.
 		/// </returns>
-		public Vector2[] GetExtents() {
-			Vector2[] ret = new Vector2[4];
-			ret[0] = TransformPoint(_bounds.left, _bounds.top);
-			ret[1] = TransformPoint(_bounds.right, _bounds.top);
-			ret[2] = TransformPoint(_bounds.right, _bounds.bottom);
-			ret[3] = TransformPoint(_bounds.left, _bounds.bottom);
+		public Vector3[] GetExtents() {
+			Vector3[] ret = new Vector3[4];
+			ret[0] = TransformPoint(_bounds.left, _bounds.top, 0);
+			ret[1] = TransformPoint(_bounds.right, _bounds.top, 0);
+			ret[2] = TransformPoint(_bounds.right, _bounds.bottom, 0);
+			ret[3] = TransformPoint(_bounds.left, _bounds.bottom, 0);
 			return ret;
 		}
 
@@ -104,22 +103,7 @@ namespace GXPEngine {
 		override protected void RenderSelf(GLContext glContext) {
 			if (!initialized) return;
 
-			bool test = false;
-
-			Vector2[] bounds = GetExtents();
-			float maxX = float.MinValue;
-			float maxY = float.MinValue;
-			float minX = float.MaxValue;
-			float minY = float.MaxValue;
-			for (int i = 0; i < 4; i++) {
-				if (bounds[i].x > maxX) maxX = bounds[i].x;
-				if (bounds[i].x < minX) minX = bounds[i].x;
-				if (bounds[i].y > maxY) maxY = bounds[i].y;
-				if (bounds[i].y < minY) minY = bounds[i].y;
-			}
-			test = (maxX < game.RenderRange.left) || (maxY < game.RenderRange.top) || (minX >= game.RenderRange.right) || (minY >= game.RenderRange.bottom);
-
-			if (test == false) {
+			if (OnScreen()) {
 				if (blendMode != null) blendMode.enable();
 				glContext.SetColor((byte)((_color >> 16) & 0xFF),
 									(byte)((_color >> 8) & 0xFF),
@@ -137,6 +121,29 @@ namespace GXPEngine {
 				//Console.WriteLine("Not rendering sprite batch");
 			}
 		}
+
+		protected bool OnScreen()
+		{
+			//same as with Sprite.OnScreen
+			/*
+            bool test = false;
+
+            Vector3[] bounds = GetExtents();
+            float maxX = float.MinValue;
+            float maxY = float.MinValue;
+            float minX = float.MaxValue;
+            float minY = float.MaxValue;
+            for (int i = 0; i < 4; i++)
+            {
+                if (bounds[i].x > maxX) maxX = bounds[i].x;
+                if (bounds[i].x < minX) minX = bounds[i].x;
+                if (bounds[i].y > maxY) maxY = bounds[i].y;
+                if (bounds[i].y < minY) minY = bounds[i].y;
+            }
+            test = (maxX < game.RenderRange.left) || (maxY < game.RenderRange.top) || (minX >= game.RenderRange.right) || (minY >= game.RenderRange.bottom);
+			*/
+			return true;
+        }
 
 		//------------------------------------------------------------------------------------------------------------------------
 		//														color
@@ -186,57 +193,6 @@ namespace GXPEngine {
 		public float alpha {
 			get { return _alpha; }
 			set { _alpha = value; }
-		}
-	}
-
-	/// <summary>
-	/// A helper class for SpriteBatches, and possibly other complex objects or collections with larger vertex and uv lists.
-	/// </summary>
-	public class BufferRenderer {
-		protected float[] verts;
-		protected float[] uvs;
-		protected int numberOfVertices; // The number of rendered quads is numberOfVertices/4
-
-		Texture2D _texture;
-
-		List<float> vertList = new List<float>();
-		List<float> uvList = new List<float>();
-
-		public BufferRenderer(Texture2D texture) {
-			_texture = texture;
-		}
-
-		public void AddVert(float x, float y) {
-			vertList.Add(x);
-			vertList.Add(y);
-		}
-		public void AddUv(float u, float v) {
-			uvList.Add(u);
-			uvList.Add(v);
-		}
-
-		public void CreateBuffers() {
-			verts = vertList.ToArray();
-			uvs = uvList.ToArray();
-			numberOfVertices = verts.Length / 2;
-		}
-
-		public void DrawBuffers(GLContext glContext) {
-			_texture.Bind();
-
-			GL.EnableClientState(GL.TEXTURE_COORD_ARRAY);
-			GL.EnableClientState(GL.VERTEX_ARRAY);
-			GL.TexCoordPointer(2, GL.FLOAT, 0, uvs);
-			GL.VertexPointer(2, GL.FLOAT, 0, verts);
-			GL.DrawArrays(GL.QUADS, 0, numberOfVertices);
-			GL.DisableClientState(GL.VERTEX_ARRAY);
-			GL.DisableClientState(GL.TEXTURE_COORD_ARRAY);
-
-			_texture.Unbind();
-		}
-
-		public void Dispose() {
-			// For this backend: nothing needed
 		}
 	}
 }
