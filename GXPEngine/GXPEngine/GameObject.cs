@@ -435,17 +435,17 @@ namespace GXPEngine
 		/// If a time of impact below 1 is returned, the normal will be the collision normal 
 		///   (otherwise it is undefined).
 		/// </summary>
-		virtual public float TimeOfImpact (GameObject other, float vx, float vy, out Vector2 normal) {
-			normal = new Vector2 ();
+		virtual public float TimeOfImpact (GameObject other, float vx, float vy, float vz, out Vector3 normal) {
+			normal = new Vector3 ();
 			if (_collider == null || other._collider == null || parent==null)
 				return float.MaxValue;
 			// Compute world space velocity:
 			//Vector2 p1 = parent.TransformPoint (vx, vy);
 			//Vector2 p0 = parent.TransformPoint (0, 0);
-			Vector2 worldVelocity=parent.TransformDirection(vx,vy);
+			Vector3 worldVelocity=parent.TransformDirection(vx,vy,vz);
 			float TOI=_collider.TimeOfImpact (other._collider, 
 				//p1.x-p0.x, p1.y-p0.y, 
-				worldVelocity.x,worldVelocity.y,
+				worldVelocity.x,worldVelocity.y,worldVelocity.z,
 				out normal
 			);
 			return TOI;
@@ -461,13 +461,13 @@ namespace GXPEngine
 		/// As objectsToCheck, pass an array or List of game objects to check against 
 		/// (this moving game object will move through all objects that are not in the given array or list).
 		/// </summary>
-		virtual public Collision MoveUntilCollision(float vx, float vy, IEnumerable<GameObject> objectsToCheck) {
+		virtual public Collision MoveUntilCollision(float vx, float vy, float vz, IEnumerable<GameObject> objectsToCheck) {
 			Collision col = null;
 			float minTOI = 1;
 			foreach (GameObject other in objectsToCheck) {
 				if (other.collider != null && other.collider.isTrigger) continue;
-				Vector2 newNormal;
-				float newTOI = TimeOfImpact (other, vx, vy, out newNormal);
+				Vector3 newNormal;
+				float newTOI = TimeOfImpact (other, vx, vy, vz, out newNormal);
 				if (newTOI < minTOI) {
 					col = new Collision (this, other, newNormal, newTOI);
 					minTOI = newTOI;
@@ -475,6 +475,7 @@ namespace GXPEngine
 			}
 			x += vx * minTOI;
 			y += vy * minTOI;
+			z += vz * minTOI;
 			return col;
 		}
 
@@ -488,13 +489,15 @@ namespace GXPEngine
 		/// Note: this is a very expensive method since it uses GetCollisions, and 
 		/// tunneling is possible since it uses discrete collision detection - use with care.
 		/// </summary>
-		virtual public Collision MoveUntilCollision(float vx, float vy) {
+		virtual public Collision MoveUntilCollision(float vx, float vy, float vz) {
 			x += vx;
 			y += vy;
+			z += vz;
 			GameObject[] overlaps = GetCollisions (false,true);
 			x -= vx;
 			y -= vy;
-			return MoveUntilCollision (vx, vy, overlaps);
+			z -= vz;
+			return MoveUntilCollision (vx, vy, vz, overlaps);
 		}
 
 		//------------------------------------------------------------------------------------------------------------------------
@@ -512,139 +515,158 @@ namespace GXPEngine
 		/// </param>
 		virtual public bool HitTestPoint(float x, float y) {
 			return _collider != null && _collider.HitTestPoint(x, y);
-		}		
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														TransformPoint()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Transforms a point from local to global space.
-		/// If you insert a point relative to the object, it will return that same point relative to the game.
-		/// </summary>
-		/// <param name='x'>
-		/// The x coordinate to transform.
+		}
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														TransformPoint()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Transforms a point from local to global space.
+        /// If you insert a point relative to the object, it will return that same point relative to the game.
+		/// If not in the hierarchy, it will be relative to the grandest parent instead.
+        /// </summary>
+        /// <param name='x'>
+        /// The x coordinate to transform.
+        /// </param>
+        /// <param name='y'>
+        /// The y coordinate to transform.
+        /// </param>
+		/// <param name='z'>
+		/// The z coordinate to transform.
 		/// </param>
-		/// <param name='y'>
-		/// The y coordinate to transform.
-		/// </param>
-		public override Vector2 TransformPoint(float x, float y) {
-			Vector2 ret = base.TransformPoint (x, y);
+        public override Vector3 TransformPoint(float x, float y, float z) {
+			Vector3 ret = base.TransformPoint (x, y, z);
 			if (parent == null) {
 				return ret;
 			} else {
-				return parent.TransformPoint (ret.x, ret.y);
+				return parent.TransformPoint (ret.x, ret.y, ret.z);
 			}
 		}
 
-		//------------------------------------------------------------------------------------------------------------------------
-		//														TransformPoint()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Transforms a point from this object's local space to the space of a given ancestor.
-		/// If you insert a point relative to this game object, this method will return that same point relative to the given ancestor.
-		/// </summary>
-		/// <param name='x'>
-		/// The x coordinate to transform.
+        //------------------------------------------------------------------------------------------------------------------------
+        //														TransformPoint()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Transforms a point from this object's local space to the space of a given ancestor.
+        /// If you insert a point relative to this game object, this method will return that same point relative to the given ancestor.
+        /// </summary>
+        /// <param name='x'>
+        /// The x coordinate to transform.
+        /// </param>
+        /// <param name='y'>
+        /// The y coordinate to transform.
+        /// </param>
+		/// <param name='z'>
+		/// The z coordinate to transform.
 		/// </param>
-		/// <param name='y'>
-		/// The y coordinate to transform.
-		/// </param>
-		/// <param name='targetParentSpace'>
-		/// This method will return the coordinates of the given point relative to this given game object. 
-		/// If the given game object is not an ancestor of [this] game object, then 
-		/// this argument is ignored, and the returned point will be in screen space.
-		/// </param>
-		public Vector2 TransformPoint(float x, float y, GameObject targetParentSpace) {
+        /// <param name='targetParentSpace'>
+        /// This method will return the coordinates of the given point relative to this given game object. 
+        /// If the given game object is not an ancestor of [this] game object, then 
+        /// this argument is ignored, and the returned point will be in screen space.
+        /// </param>
+        public Vector3 TransformPoint(float x, float y, float z, GameObject targetParentSpace) {
 			// Implementation note: since the original TransformPoint is a core engine method,
 			// efficiency (avoiding an extra method call) is preferred here at the cost of some code duplication.
-			Vector2 ret = base.TransformPoint(x, y);
+			Vector3 ret = base.TransformPoint(x, y, z);
 			if (parent == null || parent == targetParentSpace) {
 				return ret;
 			} else {
-				return parent.TransformPoint(ret.x, ret.y, targetParentSpace);
+				return parent.TransformPoint(ret.x, ret.y, ret.z, targetParentSpace);
 			}
 		}
 
-		/// <summary>
-		/// Transforms a direction vector from local to global space.
-		/// If you insert a vector relative to the object, it will return that same vector relative to the game.
-		/// Note: only scale and rotation information are taken into account, not translation (coordinates).
-		/// </summary>
-		/// <param name='x'>
-		/// The x coordinate to transform.
+        /// <summary>
+        /// Transforms a direction vector from local to global space.
+        /// If you insert a vector relative to the object, it will return that same vector relative to the game.
+        /// Note: only scale and rotation information are taken into account, not translation (coordinates).
+        /// </summary>
+        /// <param name='x'>
+        /// The x coordinate to transform.
+        /// </param>
+        /// <param name='y'>
+        /// The y coordinate to transform.
+        /// </param>
+		/// <param name='z'>
+		/// The z coordinate to transform.
 		/// </param>
-		/// <param name='y'>
-		/// The y coordinate to transform.
-		/// </param>
-		public override Vector2 TransformDirection(float x, float y) {
-			Vector2 ret = base.TransformDirection (x, y);
+        public override Vector3 TransformDirection(float x, float y, float z) {
+			Vector3 ret = base.TransformDirection(x, y, z);
 			if (parent == null) {
 				return ret;
 			} else {
-				return parent.TransformDirection (ret.x, ret.y);
+				return parent.TransformDirection (ret.x, ret.y, ret.z);
 			}
 		}
 
-		//------------------------------------------------------------------------------------------------------------------------
-		//												InverseTransformPoint()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Transforms the point from global into local space.
-		/// If you insert a point relative to the game, it will return that same point relative to this GameObject.
-		/// </summary>
-		/// <param name='x'>
-		/// The x coordinate to transform.
-		/// </param>
-		/// <param name='y'>
-		/// The y coordinate to transform.
-		/// </param>
-		public override Vector2 InverseTransformPoint(float x, float y) {
-			return InverseTransformPoint(x, y, null);
+        //------------------------------------------------------------------------------------------------------------------------
+        //												InverseTransformPoint()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Transforms the point from global into local space.
+        /// If you insert a point relative to the game, it will return that same point relative to this GameObject.
+        /// </summary>
+        /// <param name='x'>
+        /// The x coordinate to transform.
+        /// </param>
+        /// <param name='y'>
+        /// The y coordinate to transform.
+        /// </param>
+        /// <param name='z'>
+        /// The z coordinate to transform.
+        /// </param>
+        public override Vector3 InverseTransformPoint(float x, float y, float z) {
+			return InverseTransformPoint(x, y, z, null);
 		}
 
-		//------------------------------------------------------------------------------------------------------------------------
-		//												InverseTransformPoint()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Transforms the point from the space of a given ancestor into this object's local space.
-		/// If you insert a point relative to the given ancestor, it will return that same point relative to this GameObject.
-		/// </summary>
-		/// <param name='x'>
-		/// The x coordinate to transform.
+        //------------------------------------------------------------------------------------------------------------------------
+        //												InverseTransformPoint()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Transforms the point from the space of a given ancestor into this object's local space.
+        /// If you insert a point relative to the given ancestor, it will return that same point relative to this GameObject.
+        /// </summary>
+        /// <param name='x'>
+        /// The x coordinate to transform.
+        /// </param>
+        /// <param name='y'>
+        /// The y coordinate to transform.
+        /// </param>
+		/// <param name='z'>
+		/// The z coordinate to transform.
 		/// </param>
-		/// <param name='y'>
-		/// The y coordinate to transform.
-		/// </param>
-		/// <param name='fromParentSpace'>
-		/// The coordinates x and y should be given relative to this game object. If the given game object is not an ancestor of 
-		/// [this] game object, then this argument is ignored and x and y are assumed to be in screen space.
-		/// </param>
-		public Vector2 InverseTransformPoint(float x, float y, GameObject fromParentSpace) {
+        /// <param name='fromParentSpace'>
+        /// The coordinates x and y should be given relative to this game object. If the given game object is not an ancestor of 
+        /// [this] game object, then this argument is ignored and x and y are assumed to be in screen space.
+        /// </param>
+        public Vector3 InverseTransformPoint(float x, float y, float z, GameObject fromParentSpace) {
 			if (parent == null || parent==fromParentSpace) {
-				return base.InverseTransformPoint(x, y);
+				return base.InverseTransformPoint(x, y, z);
 			} else {
-				Vector2 ret = parent.InverseTransformPoint(x, y, fromParentSpace);
-				return base.InverseTransformPoint(ret.x, ret.y);
+				Vector3 ret = parent.InverseTransformPoint(x, y, z, fromParentSpace);
+				return base.InverseTransformPoint(ret.x, ret.y, ret.z);
 			}
 		}
 
-		/// <summary>
-		/// Transforms the vector from global into local space.
-		/// If you insert a vector relative to the game, it will return that same vector relative to this GameObject.
-		/// Note: only scale and rotation information are taken into account, not translation (coordinates).
-		/// </summary>
-		/// <param name='x'>
-		/// The x coordinate to transform.
-		/// </param>
-		/// <param name='y'>
-		/// The y coordinate to transform.
-		/// </param>
-		public override Vector2 InverseTransformDirection(float x, float y) {
+        /// <summary>
+        /// Transforms the vector from global into local space.
+        /// If you insert a vector relative to the game, it will return that same vector relative to this GameObject.
+        /// Note: only scale and rotation information are taken into account, not translation (coordinates).
+        /// </summary>
+        /// <param name='x'>
+        /// The x coordinate to transform.
+        /// </param>
+        /// <param name='y'>
+        /// The y coordinate to transform.
+        /// </param>
+        /// <param name='z'>
+        /// The z coordinate to transform.
+        /// </param>
+        public override Vector3 InverseTransformDirection(float x, float y, float z) {
 			if (parent == null) {
-				return base.InverseTransformDirection(x, y);
+				return base.InverseTransformDirection(x, y, z);
 			} else {
-				Vector2 ret = parent.InverseTransformDirection(x, y);
-				return base.InverseTransformDirection (ret.x, ret.y);
+				Vector3 ret = parent.InverseTransformDirection(x, y, z);
+				return base.InverseTransformDirection (ret.x, ret.y, ret.z);
 			}
 		}
 
