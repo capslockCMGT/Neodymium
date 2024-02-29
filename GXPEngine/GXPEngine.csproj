@@ -54,7 +54,7 @@
     <Compile Include="GXPEngine\SoundChannel.cs" />
     <Compile Include="GXPEngine\Sprite.cs" />
     <Compile Include="GXPEngine\Core\BlendMode.cs" />
-    <Compile Include="GXPEngine\Core\BoxCollider.cs" />
+    <Compile Include="GXPEngine\Core\BoxColliderXY.cs" />
     <Compile Include="GXPEngine\Core\Collider.cs" />
     <Compile Include="GXPEngine\Core\GLContext.cs" />
     <Compile Include="GXPEngine\Core\Rectangle.cs" />

@@ -2,14 +2,17 @@ using System;
 
 namespace GXPEngine.Core
 {
-	public class BoxCollider : Collider
+    /// <summary>
+    /// Deprecated artefact from original GXP. Don't use this.
+    /// </summary>
+    public class BoxColliderXY : Collider
 	{
 		private Sprite _owner;
 		
 		//------------------------------------------------------------------------------------------------------------------------
 		//														BoxCollider()
 		//------------------------------------------------------------------------------------------------------------------------		
-		public BoxCollider(Sprite owner) {
+		public BoxColliderXY(Sprite owner) {
 			_owner = owner;
 		}
 
@@ -18,10 +21,10 @@ namespace GXPEngine.Core
 		//														HitTest()
 		//------------------------------------------------------------------------------------------------------------------------		
 		public override bool HitTest (Collider other) {
-			if (other is BoxCollider) {
+			if (other is BoxColliderXY) {
 				Vector2[] c = _owner.GetExtents();
 				if (c == null) return false;
-				Vector2[] d = ((BoxCollider)other)._owner.GetExtents();
+				Vector2[] d = ((BoxColliderXY)other)._owner.GetExtents();
 				if (d == null) return false;
 				if (!areaOverlap(c, d)) return false;
 				return areaOverlap(d, c);
@@ -33,7 +36,7 @@ namespace GXPEngine.Core
 		//------------------------------------------------------------------------------------------------------------------------
 		//														HitTest()
 		//------------------------------------------------------------------------------------------------------------------------		
-		public override bool HitTestPoint (float x, float y) {
+		public override bool HitTestPoint (float x, float y, float z) {
 			Vector2[] c = _owner.GetExtents();
 			if (c == null) return false;
 			Vector2 p = new Vector2(x, y);
@@ -123,12 +126,12 @@ namespace GXPEngine.Core
 			return true;			
 		}	
 
-		public override float TimeOfImpact (Collider other, float vx, float vy, out Vector2 normal) {
-			normal = new Vector2 ();
-			if (other is BoxCollider) {
+		public override float TimeOfImpact (Collider other, float vx, float vy, float vz, out Vector3 normal) {
+			normal = new Vector3 ();
+			if (other is BoxColliderXY) {
 				Vector2[] c = _owner.GetExtents();
 				if (c == null) return float.MaxValue;
-				Vector2[] d = ((BoxCollider)other)._owner.GetExtents();
+				Vector2[] d = ((BoxColliderXY)other)._owner.GetExtents();
 				if (d == null) return float.MaxValue;
 
 				float maxTOI = float.MinValue;
@@ -259,11 +262,11 @@ namespace GXPEngine.Core
 			float penetrationDepth = float.MaxValue;
 			Vector2 normal=new Vector2();
 			Vector2 point=new Vector2();
-			if (other is BoxCollider) {
+			if (other is BoxColliderXY) {
 				//Console.WriteLine ("\n\n===== Computing collision data:\n");
 				Vector2[] c = _owner.GetExtents();
 				if (c == null) return null;
-				Vector2[] d = ((BoxCollider)other)._owner.GetExtents();
+				Vector2[] d = ((BoxColliderXY)other)._owner.GetExtents();
 				if (d == null) return null;
 
 				//Console.WriteLine ("\nSide vectors of this:\n {0},{1} and {2},{3}",
@@ -316,7 +319,7 @@ namespace GXPEngine.Core
 					point = _owner.parent.InverseTransformPoint (point.x, point.y);
 				}
 				*/
-				return new Collision(_owner, ((BoxCollider)other)._owner, normal, point, penetrationDepth);
+				return new Collision(_owner, ((BoxColliderXY)other)._owner, new Vector3(normal.x, normal.y, 0), new Vector3(point.x, point.y, 0), penetrationDepth);
 			} else {
 				return null;
 			}
