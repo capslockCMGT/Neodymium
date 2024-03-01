@@ -57,46 +57,35 @@ namespace GXPEngine
 		public readonly bool PixelArt;
 
 		private Rectangle _renderRange;
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														Game()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Initializes a new instance of the <see cref="GXPEngine.Game"/> class.
-		/// This class represents a game window, containing an openGL view.
-		/// </summary>
-		/// <param name='width'>
-		/// Width of the window in pixels. (As used by all the logic, e.g. the coordinate system)
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														Game()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GXPEngine.Game"/> class.
+        /// This class represents a game window, containing an openGL view.
+        /// </summary>
+        /// <param name='width'>
+        /// Width of the window in pixels.
+        /// </param>
+        /// <param name='height'>
+        /// Height of the window in pixels.
+        /// </param>
+        /// <param name='fullScreen'>
+        /// If set to <c>true</c> the application will run in fullscreen mode.
+        /// </param>
+        /// <param name='vSync'>
+        /// If <c>true</c>, the frame rate will sync to the screen refresh rate, so setting targetFps has no effect. 
+        /// (It's best to give this the same value as the 'fullScreen' parameter.)
+        /// </param>
+        /// <param name='pixelArt'>
+        /// If <c>true</c>, textures will not be interpolated ('blurred'). This way, you can get a typical pixel art look.
+        /// </param>
+		/// <param name='gameName'>
+		/// The name of the window when the game is run.
 		/// </param>
-		/// <param name='height'>
-		/// Height of the window in pixels. (As used by all the logic, e.g. the coordinate system)
-		/// </param>
-		/// <param name='fullScreen'>
-		/// If set to <c>true</c> the application will run in fullscreen mode.
-		/// </param>
-		/// <param name='vSync'>
-		/// If <c>true</c>, the frame rate will sync to the screen refresh rate, so setting targetFps has no effect. 
-		/// (It's best to give this the same value as the 'fullScreen' parameter.)
-		/// </param>
-		/// <param name='realWidth'>
-		/// The actual window width. By default (if passing a negative value), this is equal to the 'width' parameter, but using
-		/// this parameter you can easily change the window width without having to change any other code.
-		/// </param>
-		/// <param name='realHeight'>
-		/// The actual window height. By default (if passing a negative value), this is equal to the 'height' parameter, but using
-		/// this parameter you can easily change the window height without having to change any other code.
-		/// </param>
-		/// <param name='pixelArt'>
-		/// If <c>true</c>, textures will not be interpolated ('blurred'). This way, you can get a typical pixel art look.
-		/// </param>
-		public Game (int pWidth, int pHeight, bool pFullScreen, bool pVSync = true, int pRealWidth=-1, int pRealHeight=-1, bool pPixelArt=false) : base()
+        public Game (int pWidth, int pHeight, bool pFullScreen, bool pVSync = true, bool pPixelArt=false, string gameName="Game") : base()
 		{
-			if (pRealWidth <= 0) {
-				pRealWidth = pWidth;
-			}
-			if (pRealHeight <= 0) {
-				pRealHeight = pHeight;
-			}
 			PixelArt = pPixelArt;
 
 			if (PixelArt) {
@@ -113,7 +102,7 @@ namespace GXPEngine
 				_updateManager = new UpdateManager ();
 				_collisionManager = new CollisionManager ();
 				_glContext = new GLContext (this);
-				_glContext.CreateWindow (pWidth, pHeight, pFullScreen, pVSync, pRealWidth, pRealHeight);
+				_glContext.CreateWindow (pWidth, pHeight, pFullScreen, pVSync, gameName);
 
 				_renderRange = new Rectangle (0, 0, pWidth, pHeight);
 

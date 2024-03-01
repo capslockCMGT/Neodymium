@@ -80,19 +80,17 @@ namespace GXPEngine.Core {
 		//------------------------------------------------------------------------------------------------------------------------
 		//														setupWindow()
 		//------------------------------------------------------------------------------------------------------------------------
-		public void CreateWindow(int width, int height, bool fullScreen, bool vSync, int realWidth, int realHeight) {
+		public void CreateWindow(int width, int height, bool fullScreen, bool vSync, string gameName) {
 			// This stores the "logical" width, used by all the game logic:
 			WindowSize.instance.width = width;
 			WindowSize.instance.height = height;
-			_realToLogicWidthRatio = (double)realWidth / width;
-			_realToLogicHeightRatio = (double)realHeight / height;
 			_vsyncEnabled = vSync;
 			
 			GL.glfwInit();
 			
 			GL.glfwOpenWindowHint(GL.GLFW_FSAA_SAMPLES, 8);
-			GL.glfwOpenWindow(realWidth, realHeight, 8, 8, 8, 8, 24, 0, (fullScreen?GL.GLFW_FULLSCREEN:GL.GLFW_WINDOWED));
-			GL.glfwSetWindowTitle("Game");
+			GL.glfwOpenWindow(width, height, 8, 8, 8, 8, 24, 0, (fullScreen?GL.GLFW_FULLSCREEN:GL.GLFW_WINDOWED));
+			GL.glfwSetWindowTitle(gameName);
 			GL.glfwSwapInterval(vSync);
 			
 			GL.glfwSetKeyCallback(
@@ -121,8 +119,11 @@ namespace GXPEngine.Core {
 				//GL.Enable (GL.POLYGON_SMOOTH);
 				GL.ClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-				// Load the basic projection settings:
-				GL.MatrixMode(GL.PROJECTION);
+				//enable depth buffer
+                GL.Enable(0xb71);
+
+                // Load the basic projection settings:
+                GL.MatrixMode(GL.PROJECTION);
 				GL.LoadIdentity();
 
 #if STRETCH_ON_RESIZE
@@ -238,8 +239,9 @@ namespace GXPEngine.Core {
 		//------------------------------------------------------------------------------------------------------------------------
 		private void Display () {
 			GL.Clear(GL.COLOR_BUFFER_BIT);
-			
-			GL.MatrixMode(GL.MODELVIEW);
+            GL.Clear(0x4000 | 0x100); //depth buffer
+
+            GL.MatrixMode(GL.MODELVIEW);
 			GL.LoadIdentity();
 			
 			_owner.Render(this);
