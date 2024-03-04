@@ -215,6 +215,7 @@ namespace GXPEngine {
 
 		public static void drawEverything(GLContext gLContext)
 		{
+			if(Instance != null)
 			Instance.DrawLines(gLContext);
 		}
 
