@@ -27,6 +27,15 @@ namespace GXPEngine.Core
         {
             return new Vector3(-v.x, -v.y, -v.z);
         }
+        public static Vector3 operator *(Vector3 v, float s)
+        {
+            return new Vector3(v.x * s, v.y * s, v.z * s);
+        }
+        public static Vector3 operator /(Vector3 v, float s)
+        {
+			s = 1 / s;
+			return v * s;
+        }
 
         public float dot(Vector3 v)
 		{
@@ -40,6 +49,21 @@ namespace GXPEngine.Core
 				z*v.x-x*v.z,
 				x*v.y-y*v.x
 				);
+		}
+
+		public float MagnitudeSquared()
+		{
+			return x*x + y*y + z*z;
+		}
+
+		public float Magnitude()
+		{
+			return Mathf.Sqrt(MagnitudeSquared());
+		}
+
+		public static Vector3 normalize(Vector3 v)
+		{
+			return v/v.Magnitude();
 		}
 		
 		override public string ToString() {

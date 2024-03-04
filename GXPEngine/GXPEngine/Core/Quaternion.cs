@@ -201,7 +201,7 @@ namespace GXPEngine.Core
         /// </param>
         public Quaternion LookTowards(Vector3 direction, Vector3 up)
         {
-            Vector3 camside = direction.cross( up );
+            Vector3 camside = Vector3.normalize(direction).cross( up );
             Vector3 camup = camside.cross( up );
             float q = Mathf.Sqrt(1 + camside.x + camup.y + direction.z) / 2;
             float q4 = 4 * q;
@@ -212,6 +212,11 @@ namespace GXPEngine.Core
                 (camside.z - direction.x)/q4,
                 (camup.x - camside.y)/q4
                 );
+        }
+
+        override public string ToString()
+        {
+            return "[Quat "+ r + ", " + i + ", " + j + ", " + k + "]";
         }
     }
 }

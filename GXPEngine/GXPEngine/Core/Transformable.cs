@@ -14,6 +14,11 @@ namespace GXPEngine
 			0.0f, 1.0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 1.0f, 0.0f,
 			0.0f, 0.0f, 0.0f, 1.0f };
+
+        // i^ i^ i^ 0
+        // j^ j^ j^ 0
+        // k^ k^ k^ 0
+        // x  y  z  1
 			
 		protected Quaternion _rotation = Quaternion.Identity;
         protected bool _rotationMatrixIsUpToDate = true;
@@ -165,6 +170,19 @@ namespace GXPEngine
             if (_scaleZ != 0) ret.z = ((x * _matrix[8] + y * _matrix[9] + z * _matrix[10]) / _scaleZ); else ret.z = 0;
             return ret;
         }
+        /// <summary>
+        /// Transforms the point from the game's global space to this object's local space.
+        /// </summary>
+        /// <returns>
+        /// The point.
+        /// </returns>
+        /// <param name='point'>
+        /// The position.
+        /// </param>
+        public virtual Vector3 InverseTransformPoint(Vector3 point)
+        {
+            return InverseTransformPoint(point.x, point.y, point.z);
+        }
 
         /// <summary>
 		/// Transforms the direction vector (x,y,z) from the game's global space to this object's local space.
@@ -178,6 +196,14 @@ namespace GXPEngine
             if (_scaleY != 0) ret.y = ((x * _matrix[4] + y * _matrix[5] + z * _matrix[6]) / _scaleY); else ret.y = 0;
             if (_scaleZ != 0) ret.z = ((x * _matrix[8] + y * _matrix[9] + z * _matrix[10]) / _scaleZ); else ret.z = 0;
             return ret;
+        }
+        /// <summary>
+		/// Transforms the direction vector from the game's global space to this object's local space.
+		/// This means that rotation and scaling is applied, but translation is not.
+		/// </summary>
+        public virtual Vector3 InverseTransformDirection(Vector3 dir)
+        {
+            return InverseTransformDirection(dir.x, dir.y, dir.z);
         }
 
 
@@ -208,6 +234,19 @@ namespace GXPEngine
             ret.z = (_matrix[2] * x * _scaleX + _matrix[6] * y * _scaleY + _matrix[10] * z * _scaleZ + _matrix[14]);
             return ret;
         }
+        /// <summary>
+        /// Transforms the point from this object's local space to the game's global space.
+        /// </summary>
+        /// <returns>
+        /// The point.
+        /// </returns>
+        /// <param name='point'>
+        /// The coordinates.
+        /// </param>
+        public virtual Vector3 TransformPoint(Vector3 point)
+        {
+            return TransformPoint(point.x, point.y, point.z);
+        }
 
         /// <summary>
 		/// Transforms a direction vector (x,y,z) from this object's local space to the game's global space. 
@@ -221,6 +260,15 @@ namespace GXPEngine
             ret.y = (_matrix[1] * x * _scaleX + _matrix[5] * y * _scaleY + _matrix[9] * z * _scaleZ);
             ret.z = (_matrix[2] * x * _scaleX + _matrix[6] * y * _scaleY + _matrix[10] * z * _scaleZ);
             return ret;
+        }
+
+        /// <summary>
+		/// Transforms a direction vector from this object's local space to the game's global space. 
+		/// This means that rotation and scaling is applied, but translation is not.
+		/// </summary>
+        public virtual Vector3 TransformDirection(Vector3 dir)
+        {
+            return TransformDirection(dir.x, dir.y, dir.z);
         }
 
         //------------------------------------------------------------------------------------------------------------------------
@@ -265,7 +313,7 @@ namespace GXPEngine
 
             _matrix[8] = 2f * (_rotation.i * _rotation.k - _rotation.r * _rotation.j);
             _matrix[9] = 2f * (_rotation.r * _rotation.i + _rotation.j * _rotation.k);
-            _matrix[10] = 1f - 2f * (_rotation.r * _rotation.r + _rotation.j * _rotation.j);
+            _matrix[10] = 1f - 2f * (_rotation.i * _rotation.i + _rotation.j * _rotation.j);
             //the sludge is real
             _rotationMatrixIsUpToDate = true;
         }
@@ -330,42 +378,6 @@ namespace GXPEngine
             _matrix[14] += stepZ;
         }
 
-        //------------------------------------------------------------------------------------------------------------------------
-        //														SetScaleXYZ()
-        //------------------------------------------------------------------------------------------------------------------------
-        /// <summary>
-        /// Sets the object's scaling.
-        /// </summary>
-        /// <param name='scaleX'>
-        /// Scale x.
-        /// </param>
-        /// <param name='scaleY'>
-        /// Scale y.
-        /// </param>
-        /// <param name='scaleZ'>
-        /// Scale z.
-        /// </param>
-        public void SetScaleXYZ(float scaleX, float scaleY, float scaleZ)
-        {
-            _scaleX = scaleX;
-            _scaleY = scaleY;
-            _scaleZ = scaleZ;
-        }
-
-		//------------------------------------------------------------------------------------------------------------------------
-		//														SetScale()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Sets the object's scaling
-		/// </summary>
-		/// <param name='scale'>
-		/// Scale x and y.
-		/// </param>
-		public void SetScaleXY(float scale) {
-			_scaleX = scale;
-			_scaleY = scale;
-		}
-
 		//------------------------------------------------------------------------------------------------------------------------
 		//														scaleX
 		//------------------------------------------------------------------------------------------------------------------------
@@ -427,12 +439,32 @@ namespace GXPEngine
 			}
 		}
 
-		/// <summary>
-		/// Returns the inverse matrix transformation, if it exists.
-		/// (Use this e.g. for cameras used by sub windows)
+        //------------------------------------------------------------------------------------------------------------------------
+        //														scale
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets the object's x-axis, y-axis and z-axis scale
+        /// </summary>
+        /// <value>
+        /// The scale.
+        /// </value>
+        public Vector3 scaleXYZ
+        {
+            set
+            {
+                _scaleX = value.x;
+                _scaleY = value.y;
+                _scaleZ = value.z;
+            }
+            get { return new Vector3(_scaleX, _scaleY, _scaleZ); }
+        }
+
+        /// <summary>
+        /// Returns the inverse matrix transformation, if it exists.
+        /// (Use this e.g. for cameras used by sub windows)
         /// WARNING : REMAINS UNTESTED.
-		/// </summary>
-		public Transformable Inverse() {
+        /// </summary>
+        public Transformable Inverse() {
 			if (scaleX == 0 || scaleY == 0 || scaleZ == 0)
 				throw new Exception ("Cannot invert a transform with scale 0");
 			Transformable inv=new Transformable();
