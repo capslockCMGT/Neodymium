@@ -473,7 +473,7 @@ namespace GXPEngine
             inv.scaleX = 1/_scaleX;
             inv.scaleY = 1/_scaleY;
             inv.scaleZ = 1/_scaleZ;
-            inv.position = -localTranslation;
+            inv.position = localTranslation;
             return inv;
 		}
 	}

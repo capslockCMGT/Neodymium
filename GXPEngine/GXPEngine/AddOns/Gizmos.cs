@@ -37,7 +37,7 @@ namespace GXPEngine {
 
 		// Private constructor!
 		Gizmos() {
-			Game.main.OnAfterRender += DrawLines;
+			//Game.main.OnAfterRender += DrawLines;
 			drawCalls = new List<DrawLineCall>();
 		}
 
@@ -211,6 +211,11 @@ namespace GXPEngine {
 			GL.DrawArrays(GL.LINES, 0, 3);
 			GL.DisableClientState(GL.VERTEX_ARRAY);
 			GL.Enable(GL.TEXTURE_2D);
+		}
+
+		public static void drawEverything(GLContext gLContext)
+		{
+			Instance.DrawLines(gLContext);
 		}
 
 		void DrawLines(GLContext glContext) {

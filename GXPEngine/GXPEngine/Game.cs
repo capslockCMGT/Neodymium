@@ -183,6 +183,7 @@ namespace GXPEngine
 		public override void Render(GLContext glContext) {
 			if (RenderMain || !recurse) {
 				base.Render (glContext);
+				Gizmos.drawEverything(glContext);
 			}
 			if (OnAfterRender != null && recurse) {
 				recurse = false;
