@@ -58,6 +58,13 @@ namespace GXPEngine.Core
             return new Quaternion(Mathf.Cos(a), x * sn, y * sn, z * sn);
         }
 
+        static public Quaternion FromEulers(Vector3 angles)
+        {
+            Quaternion res = new Quaternion();
+            res.Eulers = angles;
+            return res; 
+        }
+
         //------------------------------------------------------------------------------------------------------------------------
         //													Eulers
         //------------------------------------------------------------------------------------------------------------------------

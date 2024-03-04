@@ -14,19 +14,18 @@ namespace GXPEngine {
 			}
 		}
 		Window _renderTarget;
+		public ProjectionMatrix projection;
 
 		/// <summary>
 		/// Creates a camera game object and a sub window to render to.
 		/// Add this camera as child to the object you want to follow, or 
 		/// update its coordinates directly in an update method.
-		/// The scale of the camera determines the "zoom factor" (High scale = zoom out)
 		/// </summary>
-		/// <param name="windowX">Left x coordinate of the render window.</param>
-		/// <param name="windowY">Top y coordinate of the render window.</param>
-		/// <param name="windowWidth">Width of the render window.</param>
-		/// <param name="windowHeight">Height of the render window.</param>
-		public Camera(int windowX, int windowY, int windowWidth, int windowHeight, bool clearBackground=true) {
-			_renderTarget = new Window (windowX, windowY, windowWidth, windowHeight, this, clearBackground);
+		/// <param name="projection">The camera's projection matrix.</param>
+		/// <param name="clearBackground">If the background should be made black before rendering the scene.</param>
+		public Camera(ProjectionMatrix projection, bool clearBackground=true) {
+			this.projection = projection;
+			_renderTarget = new Window (-game.width / 2, -game.height / 2, game.width, game.height, this, clearBackground);
 			game.OnAfterRender += _renderTarget.RenderWindow;
 		}
 

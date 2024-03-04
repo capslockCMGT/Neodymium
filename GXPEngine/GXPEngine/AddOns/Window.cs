@@ -109,8 +109,10 @@ namespace GXPEngine {
 				window.x = _windowX + _width / 2;
 				window.y = _windowY + _height / 2;
 				_dirty = false;
-			}
-			glContext.PushMatrix (window.matrix);
+            }
+            if (camera is Camera)
+                glContext.PushMatrix(((Camera)camera).projection.matrix);
+            glContext.PushMatrix (window.matrix);
 
 			int pushes = 1;
 			GameObject current = camera;
@@ -136,8 +138,10 @@ namespace GXPEngine {
 			
 			for (int i=0; i<pushes; i++) {
 				glContext.PopMatrix ();
-			}
-		}
+            }
+            if (camera is Camera)
+                glContext.PopMatrix();
+        }
 
 		void SetRenderRange() {
 			Vector3[] worldSpaceCorners = new Vector3[4];

@@ -132,7 +132,8 @@ namespace GXPEngine.Core {
 #endif
 				// Here's where the conversion from logical width/height to real width/height happens: 
 				//no it isnt.
-				GL.Ortho(newWidth * -.5f, newWidth*.5f, newHeight * .5f, newHeight *-.5f, 0.0f, 10000.0f);
+				//GL.Ortho(newWidth * -.5f, newWidth*.5f, newHeight * .5f, newHeight *-.5f, 0.0f, 10000.0f);
+				GL.Ortho(-1, 1, 1, -1, 1, -1);
 #if !STRETCH_ON_RESIZE
 				lock (WindowSize.instance) {
 					WindowSize.instance.width = (int)(newWidth/_realToLogicWidthRatio);

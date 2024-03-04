@@ -462,7 +462,6 @@ namespace GXPEngine
         /// <summary>
         /// Returns the inverse matrix transformation, if it exists.
         /// (Use this e.g. for cameras used by sub windows)
-        /// WARNING : REMAINS UNTESTED.
         /// </summary>
         public Transformable Inverse() {
 			if (scaleX == 0 || scaleY == 0 || scaleZ == 0)
