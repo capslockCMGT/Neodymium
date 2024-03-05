@@ -222,7 +222,7 @@ namespace GXPEngine {
 		void DrawLines(GLContext glContext) {
 			if (drawCalls.Count > 0) {
 				foreach (var dc in drawCalls) {
-					RenderLine(dc.x1, dc.y1, dc.z1, dc.x2, dc.y2, dc.z2, dc.color, dc.width, true);
+					RenderLine(dc.x1, dc.y1, dc.z1, dc.x2, dc.y2, dc.z2, dc.color, dc.width, false);
 				}
 				drawCalls.Clear();
 			}

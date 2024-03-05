@@ -52,21 +52,21 @@ namespace GXPEngine
         /// FOV sets the field of view in degrees,
         /// And near/far handle the near and far clipping planes.
         /// </summary>
-        /// <param name="FOV">The field of view, in degrees.</param>
+        /// <param name="FOVX">The horizontal field of view, in degrees.</param>
+        /// <param name="FOVY">The vertical field of view, in degrees.</param>
         /// <param name="near">Near clipping plane. Usually 0.</param>
         /// <param name="far">Far clipping plane. Everything farther from the camera than this will not be rendered.</param>
-        public ProjectionMatrix(float FOV, float near, float far)
+        public ProjectionMatrix(float FOVX, float FOVY, float near, float far)
         {
-            setPerspective(FOV, near, far);
+            setPerspective(FOVX, FOVY, near, far);
         }
 
-        public void setPerspective(float FOV, float near, float far)
+        public void setPerspective(float FOVX, float FOVY, float near, float far)
         {
             //mostly coming from: https://www.scratchapixel.com/lessons/3d-basic-rendering/perspective-and-orthographic-projection-matrix/building-basic-perspective-projection-matrix.html
             _basis.CopyTo(_matrix, 0);
-            float S = 1 / Mathf.Tan((FOV / 2) * (Mathf.PI / 180));
-            _matrix[0] = S;
-            _matrix[5] = S;
+            _matrix[0] = 1 / Mathf.Tan((FOVX *.5f) * (Mathf.PI / 180));
+            _matrix[5] = FOVX / (Mathf.Tan((FOVX *.5f) * (Mathf.PI / 180))*FOVY);
             _matrix[10] = -far / (far - near);
             _matrix[11] = -1;
             _matrix[14] = -far * near / (far - near);

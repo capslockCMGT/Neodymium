@@ -57,6 +57,10 @@ namespace GXPEngine.Core
 
             return new Quaternion(Mathf.Cos(a), x * sn, y * sn, z * sn);
         }
+        static public Quaternion FromRotationAroundAxis(Vector3 axis, float rotationAngle)
+        {
+            return FromRotationAroundAxis(axis.x, axis.y, axis.z, rotationAngle);
+        }
 
         static public Quaternion FromEulers(Vector3 angles)
         {
