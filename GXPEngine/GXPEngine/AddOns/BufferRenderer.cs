@@ -18,7 +18,7 @@ namespace GXPEngine
         protected float[] uvs;
         protected int numberOfVertices; // The number of rendered quads is numberOfVertices/6
 
-        Texture2D _texture;
+        public Texture2D _texture;
 
         List<float> vertList = new List<float>();
         List<float> uvList = new List<float>();
@@ -26,6 +26,10 @@ namespace GXPEngine
         public BufferRenderer(Texture2D texture)
         {
             _texture = texture;
+        }
+
+        public BufferRenderer()
+        {
         }
 
         public void AddVert(float x, float y, float z)
