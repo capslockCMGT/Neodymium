@@ -14,6 +14,8 @@ public class MyGame : Game {
 	bool showCursor;
 	Vector3 dir = new Vector3(1,0,0);
 	
+	int framesRotatedCube= 0;
+	Quaternion cubeRotate;
 	public MyGame() : base(800, 600, false, true, false, "ligma")
 	{
 		rotate.Normalize();
@@ -92,6 +94,17 @@ public class MyGame : Game {
 		Gizmos.DrawLine(0, 0, 0, 1f, 0, 0, this, 0xFFFF0000);
 		Gizmos.DrawLine(0, 0, 0, 0, 1f, 0, this, 0xFF00FF00);
 		Gizmos.DrawLine(0, 0, 0, 0, 0, 1f, this, 0xFF0000FF);
+
+		framesRotatedCube++;
+		if(framesRotatedCube == 90)
+		{
+			switch(Utils.Random(0,6))
+			{
+				case 0:
+					cubeRotate = Quaternion.FromEulers()
+			}
+		}
+		test.Rotate
 
         if (Input.GetKeyDown(Key.TAB)) showCursor = !showCursor;
 		game.ShowMouse(showCursor);
