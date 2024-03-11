@@ -10,6 +10,7 @@ namespace GXPEngine
     public class Box : GameObject
     {
         private static BufferRenderer boxModel;
+        protected static Vector3[] _bounds;
         protected Texture2D _texture;
 
         private uint _color = 0xFFFFFF;
@@ -86,7 +87,7 @@ namespace GXPEngine
         //------------------------------------------------------------------------------------------------------------------------
         protected override Collider createCollider()
         {
-            return new BoxCollider(this);
+            return new BoxCollider3D(this);
         }
 
 
@@ -98,7 +99,8 @@ namespace GXPEngine
             _texture = texture;
             if (boxModel != null) return;
             boxModel = new BufferRenderer();
-            for(int i = 0; i < 6; i++)
+            _bounds = new Vector3[8];
+            for (int i = 0; i < 6; i++)
             {
                 float third = 1 / 3f;
                 float half = .5f;
@@ -112,15 +114,19 @@ namespace GXPEngine
                 res = normal - x - y;
                 boxModel.AddVert(res.x, res.y, res.z);
                 boxModel.AddUv(third * (1 + sel), half * (1 + dir01));
+                if (sel == 1) _bounds[(dir == 1 ? 1 : 0) * 4 + 0] = res;
                 res = normal + x - y;
                 boxModel.AddVert(res.x, res.y, res.z);
                 boxModel.AddUv(third * sel, half * (1 + dir01));
+                if (sel == 1) _bounds[(dir == 1 ? 1 : 0) * 4 + 1] = res;
                 res = normal + x + y;
                 boxModel.AddVert(res.x, res.y, res.z);
                 boxModel.AddUv(third * sel, half * dir01);
+                if (sel == 1) _bounds[(dir == 1 ? 1 : 0) * 4 + 2] = res;
                 res = normal - x + y;
                 boxModel.AddVert(res.x, res.y, res.z);
                 boxModel.AddUv(third * (1 + sel), half * dir01);
+                if (sel == 1) _bounds[(dir == 1 ? 1 : 0) * 4 + 3] = res;
             }
             boxModel.CreateBuffers();
         }
@@ -158,7 +164,27 @@ namespace GXPEngine
                 }
             }
         }
+        //debug shit
+        public void DisplayVecrtices()
+        {
+            boxModel.DisplayVecrtices();
+        }
 
+        public Vector3[] GetExtents()
+        {
+            Vector3[] res = new Vector3[8];
+            for (int i = 0; i < 8; i++)
+                res[i] = TransformPoint(_bounds[i]);
+            return res;
+        }
+
+        public void DisplayExtents()
+        {
+            foreach (var vec in GetExtents())
+            {
+                Console.WriteLine(vec);
+            }
+        }
         // TODO: fix this.
         //------------------------------------------------------------------------------------------------------------------------
         //														OnScreen

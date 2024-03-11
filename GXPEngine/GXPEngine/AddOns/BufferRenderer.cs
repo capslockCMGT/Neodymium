@@ -11,6 +11,7 @@ namespace GXPEngine
 
     /// <summary>
     /// A helper class for SpriteBatches, and possibly other complex objects or collections with larger vertex and uv lists.
+    /// 
     /// </summary>
     public class BufferRenderer
     {
@@ -66,6 +67,14 @@ namespace GXPEngine
             _texture.Unbind();
         }
 
+        public void DisplayVecrtices()
+        {
+            for (int i = 0; i < verts.Length; i+=3)
+            {
+                Console.WriteLine(verts[i] + ", " + verts[i+1] + ", " + verts[i+2]);
+            }
+            Console.WriteLine("_____________________________");
+        }
         public void Dispose()
         {
             // For this backend: nothing needed
