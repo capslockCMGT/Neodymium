@@ -27,16 +27,15 @@ namespace GXPEngine.Core
 		public virtual bool HitTest (Collider other) {
 			return false;
 		}
-
-        //------------------------------------------------------------------------------------------------------------------------
-        //														HitTest()
-        //------------------------------------------------------------------------------------------------------------------------		
-        /// <summary>
-        /// Returns <c>true</c> if this collider is currently overlapping with the point x,y.
-        /// </summary>
-        public virtual bool HitTestPoint(float x, float y, float z)
-        {
-            return false;
+		
+		//------------------------------------------------------------------------------------------------------------------------
+		//														HitTest()
+		//------------------------------------------------------------------------------------------------------------------------		
+		/// <summary>
+		/// Returns <c>true</c> if this collider is currently overlapping with the point x,y.
+		/// </summary>
+		public virtual bool HitTestPoint (float x, float y, float z) {
+			return false;
         }
 
         //------------------------------------------------------------------------------------------------------------------------

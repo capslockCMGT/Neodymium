@@ -55,7 +55,7 @@ namespace GXPEngine.Core
         //------------------------------------------------------------------------------------------------------------------------
         //														HitTestLine()
         //------------------------------------------------------------------------------------------------------------------------		
-        public bool HitTestLine(Vector3 p1, Vector3 p2)
+        public override bool RayCastTest(Vector3 p1, Vector3 p2)
         {
             Vector3[] c = _owner.GetExtents();
             if (c == null) return false;
@@ -117,7 +117,7 @@ namespace GXPEngine.Core
         {
             Vector3[] c = _owner.GetExtents();
             if (c == null) return false;
-            if (!HitTestLine(p1, p2))
+            if (!RayCastTest(p1, p2))
                 return false;
             Vector3 d1 = c[1] - c[0];
             Vector3 d2 = c[3] - c[0];
