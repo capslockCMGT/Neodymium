@@ -167,7 +167,7 @@ namespace GXPEngine
         //debug shit
         public void DisplayVecrtices()
         {
-            boxModel.DisplayVecrtices();
+            boxModel.WriteVertsToConsole();
         }
 
         public Vector3[] GetExtents()

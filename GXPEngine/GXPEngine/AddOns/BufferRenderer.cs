@@ -67,7 +67,7 @@ namespace GXPEngine
             _texture.Unbind();
         }
 
-        public void DisplayVecrtices()
+        public void WriteVertsToConsole()
         {
             for (int i = 0; i < verts.Length; i+=3)
             {
