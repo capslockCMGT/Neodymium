@@ -82,13 +82,7 @@ public class MyGame : Game {
 		antiSlop.position = inv.position; 
 		antiSlop.rotation = inv.rotation;
         antiSlop.scaleXYZ = inv.scaleXYZ;
-		float msex = Input.mouseX/800f * Mathf.PI;
-		float msey = Input.mouseY/600f * Mathf.PI;
-		//cam.rotation = Quaternion.FromRotationAroundAxis(0,1,0,msex);
-		//cam.Rotate(Quaternion.FromRotationAroundAxis(1, 0, 0, msey));
-		//      //cam.Rotate(Quaternion.FromRotationAroundAxis(cam.TransformDirection(-1, 0, 0), msey));
-		//      cam.position = cam.TransformDirection(0, 0, 3);
-		//cam.z += 2;
+
 		FirstPersonViewUpdate();
 		Gizmos.DrawBox(0,0,0, 150, 50, 150, canvas);
 		Gizmos.DrawLine(0, 0, 0, 1f, 0, 0, this, 0xFFFF0000);
@@ -99,12 +93,29 @@ public class MyGame : Game {
 		if(framesRotatedCube == 90)
 		{
 			switch(Utils.Random(0,6))
-			{
-				case 0:
-					cubeRotate = Quaternion.FromEulers()
-			}
+            {
+                case 0:
+                    cubeRotate = Quaternion.FromEulers(new Vector3(.01f, 0, 0));
+                    break;
+                case 1:
+                    cubeRotate = Quaternion.FromEulers(new Vector3(0, .01f, 0));
+                    break;
+                case 2:
+                    cubeRotate = Quaternion.FromEulers(new Vector3(0, 0, .01f));
+                    break;
+                case 3:
+                    cubeRotate = Quaternion.FromEulers(new Vector3(-.01f, 0, 0));
+                    break;
+                case 4:
+                    cubeRotate = Quaternion.FromEulers(new Vector3(0, -.01f, 0));
+                    break;
+                case 5:
+                    cubeRotate = Quaternion.FromEulers(new Vector3(0, 0, -.01f));
+                    break;
+            }
+			framesRotatedCube = 0;
 		}
-		test.Rotate
+		test.Rotate(cubeRotate);
 
         if (Input.GetKeyDown(Key.TAB)) showCursor = !showCursor;
 		game.ShowMouse(showCursor);
