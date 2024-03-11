@@ -10,8 +10,10 @@ public class MyGame : Game {
 	EasyDraw slopvas;
 	Camera cam;
 	GameObject antiSlop;
-	Box test;
+	Box test, test2;
 	bool showCursor;
+	Vector3 dir = new Vector3(1,0,0);
+	
 	public MyGame() : base(800, 600, false, true, false, "ligma")
 	{
 		rotate.Normalize();
@@ -54,11 +56,19 @@ public class MyGame : Game {
 		RenderMain = false;
 		AddChild(cam);
 
-		test = new Box("cubeTex.png");
-		test.z = 2;
+
+        test2 = new Box("cubeTex.png");
+        test = new Box("cubeTex.png");
+
+        test.z = 2;
+        test2.z = 2;
+        
 		test.scale = .5f;
-		AddChild(test);
-	}
+        test2.scale = .5f;
+        test.Rotate(new Quaternion(0.5709415f, 0.1675188f, 0.5709415f, 0.5656758f));
+        AddChild(test);
+        //AddChild(test2);
+    }
 
 	// For every game object, Update is called every frame, by the engine:
 	void Update() {
@@ -72,11 +82,12 @@ public class MyGame : Game {
         antiSlop.scaleXYZ = inv.scaleXYZ;
 		float msex = Input.mouseX/800f * Mathf.PI;
 		float msey = Input.mouseY/600f * Mathf.PI;
-		cam.rotation = Quaternion.FromRotationAroundAxis(0,1,0,msex);
-		cam.Rotate(Quaternion.FromRotationAroundAxis(-1, 0, 0, msey));
-        //cam.Rotate(Quaternion.FromRotationAroundAxis(cam.TransformDirection(-1, 0, 0), msey));
-        cam.position = cam.TransformDirection(0, 0, 3);
-		cam.z += 2;
+		//cam.rotation = Quaternion.FromRotationAroundAxis(0,1,0,msex);
+		//cam.Rotate(Quaternion.FromRotationAroundAxis(1, 0, 0, msey));
+		//      //cam.Rotate(Quaternion.FromRotationAroundAxis(cam.TransformDirection(-1, 0, 0), msey));
+		//      cam.position = cam.TransformDirection(0, 0, 3);
+		//cam.z += 2;
+		FirstPersonViewUpdate();
 		Gizmos.DrawBox(0,0,0, 150, 50, 150, canvas);
 		Gizmos.DrawLine(0, 0, 0, 1f, 0, 0, this, 0xFFFF0000);
 		Gizmos.DrawLine(0, 0, 0, 0, 1f, 0, this, 0xFF00FF00);
@@ -84,6 +95,61 @@ public class MyGame : Game {
 
         if (Input.GetKeyDown(Key.TAB)) showCursor = !showCursor;
 		game.ShowMouse(showCursor);
+
+		if (Input.GetKeyDown(Key.E)) test2.DisplayExtents();
+        if (Input.GetKeyDown(Key.Q)) test.DisplayExtents();
+        if (Input.GetKey(Key.R)) dir = cam.position;
+        if (Input.GetKey(Key.L)) test2.Move(Time.deltaTime / 1000f, 0, 0);
+        if (Input.GetKey(Key.J)) test2.Move(-Time.deltaTime / 1000f, 0, 0);
+        if (Input.GetKey(Key.I)) test2.Move(0, Time.deltaTime / 1000f, 0);
+        if (Input.GetKey(Key.K)) test2.Move(0, -Time.deltaTime / 1000f, 0);
+
+		Gizmos.DrawLine(dir.x, dir.y, dir.z, 0, 0, 0);
+
+        if (((BoxCollider3D)test.collider).RayCast(Vector3.zero, dir))
+			Console.WriteLine("COLLIDED!! RAARR");
+    }
+	public void FirstPersonViewUpdate()
+	{
+        float msex = Input.mouseX / 800f * Mathf.PI;
+        float msey = Input.mouseY / 600f * Mathf.PI;
+        cam.rotation = Quaternion.FromRotationAroundAxis(0, 1, 0, msex);
+        cam.Rotate(Quaternion.FromRotationAroundAxis(1, 0, 0, msey));
+		//cam.Rotate(Quaternion.FromRotationAroundAxis(cam.TransformDirection(-1, 0, 0), msey));
+
+		//minecraft creative mode controls
+		if (Input.GetKey(Key.D))
+			cam.Move(Time.deltaTime / 1000f, 0, 0);
+        if (Input.GetKey(Key.A))
+            cam.Move(-Time.deltaTime / 1000f, 0, 0);
+		if (Input.GetKey(Key.W))
+        {
+            Vector3 delta = cam.TransformDirection(0, 0, 1);
+            delta.y = 0;
+            delta = delta.normalized() * (Time.deltaTime / 1000f);
+            cam.position -= delta;
+        }
+        if (Input.GetKey(Key.S))
+		{
+			Vector3 delta = cam.TransformDirection(0, 0, 1);
+			delta.y = 0;
+			delta = delta.normalized() * (Time.deltaTime / 1000f);
+			cam.position += delta;
+        }
+        if (Input.GetKey(Key.LEFT_SHIFT))
+        {
+            Vector3 delta = cam.TransformDirection(0, 1, 0);
+            delta.x = 0; delta.z = 0;
+			delta = delta.normalized() * (Time.deltaTime / 1000f);
+            cam.position -= delta;
+        }
+        if (Input.GetKey(Key.SPACE))
+        {
+            Vector3 delta = cam.TransformDirection(0, 1, 0);
+            delta.x = 0; delta.z = 0;
+			delta = delta.normalized() * (Time.deltaTime / 1000f);
+            cam.position += delta;
+        }
     }
     static void Main()                          // Main() is the first method that's called when the program is run
 	{

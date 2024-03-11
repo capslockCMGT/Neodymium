@@ -34,7 +34,7 @@ namespace GXPEngine.Core
 		/// <summary>
 		/// Returns <c>true</c> if this collider is currently overlapping with the point x,y.
 		/// </summary>
-		public virtual bool HitTestPoint (float x, float y, float vz) {
+		public virtual bool HitTestPoint (float x, float y, float z) {
 			return false;
 		}
 

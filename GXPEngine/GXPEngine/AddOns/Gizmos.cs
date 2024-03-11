@@ -102,14 +102,18 @@ namespace GXPEngine {
 				Instance.drawCalls.Add(new DrawLineCall(start.x, start.y, start.z, end.x, end.y, end.z, color, width));
 			}
 		}
+        public static void DrawLine(Vector3 p1, Vector3 p2, GameObject space = null, uint color = 0, byte width = 0)
+		{
+			DrawLine(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z, space, color, width);
 
-		/// <summary>
-		/// Draws a plus shape centered at the point x,y,z, with given radius, using DrawLine.
-		/// </summary>
-		public static void DrawPlus(float x, float y, float z, float radius, GameObject space = null, uint color = 0, byte width = 0) {
+        }
+        /// <summary>
+        /// Draws a plus shape centered at the point x,y,z, with given radius, using DrawLine.
+        /// </summary>
+        public static void DrawPlus(float x, float y, float z, float radius, GameObject space = null, uint color = 0, byte width = 0) {
 			DrawLine(x - radius, y, z, x + radius, y, z, space, color, width);
 			DrawLine(x, y - radius, z, x, y + radius, z, space, color, width);
-			DrawLine(x, y, z - radius, x, y, z - radius, space, color, width);
+			DrawLine(x, y, z - radius, x, y, z + radius, space, color, width);
         }
 
         /// <summary>
@@ -159,18 +163,30 @@ namespace GXPEngine {
 		/// The relativeArrowSize is the size of the arrow head compared to the arrow length.
 		/// </summary>
 		public static void DrawArrowAngle(float x, float y, float angleDegrees, float length, float relativeArrowSize = 0.25f, GameObject space = null, uint color = 0, byte width = 0) {
-			//not implementing this
-			/*
+            //not implementing this
+            /*
 			float dx = Mathf.Cos(angleDegrees * Mathf.PI / 180) * length;
 			float dy = Mathf.Sin(angleDegrees * Mathf.PI / 180) * length;
 			DrawArrow(x, y, dx, dy, relativeArrowSize, space, color, width);*/
-		}
+        }
 
-		/// <summary>
-		/// Draws an axis-aligned box centered at a given point, with given width, height and depth,
-		/// using DrawLine.
-		/// </summary>
-		public static void DrawBox(float xCenter, float yCenter, float zCenter, float width, float height, float depth, GameObject space = null, uint color = 0, byte lineWidth = 0) {
+        /// <summary>
+        /// Draws an axis-aligned box centered at a given point, with given width, height and depth,
+        /// using DrawLine.
+        /// </summary>
+        public static void DrawParallelogram(Vector3 pos, Vector3 d1, Vector3 d2, GameObject space = null, uint color = 0, byte lineWidth = 0)
+        {
+			DrawLine(pos, pos + d1, space, color, lineWidth);
+			DrawLine(pos + d1, pos + d1 + d2, space, color, lineWidth);
+			DrawLine(pos + d2 + d1, pos + d2, space, color, lineWidth);
+            DrawLine(pos + d2, pos, space, color, lineWidth);
+        }
+
+        /// <summary>
+        /// Draws an axis-aligned box centered at a given point, with given width, height and depth,
+        /// using DrawLine.
+        /// </summary>
+        public static void DrawBox(float xCenter, float yCenter, float zCenter, float width, float height, float depth, GameObject space = null, uint color = 0, byte lineWidth = 0) {
 			width *= .5f;
 			height *= .5f;
 			depth *= .5f;
@@ -190,6 +206,21 @@ namespace GXPEngine {
 			DrawLine(xCenter + width, yCenter + height, zCenter - depth, xCenter + width, yCenter + height, zCenter + depth, space, color, lineWidth);
         }
 
+		public static void DrawParallelogon(Parallelogon p, GameObject space = null, uint color = 0, byte lineWidth = 0)
+		{
+			Vector3 b0 = p.a0 + p.a;
+			Vector3 c0 = p.a0 + p.a + p.b;
+            Vector3 d0 = p.a0 + p.a + p.b + p.c;
+            Vector3 e0 = p.a0 + p.b + p.c;
+            Vector3 f0 = p.a0 + p.c;
+            DrawLine(p.a0, b0, space, color, lineWidth);
+            DrawLine(b0, c0, space, color, lineWidth);
+            DrawLine(c0, d0, space, color, lineWidth);
+            DrawLine(d0, e0, space, color, lineWidth);
+            DrawLine(e0, f0, space, color, lineWidth);
+            DrawLine(f0, p.a0, space, color, lineWidth);
+
+        }
         /// <summary>
         /// This method should typically be called from the RenderSelf method of a GameObject,
         /// or from the game's OnAfterRender event.
