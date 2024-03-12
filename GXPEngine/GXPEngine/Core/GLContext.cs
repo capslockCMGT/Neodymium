@@ -115,12 +115,14 @@ namespace GXPEngine.Core {
 				GL.Enable (GL.TEXTURE_2D);
 				GL.Enable( GL.BLEND );
 				GL.BlendFunc( GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA );
-				GL.Hint (GL.PERSPECTIVE_CORRECTION, GL.FASTEST);
-				//GL.Enable (GL.POLYGON_SMOOTH);
-				GL.ClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+				GL.Hint (GL.PERSPECTIVE_CORRECTION, GL.FASTEST); 
+                //GL.Enable (GL.POLYGON_SMOOTH);
+                GL.ClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 				//enable depth buffer
                 GL.Enable(0xb71);
+                GL.Enable(0x809e);
+				//GL.Enable(0xbc0);
 
                 // Load the basic projection settings:
                 GL.MatrixMode(GL.PROJECTION);
