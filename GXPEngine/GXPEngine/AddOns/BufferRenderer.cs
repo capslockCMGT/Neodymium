@@ -116,7 +116,8 @@ namespace GXPEngine
             while (line != null)
             {
                 string[] words;
-                switch(line.Substring(0,2))
+                if(line.Length>1)
+                switch (line.Substring(0,2))
                 {
                     default:
                         break;
@@ -157,6 +158,7 @@ namespace GXPEngine
                             int vertIndex, uvIndex;
                             int.TryParse(ints[0], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out vertIndex);
                             int.TryParse(ints[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out uvIndex);
+                            //in .obj, indeces start at 1. because of course they do.
                             vertIndeces.Add(vertIndex-1);
                             uvIndeces.Add(uvIndex-1);
                         }
