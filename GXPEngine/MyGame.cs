@@ -15,7 +15,7 @@ public class MyGame : Game {
 	Vector3 dir = new Vector3(1,0,0);
 	
 	int framesRotatedCube= 0;
-	Quaternion cubeRotate;
+	Quaternion cubeRotate = Quaternion.FromEulers(new Vector3(.01f, 0, 0));
 	public MyGame() : base(800, 600, false, true, false, "ligma")
 	{
 		rotate.Normalize();
@@ -95,31 +95,32 @@ public class MyGame : Game {
 		Gizmos.DrawLine(0, 0, 0, 0, 0, 1f, this, 0xFF0000FF);
 
 		framesRotatedCube++;
-		if(framesRotatedCube == 90)
+		if(framesRotatedCube == 180)
 		{
 			switch(Utils.Random(0,6))
             {
                 case 0:
-                    cubeRotate = Quaternion.FromEulers(new Vector3(.01f, 0, 0));
+                    cubeRotate = Quaternion.FromEulers(new Vector3(.0025f, 0, 0));
                     break;
                 case 1:
-                    cubeRotate = Quaternion.FromEulers(new Vector3(0, .01f, 0));
+                    cubeRotate = Quaternion.FromEulers(new Vector3(0, .0025f, 0));
                     break;
                 case 2:
-                    cubeRotate = Quaternion.FromEulers(new Vector3(0, 0, .01f));
+                    cubeRotate = Quaternion.FromEulers(new Vector3(0, 0, .0025f));
                     break;
                 case 3:
-                    cubeRotate = Quaternion.FromEulers(new Vector3(-.01f, 0, 0));
+                    cubeRotate = Quaternion.FromEulers(new Vector3(-.0025f, 0, 0));
                     break;
                 case 4:
-                    cubeRotate = Quaternion.FromEulers(new Vector3(0, -.01f, 0));
+                    cubeRotate = Quaternion.FromEulers(new Vector3(0, -.0025f, 0));
                     break;
                 case 5:
-                    cubeRotate = Quaternion.FromEulers(new Vector3(0, 0, -.01f));
+                    cubeRotate = Quaternion.FromEulers(new Vector3(0, 0, -.0025f));
                     break;
             }
 			framesRotatedCube = 0;
 		}
+		Console.WriteLine(test.rotation);
 		test.Rotate(cubeRotate);
 
         if (Input.GetKeyDown(Key.TAB)) showCursor = !showCursor;
