@@ -167,6 +167,7 @@ namespace GXPEngine
                 }
                 line = reader.ReadLine();
             }
+            reader.Close();
             for(int i = 0; i<vertIndeces.Count; i++)
             {
                 Vector3 vertex = verts[vertIndeces[i]];
