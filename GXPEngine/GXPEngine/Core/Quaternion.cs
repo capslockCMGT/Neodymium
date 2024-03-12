@@ -210,10 +210,12 @@ namespace GXPEngine.Core
         /// <param name='up'>
         /// The direction's "up". Usually this should be (0,1,0).
         /// </param>
-        public Quaternion LookTowards(Vector3 direction, Vector3 up)
+        public static Quaternion LookTowards(Vector3 direction, Vector3 up)
         {
-            Vector3 camside = Vector3.normalize(direction).cross( up );
+            direction.Normalize();
+            Vector3 camside = direction.cross( up );
             Vector3 camup = camside.cross( up );
+
             float q = Mathf.Sqrt(1 + camside.x + camup.y + direction.z) / 2;
             float q4 = 4 * q;
             //matrix conversion from https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
@@ -223,6 +225,27 @@ namespace GXPEngine.Core
                 (camside.z - direction.x)/q4,
                 (camup.x - camside.y)/q4
                 );
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //													SLerp()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Interpolates between two quaternions.
+        /// </summary>
+        /// <param name='q1'>
+        /// The start quaternion. Associated with t=0.0.
+        /// </param>
+        /// <param name='q2'>
+        /// The end quaternion. Associated with t=1.0.
+        /// </param>
+        /// <param name="t">
+        /// The "time" in between the two quaternions. Decides how much to take from q1 and q2.
+        /// </param>
+        public static Quaternion SLerp(Quaternion q1, Quaternion q2, float t)
+        {
+            //based on https://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/index.htm
+            return q1;
         }
 
         override public string ToString()

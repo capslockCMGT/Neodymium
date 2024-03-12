@@ -80,8 +80,9 @@ public class MyGame : Game {
 	// For every game object, Update is called every frame, by the engine:
 	void Update() {
 		canvas.Rotate(camRotate);
-        //slopvas.Rotate(rotate);
-
+		//slopvas.Rotate(rotate);
+        slopvas.rotation = Quaternion.LookTowards(slopvas.TransformPoint(0, .01f, 0) - cam.TransformPoint(0,0, 0), new Vector3(0, 1, 0));
+        
         //cam.Rotate(camRotate);
         Transformable inv = canvas.Inverse();
 		antiSlop.position = inv.position; 
@@ -120,7 +121,6 @@ public class MyGame : Game {
             }
 			framesRotatedCube = 0;
 		}
-		Console.WriteLine(test.rotation);
 		test.Rotate(cubeRotate);
 
         if (Input.GetKeyDown(Key.TAB)) showCursor = !showCursor;
