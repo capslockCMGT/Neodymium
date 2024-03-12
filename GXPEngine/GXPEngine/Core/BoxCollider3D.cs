@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Security.Cryptography;
 
 namespace GXPEngine.Core
@@ -10,6 +12,10 @@ namespace GXPEngine.Core
         {
             return a + ", " + b + ", " + c + ", " + a0;
         }
+	}
+	public struct CollisionManifold
+	{
+		Vector3[] collisionPoints;
 	}
     /// <summary>
     /// Deprecated artefact from original GXP. Don't use this.
@@ -35,9 +41,10 @@ namespace GXPEngine.Core
 				if (c == null) return false;
 				Vector3[] d = ((BoxCollider3D)other)._owner.GetExtents();
 				if (d == null) return false;
-				if (!areaOverlap(c, d)) return false;
-				return areaOverlap(d, c);
-			}	
+                if (!areaOverlap(c, d)) return false; 
+				if (!areaOverlap(d, c)) return false;
+                return CheckEdgeCollisions(c, d);
+            }	
             else {
 				return false;
 			}
@@ -150,6 +157,37 @@ namespace GXPEngine.Core
             return true;
         }
         //------------------------------------------------------------------------------------------------------------------------
+        //														boundDistance()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// <para>
+        /// Returns the distance to the intersection point from the par-on's origin between the parallelepipedon and a plane with <paramref name="normal"/>
+        /// which bounds the given parallelepipedon with dimentions of <paramref name="a"/>, <paramref name="b"/>, <paramref name="c"/>
+		/// in that direction
+        /// </para>
+        /// <para>
+        /// Used for detecting edge to edge collisions
+        /// </para>
+        /// </summary>
+        /// <param name="normal"></param>
+        /// <param name="O"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public Vector3 boundDistance(Vector3 normal, Vector3 a, Vector3 b, Vector3 c)
+		{
+			normal.Normalize();
+			float dotA = a * normal;
+            float dotB = b * normal;
+            float dotC = c * normal;
+			Vector3 p = 
+                ((dotA < 0) ? -a : a) +
+                ((dotB < 0) ? -b : b) +
+                ((dotC < 0) ? -c : c);
+			return p/2;
+        }
+        //------------------------------------------------------------------------------------------------------------------------
         //														areaOverlap()
         //------------------------------------------------------------------------------------------------------------------------
         private bool areaOverlap(Vector3[] c, Vector3[] d)
@@ -163,14 +201,12 @@ namespace GXPEngine.Core
             if (tripleProd == 0.0f) tripleProd = 1.0f;
 
             float t = ((d[0] - c[0]) * (d2 ^ d3)) / tripleProd;
-            float t2 = ((d[0] - c[0]) * (d3 ^ d1)) / tripleProd;
             float maxT = t;
             float minT = t;
 
             for (int i = 1; i < 8; i++)
             {
-                t = ((d[0] - c[0]) * (d1 ^ d2)) / tripleProd;
-                t2 = ((d[0] - c[0]) * (d3 ^ d1)) / tripleProd;
+                t = ((d[i] - c[0]) * (d1 ^ d2)) / tripleProd;
                 minT = Math.Min(minT, t);
                 maxT = Math.Max(maxT, t);
             }
@@ -204,9 +240,61 @@ namespace GXPEngine.Core
             }
 
             if ((minT >= 1) || (maxT <= 0)) return false;
-            //Console.WriteLine("third");
-            return true;
+			//Console.WriteLine("third");
+			return true;
         }
+
+		public bool CheckEdgeCollisions(Vector3[] c, Vector3[] d)
+        {
+			Vector3[] cEdges = new Vector3[]
+				{
+					c[1] - c[0],
+					c[3] - c[0],
+                    c[4] - c[0],
+                };
+
+            Vector3[] dEdges = new Vector3[]
+                {
+                    d[1] - d[0],
+                    d[3] - d[0],
+                    d[4] - d[0],
+                };
+            Vector3 O = (c[6] + c[0]) / 2;
+			float t, maxT, minT;
+
+			// checking all edge pairs (x1 x2, x1 y2... z1 y2, z1 z2)
+			for (int C = 0; C < 3; C++)
+			{
+				for (int D = 0; D < 3; D++)
+				{
+					Console.WriteLine(C * 3 + D);
+                    Vector3 normal = (cEdges[C] ^ dEdges[D]).normalized();
+                    Vector3 p = boundDistance(normal, cEdges[0], cEdges[1], cEdges[2]);
+                    float dot = normal * p;
+
+                    t = ((d[0] - O) * normal) / dot;
+                    maxT = t; minT = t;
+
+                    for (int i = 1; i < 8; i++)
+                    {
+                        t = ((d[i] - O) * normal) / dot;
+                        minT = Math.Min(minT, t);
+                        maxT = Math.Max(maxT, t);
+                    }
+					if ((minT >= 1) || (maxT <= -1))
+					{
+                        Gizmos.DrawPlus((O).x, (O).y, (O).z, 0.05f, color: 0xffaaff00);
+                        Gizmos.DrawLine(O+p, O+p + cEdges[C], color: 0xffaaff00);
+                        Gizmos.DrawLine(O+p, O+p + dEdges[D], color: 0xffaaff00);
+                        return false;
+					}
+
+                }
+			}
+            return true;
+
+        }
+
 
 		/// <summary>
 		/// Creates a projection of the parallelepiped onto a plane with the given normal and encapsulates it as a hexagon (parallelogon)
@@ -446,46 +534,66 @@ namespace GXPEngine.Core
 				Vector3[] d = ((BoxCollider3D)other)._owner.GetExtents();
 				if (d == null) return null;
 
+                Vector3[] cEdges = new Vector3[]
+                    {
+						c[1] - c[0],
+						c[3] - c[0],
+						c[4] - c[0],
+                    };
+
+                Vector3[] dEdges = new Vector3[]
+                    {
+						d[1] - d[0],
+						d[3] - d[0],
+						d[4] - d[0],
+                    };
+                Vector3 cO = (c[6] + c[0]) / 2;
+                Vector3 dO = (d[6] + d[0]) / 2;
+
 				//Console.WriteLine ("\nSide vectors of this:\n {0},{1} and {2},{3}",
 				//	c[1].x-c[0].x,c[1].y-c[0].y,c[3].x-c[0].x,c[3].y-c[0].y
 				//);
 
 				// normals of this vs points of other:
-				float nx = -c [0].y + c [1].y;
-				float ny = -c [1].x + c [0].x;
+				Vector3 n = cEdges[0] ^ cEdges[1];
 				if (!updateCollisionPoint (
-					    c [0].x, c [0].y, nx, ny, 
-					    c [3].x - c [0].x, c [3].y - c [0].y, d,
-					    true, ref penetrationDepth, ref normal, ref point))
-					return null;
-
-				nx = c [0].y - c [3].y;
-				ny = c [3].x - c [0].x;
-				if (!updateCollisionPoint (
-					c [0].x, c [0].y, nx, ny, 
-					c [1].x - c [0].x, c [1].y - c [0].y, d, 
+					c [0], n, cEdges[2], d,
 					true, ref penetrationDepth, ref normal, ref point))
 					return null;
 
-				//Console.WriteLine ("\nSide vectors of other:\n {0},{1} and {2},{3}",
-				//	d[1].x-d[0].x,d[1].y-d[0].y,d[3].x-d[0].x,d[3].y-d[0].y
-				//);
-				// normals of other vs points of this:
-				nx = -d [0].y + d [1].y;
-				ny = -d [1].x + d [0].x;
-				if (!updateCollisionPoint (
-					d [0].x, d [0].y, nx, ny, 
-					d [3].x - d [0].x, d [3].y - d [0].y, c, 
-					false, ref penetrationDepth, ref normal, ref point))
+                n = cEdges[1] ^ cEdges[2];
+                if (!updateCollisionPoint (
+					c [0], n, cEdges[0], d,
+					true, ref penetrationDepth, ref normal, ref point))
 					return null;
 
-				nx = d [0].y - d [3].y;
-				ny = d [3].x - d [0].x;
-				if (!updateCollisionPoint (
-					d [0].x, d [0].y, nx, ny, 
-					d [1].x - d [0].x, d [1].y - d [0].y, c, 
-					false, ref penetrationDepth, ref normal, ref point))
-					return null;
+                n = cEdges[2] ^ cEdges[0];
+                if (!updateCollisionPoint(
+                    c[0], n, cEdges[1], d,
+                    true, ref penetrationDepth, ref normal, ref point))
+                    return null;
+
+                //Console.WriteLine ("\nSide vectors of other:\n {0},{1} and {2},{3}",
+                //	d[1].x-d[0].x,d[1].y-d[0].y,d[3].x-d[0].x,d[3].y-d[0].y
+                //);
+                // normals of other vs points of this:
+                n = dEdges[0] ^ dEdges[1];
+                if (!updateCollisionPoint(
+                    d[0], n, dEdges[2], c,
+                    true, ref penetrationDepth, ref normal, ref point))
+                    return null;
+
+                n = dEdges[1] ^ dEdges[2];
+                if (!updateCollisionPoint(
+                    d[0], n, dEdges[0], c,
+                    true, ref penetrationDepth, ref normal, ref point))
+                    return null;
+
+                n = dEdges[2] ^ dEdges[0];
+                if (!updateCollisionPoint(
+                    d[0], n, dEdges[1], c,
+                    true, ref penetrationDepth, ref normal, ref point))
+                    return null;
 				/*
 				if (convertToParentSpace && _owner.parent!=null) {
 					normal = _owner.parent.InverseTransformPoint (normal.x, normal.y);
@@ -496,17 +604,61 @@ namespace GXPEngine.Core
 					point = _owner.parent.InverseTransformPoint (point.x, point.y);
 				}
 				*/
-				return new Collision(_owner, ((BoxCollider3D)other)._owner, new Vector3(normal.x, normal.y, 0), new Vector3(point.x, point.y, 0), penetrationDepth);
+
+				//edges vs edges
+				for (int C = 0; C < 3; C++)
+				{
+					for (int D = 0; D < 3; D++)
+					{
+						float startPenetration = penetrationDepth;
+						n = cEdges[C] ^ dEdges[D];
+						Vector3 p = boundDistance(n, cEdges[0], cEdges[1], cEdges[2]);
+                        if (!updateCollisionPoint(
+							cO + p, n, - p * 2, d,
+							false, ref penetrationDepth, ref normal, ref point))
+						{
+							Gizmos.DrawPlus(cO + p, 0.05f, color: 0xff55ffff);
+							Gizmos.DrawLine(cO + p, cO - p, color: 0xff55ffff);
+							Gizmos.DrawLine(cO + p - cEdges[C], cO + p + cEdges[C], color: 0xffaa00ff);
+							Gizmos.DrawLine(cO + p - dEdges[D], cO + p + dEdges[D], color: 0xffaa00ff);
+							Gizmos.DrawLine(cO - p - cEdges[C], cO - p + cEdges[C], color: 0xffaa00ff);
+							Gizmos.DrawLine(cO - p - dEdges[D], cO - p + dEdges[D], color: 0xffaa00ff);
+							return null;
+						}
+						if (penetrationDepth != startPenetration)
+                        {
+                            Vector3 dirc = (normal * n > 0) ? p : - p;
+                            Vector3 dird = boundDistance(-normal, dEdges[0], dEdges[1], dEdges[2]);
+
+                            Vector3 pc = cO + dirc;
+							Vector3 pd = dO + dird;
+
+                            Vector3 ec = (dirc * cEdges[C] > 0) ? - cEdges[C] : cEdges[C];
+                            Vector3 ed = (dird * dEdges[D] > 0) ? - dEdges[D] : dEdges[D];
+							ec.Normalize();
+							ed.Normalize();
+
+							point = pc + ((ed ^ normal) * (pd - pc)) * ec;
+
+							Gizmos.DrawLine(pc, pc + ec, color: 0xffaa00ff, width: 10);
+                            Gizmos.DrawLine(pd, pd + ed, color: 0xffaa00ff, width: 10);
+                        }
+					}
+				}
+				Gizmos.DrawPlus(point, 0.05f, color: 0xff00aa00);
+                Gizmos.DrawLine(point, point - (normal * penetrationDepth), color: 0xff00aaaa);
+                Console.WriteLine(penetrationDepth);
+                return new Collision(_owner, ((BoxCollider3D)other)._owner, normal, point, penetrationDepth);
 			} else {
 				return null;
 			}
 		}
 	
 		private bool updateCollisionPoint(
-			float cx, float cy, float nx, float ny, float dx, float dy, Vector3[] d, bool invertNormal,
+			Vector3 c, Vector3 n, Vector3 a, Vector3[] d, bool invertNormal,
 			ref float minPenetrationDepth, ref Vector3 normal, ref Vector3 point
 		) {
-			float dot = (dy * ny + dx * nx);
+			float dot = a * n;
 
 			if (dot == 0.0f) dot = 1.0f; // hm
 
@@ -515,7 +667,7 @@ namespace GXPEngine.Core
 			float minT=float.MaxValue;
 			float maxT=float.MinValue;
 			for (int i = 0; i < d.Length; i++) {
-				float t = ((d [i].x - cx) * nx + (d [i].y - cy) * ny) / dot;
+				float t = (d [i] - c) * n / dot;
 				if (t < minT) {
 					minT = t;
 					argMin = d [i];
@@ -531,11 +683,8 @@ namespace GXPEngine.Core
 			if (minT > 1)
 				return false;
 			bool updateNormal = false;
-			float lenD = Mathf.Sqrt (dx * dx + dy * dy);
+			float lenD = a.Magnitude();
 
-			//Console.WriteLine ("\n  considering normal: {0},{1}\n  minT, maxT: {2},{3}\n  intersection candidates: {4},{5}",
-			//	nx,ny,minT,maxT,(1-minT)*lenD,maxT*lenD
-			//);
 			if (lenD == 0)
 				lenD = 1; // hm
 			if (maxT*lenD < minPenetrationDepth) {
@@ -550,9 +699,7 @@ namespace GXPEngine.Core
 				invertNormal = !invertNormal;
 			}
 			if (updateNormal) {
-				float len = invertNormal ? -Mathf.Sqrt (nx * nx + ny * ny) : Mathf.Sqrt (nx * nx + ny * ny);
-				normal.x = nx / len;
-				normal.y = ny / len;
+				normal = invertNormal ? -n.normalized() : n.normalized();
 				//Console.WriteLine ("NEW BEST");
 			} else {
 				//Console.WriteLine ("NO UPDATE");
@@ -560,7 +707,7 @@ namespace GXPEngine.Core
 			//Console.WriteLine (" (check:) best normal: "+normal);
 			return true;
 		}
-	}
+    }
 }
 
 

@@ -115,6 +115,10 @@ namespace GXPEngine {
 			DrawLine(x, y - radius, z, x, y + radius, z, space, color, width);
 			DrawLine(x, y, z - radius, x, y, z + radius, space, color, width);
         }
+        public static void DrawPlus(Vector3 p, float radius, GameObject space = null, uint color = 0, byte width = 0)
+        {
+			DrawPlus(p.x, p.y, p.z, radius, space, color, width);
+        }
 
         /// <summary>
         /// Draws a cross shape centered at the point x,y,z, with given radius, using DrawLine.
