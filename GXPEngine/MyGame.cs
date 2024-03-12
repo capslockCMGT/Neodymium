@@ -71,7 +71,7 @@ public class MyGame : Game {
         AddChild(test);
 		//AddChild(test2);
 
-		ModelRenderer sloppersludge = new ModelRenderer("editor/arrow.obj", "colors.png");
+		ModelRenderer sloppersludge = new ModelRenderer("editor/arrow.obj", "editor/whitePixel.png");
 		AddChild(sloppersludge);
 		sloppersludge.x = 2;
 		sloppersludge.scale = .2f;
@@ -128,10 +128,10 @@ public class MyGame : Game {
 		if (Input.GetKeyDown(Key.E)) test2.DisplayExtents();
         if (Input.GetKeyDown(Key.Q)) test.DisplayExtents();
         if (Input.GetKey(Key.R)) dir = cam.position;
-        if (Input.GetKey(Key.L)) test2.Move(Time.deltaTime / 1000f, 0, 0);
-        if (Input.GetKey(Key.J)) test2.Move(-Time.deltaTime / 1000f, 0, 0);
-        if (Input.GetKey(Key.I)) test2.Move(0, Time.deltaTime / 1000f, 0);
-        if (Input.GetKey(Key.K)) test2.Move(0, -Time.deltaTime / 1000f, 0);
+        if (Input.GetKey(Key.L)) test2.Move(Time.deltaTimeS, 0, 0);
+        if (Input.GetKey(Key.J)) test2.Move(-Time.deltaTimeS, 0, 0);
+        if (Input.GetKey(Key.I)) test2.Move(0, Time.deltaTimeS, 0);
+        if (Input.GetKey(Key.K)) test2.Move(0, -Time.deltaTimeS, 0);
 
 		Gizmos.DrawLine(dir.x, dir.y, dir.z, 0, 0, 0);
 
@@ -148,35 +148,35 @@ public class MyGame : Game {
 
 		//minecraft creative mode controls
 		if (Input.GetKey(Key.D))
-			cam.Move(Time.deltaTime / 1000f, 0, 0);
+			cam.Move(Time.deltaTimeS, 0, 0);
         if (Input.GetKey(Key.A))
-            cam.Move(-Time.deltaTime / 1000f, 0, 0);
+            cam.Move(-Time.deltaTimeS, 0, 0);
 		if (Input.GetKey(Key.W))
         {
             Vector3 delta = cam.TransformDirection(0, 0, 1);
             delta.y = 0;
-            delta = delta.normalized() * (Time.deltaTime / 1000f);
+            delta = delta.normalized() * (Time.deltaTimeS);
             cam.position -= delta;
         }
         if (Input.GetKey(Key.S))
 		{
 			Vector3 delta = cam.TransformDirection(0, 0, 1);
 			delta.y = 0;
-			delta = delta.normalized() * (Time.deltaTime / 1000f);
+			delta = delta.normalized() * (Time.deltaTimeS);
 			cam.position += delta;
         }
         if (Input.GetKey(Key.LEFT_SHIFT))
         {
             Vector3 delta = cam.TransformDirection(0, 1, 0);
             delta.x = 0; delta.z = 0;
-			delta = delta.normalized() * (Time.deltaTime / 1000f);
+			delta = delta.normalized() * (Time.deltaTimeS);
             cam.position -= delta;
         }
         if (Input.GetKey(Key.SPACE))
         {
             Vector3 delta = cam.TransformDirection(0, 1, 0);
             delta.x = 0; delta.z = 0;
-			delta = delta.normalized() * (Time.deltaTime / 1000f);
+			delta = delta.normalized() * (Time.deltaTimeS);
             cam.position += delta;
         }
     }
