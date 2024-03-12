@@ -69,7 +69,12 @@ public class MyGame : Game {
         test2.scale = .5f;
         test.Rotate(new Quaternion(0.5709415f, 0.1675188f, 0.5709415f, 0.5656758f));
         AddChild(test);
-        //AddChild(test2);
+		//AddChild(test2);
+
+		ModelRenderer sloppersludge = new ModelRenderer("editor/arrow.obj", "colors.png");
+		AddChild(sloppersludge);
+		sloppersludge.x = 2;
+		sloppersludge.scale = .2f;
     }
 
 	// For every game object, Update is called every frame, by the engine:
