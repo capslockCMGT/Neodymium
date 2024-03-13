@@ -72,7 +72,7 @@ public class MyGame : Game {
         AddChild(test);
 		AddChild(test2);
 
-		ModelRenderer sloppersludge = new ModelRenderer("editor/monki.obj", "editor/whitePixel.png");
+		ModelRenderer sloppersludge = new ModelRenderer("editor/monki.obj", "editor/suzanne.png");
 		AddChild(sloppersludge);
 		sloppersludge.x = 2;
 		sloppersludge.scale = .2f;
@@ -102,22 +102,22 @@ public class MyGame : Game {
 			switch(Utils.Random(0,6))
             {
                 case 0:
-                    cubeRotate = Quaternion.FromEulers(new Vector3(.0025f, 0, 0));
+                    cubeRotate = Quaternion.FromEulers(new Vector3(.005f, 0, 0));
                     break;
                 case 1:
-                    cubeRotate = Quaternion.FromEulers(new Vector3(0, .0025f, 0));
+                    cubeRotate = Quaternion.FromEulers(new Vector3(0, .005f, 0));
                     break;
                 case 2:
-                    cubeRotate = Quaternion.FromEulers(new Vector3(0, 0, .0025f));
+                    cubeRotate = Quaternion.FromEulers(new Vector3(0, 0, .005f));
                     break;
                 case 3:
-                    cubeRotate = Quaternion.FromEulers(new Vector3(-.0025f, 0, 0));
+                    cubeRotate = Quaternion.FromEulers(new Vector3(-.005f, 0, 0));
                     break;
                 case 4:
-                    cubeRotate = Quaternion.FromEulers(new Vector3(0, -.0025f, 0));
+                    cubeRotate = Quaternion.FromEulers(new Vector3(0, -.005f, 0));
                     break;
                 case 5:
-                    cubeRotate = Quaternion.FromEulers(new Vector3(0, 0, -.0025f));
+                    cubeRotate = Quaternion.FromEulers(new Vector3(0, 0, -.005f));
                     break;
             }
 			framesRotatedCube = 0;

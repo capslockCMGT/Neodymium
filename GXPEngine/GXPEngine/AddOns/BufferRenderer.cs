@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GXPEngine.Core;
-using System.IO;
-using GXPEngine.OpenGL;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using GXPEngine.Core;
+using GXPEngine.OpenGL;
 
 namespace GXPEngine
 {
@@ -44,7 +41,7 @@ namespace GXPEngine
         public static BufferRenderer GetModel(string filename)
         {
             BufferRenderer model = LoadCache[filename] as BufferRenderer;
-            if(model == null)
+            if (model == null)
             {
                 model = new BufferRenderer(filename);
                 LoadCache[filename] = model;
@@ -89,9 +86,9 @@ namespace GXPEngine
 
         public void WriteVertsToConsole()
         {
-            for (int i = 0; i < verts.Length; i+=3)
+            for (int i = 0; i < verts.Length; i += 3)
             {
-                Console.WriteLine(verts[i] + ", " + verts[i+1] + ", " + verts[i+2]);
+                Console.WriteLine(verts[i] + ", " + verts[i + 1] + ", " + verts[i + 2]);
             }
             Console.WriteLine("_____________________________");
         }
@@ -109,16 +106,20 @@ namespace GXPEngine
 
             if (!File.Exists(model))
                 throw new Exception("Model could not be found at filepath " + model);
-            if (model.Substring(model.Length-4) != ".obj")
-                throw new Exception("Specified model is not in Wavefront (.obj) format. Model in question: "+ model);
+            if (model.Substring(model.Length - 4) != ".obj")
+                throw new Exception("Specified model is not in Wavefront (.obj) format. Model in question: " + model);
 
             StreamReader reader = new StreamReader(model);
             string line = reader.ReadLine();
             while (line != null)
             {
                 string[] words;
-                if(line.Length>1)
-                switch (line.Substring(0,2))
+                if (line.Length < 2)
+                {
+                    line = reader.ReadLine();
+                    continue;
+                }
+                switch (line.Substring(0, 2))
                 {
                     default:
                         break;
@@ -127,13 +128,14 @@ namespace GXPEngine
                         words = line.Split(' ');
                         if (words.Length != 4) break;
 
-                        float x,y,z;
+                        float x, y, z;
                         float.TryParse(words[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out x);
                         float.TryParse(words[2], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out y);
                         float.TryParse(words[3], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out z);
                         verts.Add(new Vector3(x, y, z));
 
                         break;
+
                     case "vn":
                         //data is a normal - is ignored (given this class doesnt have normals for now)
                         break;
@@ -149,19 +151,32 @@ namespace GXPEngine
 
                         break;
                     case "f ":
-                        //data is vert and UV indeces, assuming 4 sets of 3 ints
+
+                        //data is vert and UV indeces, assuming 3 or 4 sets of 3 ints
                         //the third int is the normal index, but we dont care about it and will be dropping it
                         words = line.Split(' ');
-                        if (words.Length != 5) break;
-                        for(int i = 1; i<5; i++)
+                        if (words.Length != 5 && words.Length != 4)
+                            break;
+                        int fallBackVert=1, fallBackUv=1;
+                        for (int i = 1; i < 5; i++)
                         {
-                            string[] ints = words[i].Split('/');
                             int vertIndex, uvIndex;
-                            int.TryParse(ints[0], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out vertIndex);
-                            int.TryParse(ints[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out uvIndex);
+                            if (i < words.Length)
+                            {
+                                string[] ints = words[i].Split('/');
+                                int.TryParse(ints[0], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out vertIndex);
+                                int.TryParse(ints[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out uvIndex);
+                                fallBackVert = vertIndex;
+                                fallBackUv = uvIndex;
+                            }
+                            else
+                            {
+                                vertIndex = fallBackVert;
+                                uvIndex = fallBackUv;
+                            }
                             //in .obj, indeces start at 1. because of course they do.
-                            vertIndeces.Add(vertIndex-1);
-                            uvIndeces.Add(uvIndex-1);
+                            vertIndeces.Add(vertIndex - 1);
+                            uvIndeces.Add(uvIndex - 1);
                         }
 
                         break;
@@ -169,7 +184,7 @@ namespace GXPEngine
                 line = reader.ReadLine();
             }
             reader.Close();
-            for(int i = 0; i<vertIndeces.Count; i++)
+            for (int i = 0; i < vertIndeces.Count; i++)
             {
                 Vector3 vertex = verts[vertIndeces[i]];
                 Vector2 uv = uvs[uvIndeces[i]];
