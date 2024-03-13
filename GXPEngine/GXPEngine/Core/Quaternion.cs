@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -177,7 +177,9 @@ namespace GXPEngine.Core
         /// </summary>
         public void Normalize()
         {
-            float invMag = 1.0f / Mathf.Sqrt(r*r + i*i + j*j + k*k);
+            float magsq = r * r + i * i + j * j + k * k;
+            if (magsq == 1) return;
+            float invMag = 1.0f / Mathf.Sqrt(magsq);
             r *= invMag;
             i *= invMag;
             j *= invMag;
@@ -189,7 +191,7 @@ namespace GXPEngine.Core
         //													Normalized()
         //------------------------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Normalizes the quaternion in question.
+        /// Returns a normalized version of the quaternion in question.
         /// </summary>
         public Quaternion Normalized()
         {
@@ -229,6 +231,44 @@ namespace GXPEngine.Core
             return FromRotationAroundAxis(axis, angle);
         }
 
+        public static Quaternion LookTowards(Vector3 direction)
+        {
+            float signX = Mathf.Sign(direction.x);
+            float signY = Mathf.Sign(direction.y);
+            
+            direction.Normalize();
+            Vector3 left = Vector3.up ^ direction;
+            left.Normalize();
+            Vector3 up = left ^ direction;
+
+            Quaternion res;
+
+            float AngleXZ = Mathf.Acos(left * Vector3.left);
+            float AngleY = Mathf.Acos(up * Vector3.up);
+
+            res = FromRotationAroundAxis(Vector3.up, -AngleXZ * signX);
+            res *= FromRotationAroundAxis(Vector3.left, -AngleY * signY);
+
+            if (Input.GetKeyDown(Key.H))
+            {
+                Console.WriteLine(left);
+                Console.WriteLine(up);
+                Console.WriteLine(direction);
+                Console.WriteLine("-------------");
+                Console.WriteLine(AngleXZ);
+                Console.WriteLine(AngleY);
+                Console.WriteLine("-----------");
+            }
+
+            return res;
+
+            //float angle = Mathf.Acos(direction * up);
+            //Vector3 axis = (direction ^ up).normalized();
+            //Quaternion res = FromRotationAroundAxis(axis, angle);
+            //res *= FromRotationAroundAxis(new Vector3(0,0,-1), Mathf.PI * .25f);
+            //return res;
+        }
+
         //------------------------------------------------------------------------------------------------------------------------
         //													SLerp()
         //------------------------------------------------------------------------------------------------------------------------
@@ -264,10 +304,6 @@ namespace GXPEngine.Core
             float ratioB = Mathf.Sin(t*halfTheta) / sinHalfTheta;
 
             return q1*ratioA + q2*ratioB;
-        }
-        public void LerpTo(Quaternion q, float t)
-        {
-            this = SLerp(this, q, t);
         }
 
         override public string ToString()
