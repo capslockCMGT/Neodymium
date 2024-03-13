@@ -219,23 +219,14 @@ namespace GXPEngine.Core
         /// The direction to look towards.
         /// </param>
         /// <param name='up'>
-        /// The direction's "up". Usually this should be (0,1,0).
+        /// The direction's "forward". Usually this should be (1,0,0).
         /// </param>
-        public static Quaternion LookTowards(Vector3 direction, Vector3 up)
+        public static Quaternion LookTowards(Vector3 direction, Vector3 forward)
         {
             direction.Normalize();
-            Vector3 camside = direction.cross( up );
-            Vector3 camup = camside.cross( up );
-
-            float q = Mathf.Sqrt(1 + camside.x + camup.y + direction.z) / 2;
-            float q4 = 4 * q;
-            //matrix conversion from https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
-            return new Quaternion(
-                q,
-                (direction.y - camup.z)/q4,
-                (camside.z - direction.x)/q4,
-                (camup.x - camside.y)/q4
-                );
+            float angle = Mathf.Acos(direction * forward);
+            Vector3 axis = (direction ^ forward).normalized();
+            return FromRotationAroundAxis(axis, angle);
         }
 
         //------------------------------------------------------------------------------------------------------------------------

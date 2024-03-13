@@ -11,6 +11,7 @@ public class MyGame : Game {
 	Camera cam;
 	GameObject antiSlop;
 	Box test, test2;
+	ParticleSystem particles;
 	bool showCursor;
 	Vector3 dir = new Vector3(1,0,0);
 	
@@ -76,13 +77,19 @@ public class MyGame : Game {
 		AddChild(sloppersludge);
 		sloppersludge.x = 2;
 		sloppersludge.scale = .2f;
+
+		particles = new ParticleSystem("circle.png", 0, 0, 0, ParticleSystem.EmitterType.rect, ParticleSystem.Mode.velocity, MyGame.main, cam);
+		particles.lifetime = 1;
     }
 
 	// For every game object, Update is called every frame, by the engine:
-	void Update() {
-		canvas.Rotate(camRotate);
+	void Update()
+    {
+		particles.Update();
+        Console.WriteLine(particles.particleCount);
+        canvas.Rotate(camRotate);
 		//slopvas.Rotate(rotate);
-        slopvas.rotation = Quaternion.LookTowards(slopvas.TransformPoint(0, .01f, 0) - cam.TransformPoint(0,0, 0), new Vector3(0, 1, 0));
+        slopvas.rotation = Quaternion.LookTowards(slopvas.TransformPoint(0, .01f, 0) - cam.TransformPoint(0,0, 0), new Vector3(0, 0, 1));
         
         //cam.Rotate(camRotate);
         Transformable inv = canvas.Inverse();

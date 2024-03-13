@@ -96,9 +96,19 @@ namespace GXPEngine.Core
         {
             this /= Magnitude();
         }
+
         public Vector3 normalized()
         {
             return this / Magnitude();
+        }
+
+        public static Vector3 Lerp(float fac, Vector3 min, Vector3 max)
+        {
+            return new Vector3(
+                Mathf.Lerp(fac, min.x, max.x),
+                Mathf.Lerp(fac, min.y, max.y),
+                Mathf.Lerp(fac, min.z, max.z)
+                );
         }
         override public string ToString() {
 			return "[Vector2 " + x + ", " + y + ", " + z + "]";

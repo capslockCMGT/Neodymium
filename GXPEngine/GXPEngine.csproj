@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="GXPEngine\AddOns\BufferRenderer.cs" />
     <Compile Include="GXPEngine\AddOns\Gizmos.cs" />
+    <Compile Include="GXPEngine\AddOns\ParticleSystem.cs" />
     <Compile Include="GXPEngine\AddOns\ProjectionMatrix.cs" />
     <Compile Include="GXPEngine\AddOns\SpriteBatch.cs" />
     <Compile Include="GXPEngine\Box.cs" />
