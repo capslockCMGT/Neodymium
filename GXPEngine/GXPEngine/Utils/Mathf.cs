@@ -205,6 +205,13 @@ namespace GXPEngine
 		public static float Clamp(float f, float min, float max) {
 			return f < min ? min : (f > max ? max : f);
 		}
+		/// <summary>
+		/// Lerps betweet min and max by factor f (f=0 will give min, f=1 will give max). Not clamped.
+		/// </summary>
+		public static float Lerp(float f, float min, float max)
+        {
+            return (max - min) * f + min;
+        }
 
 	}
 }

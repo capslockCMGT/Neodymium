@@ -1,3 +1,4 @@
+using GXPEngine.Core;
 using System;
 using System.Collections.Generic;
 using System.Drawing; // For Font
@@ -62,19 +63,27 @@ namespace GXPEngine
 		public static int Random (int min, int max) {
 			return random.Next(min, max);
 		}
-		public static float Random (float min, float max) {
+
+        public static float Random (float min, float max) {
 			return (float)(random.NextDouble() * (max - min) + min);
-		}
+        }
+        public static Vector3 Random(Vector3 pos, Vector3 delta)
+        {
+			return new Vector3(
+					Random(pos.x - delta.x, pos.x + delta.x),
+                    Random(pos.y - delta.y, pos.y + delta.y),
+                    Random(pos.z - delta.z, pos.z + delta.z));
+        }
 
 
-		//------------------------------------------------------------------------------------------------------------------------
-		//														print()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Shows output on the console window.
-		/// Basically, a shortcut for Console.WriteLine() that allows for multiple parameters.
-		/// </summary>
-		public static void print(params object[] list) {
+        //------------------------------------------------------------------------------------------------------------------------
+        //														print()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Shows output on the console window.
+        /// Basically, a shortcut for Console.WriteLine() that allows for multiple parameters.
+        /// </summary>
+        public static void print(params object[] list) {
 			for (int i = 0; i < list.Length; i++) {
 				if (list[i] != null) Console.Write(list[i].ToString() + " "); else Console.Write("null ");
 			}
