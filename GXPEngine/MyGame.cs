@@ -70,9 +70,9 @@ public class MyGame : Game {
         test2.scale = .5f;
         test.Rotate(new Quaternion(0.5709415f, 0.1675188f, 0.5709415f, 0.5656758f));
         AddChild(test);
-		//AddChild(test2);
+		AddChild(test2);
 
-		ModelRenderer sloppersludge = new ModelRenderer("editor/arrow.obj", "editor/whitePixel.png");
+		ModelRenderer sloppersludge = new ModelRenderer("editor/monki.obj", "editor/whitePixel.png");
 		AddChild(sloppersludge);
 		sloppersludge.x = 2;
 		sloppersludge.scale = .2f;
@@ -143,7 +143,7 @@ public class MyGame : Game {
 
 		Gizmos.DrawLine(dir.x, dir.y, dir.z, 0, 0, 0);
 
-        if (((BoxCollider3D)test.collider).RayCast(Vector3.zero, dir))
+        if (test.collider.GetCollisionInfo(test2.collider) != null)
 			Console.WriteLine("COLLIDED!! RAARR");
     }
 	public void FirstPersonViewUpdate()

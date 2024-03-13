@@ -75,6 +75,7 @@ namespace GXPEngine
         {
             _texture.Bind();
 
+            //glContext.SetColor(0xff, 0xff, 0xff, 0x99);
             GL.EnableClientState(GL.TEXTURE_COORD_ARRAY);
             GL.EnableClientState(GL.VERTEX_ARRAY);
             GL.TexCoordPointer(2, GL.FLOAT, 0, uvs);
