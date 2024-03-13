@@ -123,11 +123,7 @@ public class MyGame : Game {
 			framesRotatedCube = 0;
 		}
 		cubeRotation = cubeRotation * cubeRotate;
-		if (Time.time > 1000)
-		{
-			Console.WriteLine(test.rotation);
-			test.rotation = Quaternion.SLerp(test.rotation, cubeRotation, Time.deltaTimeS*.7f);
-		}
+		test.rotation = Quaternion.SLerp(test.rotation, cubeRotation, Time.deltaTimeS*.7f);
 		
 
         if (Input.GetKeyDown(Key.TAB)) showCursor = !showCursor;
