@@ -62,6 +62,8 @@ public class MyGame : Game {
 		cam = new Camera(new ProjectionMatrix(90, 90*.75f, .1f, 10), true);
 		RenderMain = false;
 		AddChild(cam);
+		cam.x = 1;
+		cam.y = .1f;
 		uiManager.AssignWindow(cam.RenderTarget);
 
         test2 = new Box("cubeTex.png");
@@ -69,6 +71,7 @@ public class MyGame : Game {
 
         test.z = 2;
         test2.z = 2;
+		test2.x = 3;
         
 		test.scale = .5f;
         test2.scale = .5f;
@@ -95,7 +98,7 @@ public class MyGame : Game {
 		particles.Update();
         canvas.Rotate(camRotate);
 		//slopvas.Rotate(rotate);
-        slopvas.rotation = Quaternion.LookTowards(slopvas.TransformPoint(0, .01f, 0) - cam.TransformPoint(0,0, 0), new Vector3(0, 0, 1));
+        slopvas.rotation = Quaternion.LookTowards(slopvas.TransformPoint(0, .01f, 0) - cam.TransformPoint(0, 0, 0));
         
         //cam.Rotate(camRotate);
         Transformable inv = canvas.Inverse();
