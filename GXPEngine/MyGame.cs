@@ -16,6 +16,7 @@ public class MyGame : Game {
 	
 	int framesRotatedCube= 0;
 	Quaternion cubeRotate = Quaternion.FromEulers(new Vector3(.01f, 0, 0));
+	Quaternion cubeRotation = Quaternion.Identity;
 	public MyGame() : base(800, 600, false, true, false, "ligma")
 	{
 		rotate.Normalize();
@@ -96,7 +97,7 @@ public class MyGame : Game {
 		Gizmos.DrawLine(0, 0, 0, 0, 0, 1f, this, 0xFF0000FF);
 
 		framesRotatedCube++;
-		if(framesRotatedCube == 180)
+		if(framesRotatedCube == 360)
 		{
 			switch(Utils.Random(0,6))
             {
@@ -121,7 +122,13 @@ public class MyGame : Game {
             }
 			framesRotatedCube = 0;
 		}
-		test.Rotate(cubeRotate);
+		cubeRotation = cubeRotation * cubeRotate;
+		if (Time.time > 1000)
+		{
+			Console.WriteLine(test.rotation);
+			test.rotation = Quaternion.SLerp(test.rotation, cubeRotation, Time.deltaTimeS*.7f);
+		}
+		
 
         if (Input.GetKeyDown(Key.TAB)) showCursor = !showCursor;
 		game.ShowMouse(showCursor);

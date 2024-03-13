@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -136,9 +137,19 @@ namespace GXPEngine.Core
                 q1.r * q2.k + q1.k * q2.r + q1.j * q2.i - q1.i * q2.j
                 );
         }
-        static public Quaternion operator * (Quaternion q1, Quaternion q2)
+        static public Quaternion operator *(Quaternion q1, Quaternion q2)
         {
             return Multiply(q1, q2);
+        }
+
+        static public Quaternion operator *(Quaternion q, float s)
+        {
+            return new Quaternion(q.r * s, q.i * s, q.j * s, q.k * s);
+        }
+
+        static public Quaternion operator +(Quaternion q1, Quaternion q2)
+        {
+            return new Quaternion(q1.r + q2.r, q1.i + q2.i, q1.j + q2.j, q1.k + q2.k);
         }
 
         //------------------------------------------------------------------------------------------------------------------------
@@ -245,7 +256,27 @@ namespace GXPEngine.Core
         public static Quaternion SLerp(Quaternion q1, Quaternion q2, float t)
         {
             //based on https://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/index.htm
-            return q1;
+            //i say based on. it wouldve been if i wrote this when i originally read the post
+            //instead i put it off because i was busy doing """"more important"""" things
+            //now i forgot what any of this does and i just copied the code sample word for word
+
+            float cosHalfTheta = q1.Dot(q2);
+            if (Mathf.Abs(cosHalfTheta) >= 1.0)
+                return q1;
+            
+            float halfTheta = Mathf.Acos(cosHalfTheta);
+            float sinHalfTheta = Mathf.Sqrt(1f - cosHalfTheta * cosHalfTheta);
+            if (Mathf.Abs(sinHalfTheta) < .001f)
+                return (q1+q2)*.5f;
+
+            float ratioA = Mathf.Sin((1 - t) * halfTheta) / sinHalfTheta;
+            float ratioB = Mathf.Sin(t*halfTheta) / sinHalfTheta;
+
+            return q1*ratioA + q2*ratioB;
+        }
+        public void LerpTo(Quaternion q, float t)
+        {
+            this = SLerp(this, q, t);
         }
 
         override public string ToString()
