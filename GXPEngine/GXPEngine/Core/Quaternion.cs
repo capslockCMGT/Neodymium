@@ -249,7 +249,7 @@ namespace GXPEngine.Core
             res = FromRotationAroundAxis(Vector3.up, -AngleXZ * signX);
             res *= FromRotationAroundAxis(Vector3.left, -AngleY * signY);
 
-            if (Input.GetKeyDown(Key.H))
+            /*if (Input.GetKeyDown(Key.H))
             {
                 Console.WriteLine(left);
                 Console.WriteLine(up);
@@ -258,15 +258,9 @@ namespace GXPEngine.Core
                 Console.WriteLine(AngleXZ);
                 Console.WriteLine(AngleY);
                 Console.WriteLine("-----------");
-            }
+            }*/
 
             return res;
-
-            //float angle = Mathf.Acos(direction * up);
-            //Vector3 axis = (direction ^ up).normalized();
-            //Quaternion res = FromRotationAroundAxis(axis, angle);
-            //res *= FromRotationAroundAxis(new Vector3(0,0,-1), Mathf.PI * .25f);
-            //return res;
         }
 
         //------------------------------------------------------------------------------------------------------------------------
