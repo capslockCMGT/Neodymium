@@ -110,7 +110,7 @@ namespace GXPEngine.Core
             //Gizmos.DrawLine(p.x, p.y, p.z, p.x + n.x * 0.1f, p.y + n.y * 0.1f, p.z + n.z * 0.1f, color: 0xff00ff00);
             if (d < distance)
 			{
-				Console.WriteLine(d);
+				//Console.WriteLine(d);
                 distance = d;
                 normal = n;
 				change = true;
@@ -267,7 +267,7 @@ namespace GXPEngine.Core
 			{
 				for (int D = 0; D < 3; D++)
 				{
-					Console.WriteLine(C * 3 + D);
+					//Console.WriteLine(C * 3 + D);
                     Vector3 normal = (cEdges[C] ^ dEdges[D]).normalized();
                     Vector3 p = boundDistance(normal, cEdges[0], cEdges[1], cEdges[2]);
                     float dot = normal * p;
@@ -647,7 +647,7 @@ namespace GXPEngine.Core
 				}
 				Gizmos.DrawPlus(point, 0.05f, color: 0xff00aa00);
                 Gizmos.DrawLine(point, point - (normal * penetrationDepth), color: 0xff00aaaa);
-                Console.WriteLine(penetrationDepth);
+                //Console.WriteLine(penetrationDepth);
                 return new Collision(_owner, ((BoxCollider3D)other)._owner, normal, point, penetrationDepth);
 			} else {
 				return null;

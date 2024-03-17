@@ -53,6 +53,9 @@
     <Compile Include="GXPEngine\Core\Vector3.cs" />
     <Compile Include="GXPEngine\Editor\Editor.cs" />
     <Compile Include="GXPEngine\ModelRenderer.cs" />
+    <Compile Include="GXPEngine\UI\Button.cs" />
+    <Compile Include="GXPEngine\UI\Panel.cs" />
+    <Compile Include="GXPEngine\UI\UIManager.cs" />
     <Compile Include="MyGame.cs" />
     <Compile Include="GXPEngine\Core\Canvas.cs" />
     <Compile Include="GXPEngine\Game.cs" />

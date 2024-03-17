@@ -2,8 +2,10 @@ using System;                                   // System contains a lot of defa
 using GXPEngine;                                // GXPEngine contains the engine
 using System.Drawing;
 using GXPEngine.Core;                           // System.Drawing contains drawing tools such as Color definitions
+using GXPEngine.UI;
 
 public class MyGame : Game {
+
 	Quaternion rotate = new Quaternion(100,-.7f,.1f,.3f);
 	Quaternion camRotate;
 	EasyDraw canvas;
@@ -14,6 +16,7 @@ public class MyGame : Game {
 	ParticleSystem particles;
 	bool showCursor;
 	Vector3 dir = new Vector3(1,0,0);
+	Button butt;
 	
 	int framesRotatedCube= 0;
 	Quaternion cubeRotate = Quaternion.FromEulers(new Vector3(.01f, 0, 0));
@@ -59,7 +62,7 @@ public class MyGame : Game {
 		cam = new Camera(new ProjectionMatrix(90, 90*.75f, .1f, 10), true);
 		RenderMain = false;
 		AddChild(cam);
-
+		uiManager.AssignWindow(cam.RenderTarget);
 
         test2 = new Box("cubeTex.png");
         test = new Box("cubeTex.png");
@@ -80,13 +83,16 @@ public class MyGame : Game {
 
 		particles = new ParticleSystem("circle.png", 0, 0, 0, ParticleSystem.EmitterType.rect, ParticleSystem.Mode.velocity, MyGame.main, cam);
 		particles.lifetime = 1;
+
+		butt = new Button("circle.png", 0, 0);
+		butt.scale = 1f;
+		uiManager.Add(butt);
     }
 
 	// For every game object, Update is called every frame, by the engine:
 	void Update()
     {
 		particles.Update();
-        Console.WriteLine(particles.particleCount);
         canvas.Rotate(camRotate);
 		//slopvas.Rotate(rotate);
         slopvas.rotation = Quaternion.LookTowards(slopvas.TransformPoint(0, .01f, 0) - cam.TransformPoint(0,0, 0), new Vector3(0, 0, 1));
@@ -146,8 +152,8 @@ public class MyGame : Game {
 
 		Gizmos.DrawLine(dir.x, dir.y, dir.z, 0, 0, 0);
 
-        if (test.collider.GetCollisionInfo(test2.collider) != null)
-			Console.WriteLine("COLLIDED!! RAARR");
+		if (test.collider.GetCollisionInfo(test2.collider) != null) ;
+			//Console.WriteLine("COLLIDED!! RAARR");
     }
 	public void FirstPersonViewUpdate()
 	{

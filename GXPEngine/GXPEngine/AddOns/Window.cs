@@ -1,5 +1,7 @@
 using GXPEngine.OpenGL;
 using GXPEngine.Core;
+using GXPEngine.UI;
+using System;
 
 namespace GXPEngine {
 	/// <summary>
@@ -85,7 +87,7 @@ namespace GXPEngine {
 		bool _dirty=true;
 		bool _clear;
 
-		Transformable window;
+		public Transformable window;
 
 		/// <summary>
 		/// Creates a render window in the rectangle given by x,y,width,height.
@@ -110,11 +112,12 @@ namespace GXPEngine {
 				window.y = _windowY + _height / 2;
 				_dirty = false;
             }
-            if (camera is Camera)
-                glContext.PushMatrix(((Camera)camera).projection.matrix);
             glContext.PushMatrix (window.matrix);
 
-			int pushes = 1;
+            if (camera is Camera)
+                glContext.PushMatrix(((Camera)camera).projection.matrix);
+
+            int pushes = 1;
 			GameObject current = camera;
 			Transformable cameraInverse;
 			while (true) {
@@ -125,22 +128,50 @@ namespace GXPEngine {
 					break;
 				current = current.parent;
 			}
-
 			if (current is Game) {// otherwise, the camera is not in the scene hierarchy, so render nothing - not even a black background
 				Game main=Game.main;
+				
 				var oldRange = main.RenderRange;
 				SetRenderRange();
 				main.SetViewport (_windowX, _windowY, _width, _height, false);
 				if (_clear) GL.Clear(GL.COLOR_BUFFER_BIT);
 				current.Render (glContext);
 				main.SetViewport ((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height);
-			}
+            }
 			
-			for (int i=0; i<pushes; i++) {
+			for (int i=1; i<pushes; i++) {
 				glContext.PopMatrix ();
             }
+
             if (camera is Camera)
                 glContext.PopMatrix();
+			//ui render
+            
+            glContext.PopMatrix();
+
+			if (current is Game)
+            {
+               /* (i dunno, this is probably hardcode but I cannot think of any other way)
+                * 
+				* basically mapping from -1..1, -1..1 range of the window
+				* to 0..width, 0..height
+				*/
+                glContext.PushMatrix(new float[]
+                {
+                    2f/_width,0,0,0,
+                    0,-2f/_height,0,0,
+                    0,0,1,0,
+                    -1f,1f,0,1
+                });
+                Game main = Game.main;
+                var oldRange = main.RenderRange;
+                SetRenderRange();
+                main.SetViewport(_windowX, _windowY, _width, _height, false);
+                GL.Clear(0x100);
+                main.uiManager.Render(glContext);
+                main.SetViewport((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height);
+                glContext.PopMatrix();
+            }
         }
 
 		void SetRenderRange() {

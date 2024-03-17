@@ -250,8 +250,13 @@ namespace GXPEngine.Core {
 			
 			_owner.Render(this);
 
-			GL.glfwSwapBuffers();
-			if (GetKey(Key.ESCAPE)) this.Close();
+            //GL.Clear(0x100); //clear depth buffer again so it doesnt overlap with ui
+
+            //_owner.uiManager.Render(this);
+
+            GL.glfwSwapBuffers();
+
+            if (GetKey(Key.ESCAPE)) this.Close();
 		}
 		
 		//------------------------------------------------------------------------------------------------------------------------

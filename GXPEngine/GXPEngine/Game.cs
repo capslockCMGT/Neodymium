@@ -2,6 +2,7 @@ using System;
 using GXPEngine.Core;
 using GXPEngine.Managers;
 using System.Collections.Generic;
+using GXPEngine.UI;
 
 namespace GXPEngine
 {
@@ -17,6 +18,7 @@ namespace GXPEngine
 
 		private UpdateManager _updateManager;
 		private CollisionManager _collisionManager;
+		public UIManager uiManager;
 
 		/// <summary>
 		/// Step delegate defines the signature of a method used for step callbacks, see OnBeforeStep, OnAfterStep.
@@ -101,6 +103,7 @@ namespace GXPEngine
 				main = this;
 				_updateManager = new UpdateManager ();
 				_collisionManager = new CollisionManager ();
+				uiManager = new UIManager ();
 				_glContext = new GLContext (this);
 				_glContext.CreateWindow (pWidth, pHeight, pFullScreen, pVSync, gameName);
 
@@ -174,6 +177,7 @@ namespace GXPEngine
 				OnBeforeStep ();
 			_updateManager.Step ();
 			_collisionManager.Step ();
+			uiManager.Step();
 			if (OnAfterStep != null)
 				OnAfterStep ();
 		}
@@ -187,8 +191,8 @@ namespace GXPEngine
 			}
 			if (OnAfterRender != null && recurse) {
 				recurse = false;
-				OnAfterRender (glContext);
-				recurse = true;
+                OnAfterRender (glContext);
+                recurse = true;
 			}
 		}
 
