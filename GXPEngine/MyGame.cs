@@ -155,7 +155,7 @@ public class MyGame : Game {
 
 		Gizmos.DrawLine(dir.x, dir.y, dir.z, 0, 0, 0);
 
-		if (test.collider.GetCollisionInfo(test2.collider) != null) ;
+		//if (test.collider.GetCollisionInfo(test2.collider) != null)
 			//Console.WriteLine("COLLIDED!! RAARR");
     }
 	public void FirstPersonViewUpdate()
