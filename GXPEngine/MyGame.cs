@@ -158,7 +158,7 @@ public class MyGame : Game {
 
 		Gizmos.DrawLine(dir.x, dir.y, dir.z, 0, 0, 0);
 
-			gizPos = cam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0f);
+		gizPos = cam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0f);
 		Gizmos.DrawPlus(gizPos.x, gizPos.y, gizPos.z, .1f, null, 0xFFFFFFFF);
 
 		//if (test.collider.GetCollisionInfo(test2.collider) != null)
