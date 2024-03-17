@@ -64,11 +64,8 @@ public class MyGame : Game {
 		AddChild(cam);
 		cam.x = 1;
 		cam.y = .1f;
-<<<<<<< HEAD
 		uiManager.AssignWindow(cam.RenderTarget);
-=======
 
->>>>>>> 8540a1c82b902b02b18509cd2af4181c825b07eb
 
         test2 = new Box("cubeTex.png");
         test = new Box("cubeTex.png");
