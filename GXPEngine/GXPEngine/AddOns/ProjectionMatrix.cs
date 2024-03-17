@@ -39,12 +39,35 @@ namespace GXPEngine
 
         public void setOrthographic(Vector2 dimensions, float near, float far)
         {
+            _near = near;
+            _far = far;
             //partially coming from: https://www.scratchapixel.com/lessons/3d-basic-rendering/perspective-and-orthographic-projection-matrix/orthographic-projection-matrix.html
             _basis.CopyTo(_matrix,0);
             _matrix[0] = 2f/dimensions.x;
             _matrix[5] = 2f/dimensions.y;
             _matrix[10] = -2f / (far - near);
             _matrix[14] = -(far+near)/(far-near);
+        }
+
+        private float _FOVX;
+        private float _FOVY;
+        public float FOVX
+        {
+            get { return _FOVX; }
+        }
+        public float FOVY
+        { 
+            get { return _FOVY; } 
+        }
+        private float _near;
+        private float _far;
+        public float near
+        {
+            get { return _near; }
+        }
+        public float far
+        {
+            get { return _far; }
         }
 
         /// <summary>
@@ -63,10 +86,15 @@ namespace GXPEngine
 
         public void setPerspective(float FOVX, float FOVY, float near, float far)
         {
+            _FOVX = FOVX;
+            _FOVY = FOVY;
+            _near = near;
+            _far = far;
             //mostly coming from: https://www.scratchapixel.com/lessons/3d-basic-rendering/perspective-and-orthographic-projection-matrix/building-basic-perspective-projection-matrix.html
             _basis.CopyTo(_matrix, 0);
-            _matrix[0] = 1 / Mathf.Tan((FOVX *.5f) * (Mathf.PI / 180));
-            _matrix[5] = FOVX / (Mathf.Tan((FOVX *.5f) * (Mathf.PI / 180))*FOVY);
+            float temp = 1 / Mathf.Tan((FOVX * .5f) * (Mathf.PI / 180));
+            _matrix[0] = temp;
+            _matrix[5] = (FOVX*temp)/FOVY;
             _matrix[10] = -far / (far - near);
             _matrix[11] = -1;
             _matrix[14] = -far * near / (far - near);

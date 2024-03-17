@@ -17,6 +17,8 @@ public class MyGame : Game {
 	bool showCursor;
 	Vector3 dir = new Vector3(1,0,0);
 	Button butt;
+
+	Vector3 gizPos;
 	
 	int framesRotatedCube= 0;
 	Quaternion cubeRotate = Quaternion.FromEulers(new Vector3(.01f, 0, 0));
@@ -155,6 +157,9 @@ public class MyGame : Game {
         if (Input.GetKey(Key.K)) test2.Move(0, -Time.deltaTimeS, 0);
 
 		Gizmos.DrawLine(dir.x, dir.y, dir.z, 0, 0, 0);
+
+			gizPos = cam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0f);
+		Gizmos.DrawPlus(gizPos.x, gizPos.y, gizPos.z, .1f, null, 0xFFFFFFFF);
 
 		//if (test.collider.GetCollisionInfo(test2.collider) != null)
 			//Console.WriteLine("COLLIDED!! RAARR");

@@ -40,21 +40,25 @@ namespace GXPEngine {
 				screenY <= _renderTarget.windowY + _renderTarget.height;
 		}
 
-		/// <summary>
-		/// Translates a point from camera space to global space, taking the camera transform and window position into account.
-		/// The input should be a point in screen space (coordinates between 0 and game.width/height), 
-		/// that is covered by the camera window (use ScreenPointInWindow to check).
-		/// You can combine this for instance with HitTestPoint and Input.mouseX/Y to check whether the
-		/// mouse hits a sprite that is shown in the camera's window.
-		/// </summary>
-		/// <param name="screenX">The x coordinate of a point in screen space (like Input.mouseX) </param>
-		/// <param name="screenY">The y coordinate of a point in screen space (like Input.mouseY) </param>
-		/// <returns>Global space coordinates (to be used e.g. with HitTestPoint) </returns>
-		// TODO: fix this.
-		public Vector3 ScreenPointToGlobal(int screenX, int screenY) {
-			float camX = screenX - _renderTarget.centerX;
-			float camY = screenY - _renderTarget.centerY;
-			return TransformPoint(camX, camY, 0);
+        /// <summary>
+        /// Translates a point from camera space to global space, taking the camera transform and window position into account.
+        /// The input should be a point in screen space (coordinates between 0 and game.width/height), 
+        /// that is covered by the camera window (use ScreenPointInWindow to check).
+        /// You can combine this for instance with HitTestPoint and Input.mouseX/Y to check whether the
+        /// mouse hits a sprite that is shown in the camera's window.
+        /// </summary>
+        /// <param name="screenX">The x coordinate of a point in screen space (like Input.mouseX) </param>
+        /// <param name="screenY">The y coordinate of a point in screen space (like Input.mouseY) </param>
+        /// <param name="depth">The depth of the point in screen space, ranges from 0 to 1, meaning near and far plane of the camera respectively. </param>
+        /// <returns>Global space coordinates (to be used e.g. with HitTestPoint) </returns>
+        // TODO: fix this.
+        public Vector3 ScreenPointToGlobal(int screenX, int screenY, float depth = 0) {
+			Vector3 camSpace = new Vector3(screenX/(float)game.width*-2+1, screenY/(float)game.height*2-1, -projection.near - projection.far*depth);
+			camSpace.x /= projection.matrix[0];
+			camSpace.y /= projection.matrix[5];
+			camSpace.x *= camSpace.z;
+			camSpace.y *= camSpace.z;
+			return TransformPoint(camSpace);
 		}
 
 		protected override void OnDestroy() {
