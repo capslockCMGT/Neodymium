@@ -27,7 +27,8 @@ namespace GXPEngine {
 			this.projection = projection;
 			_renderTarget = new Window (-game.width / 2, -game.height / 2, game.width, game.height, this, clearBackground);
 			game.OnAfterRender += _renderTarget.RenderWindow;
-		}
+            game.uiManager.AssignWindow(_renderTarget);
+        }
 
 		/// <summary>
 		/// Returns whether a screen point (such as received from e.g. Input.mouseX/Y) is in the camera's window
