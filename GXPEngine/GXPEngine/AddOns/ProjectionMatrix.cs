@@ -88,6 +88,7 @@ namespace GXPEngine
         {
             _FOVX = FOVX;
             _FOVY = FOVY;
+            if (near == 0) throw new Exception("HEY DONT DO THAT - near plane cannot be zero or rendering just doesnt work. it just doesnt okay??!!");
             _near = near;
             _far = far;
             //mostly coming from: https://www.scratchapixel.com/lessons/3d-basic-rendering/perspective-and-orthographic-projection-matrix/building-basic-perspective-projection-matrix.html
