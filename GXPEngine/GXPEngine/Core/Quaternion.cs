@@ -211,6 +211,29 @@ namespace GXPEngine.Core
             return new Quaternion( r, -i, -j, -k);
         }
 
+        //as seen in https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Rotation_matrices
+        public Vector3 Left
+        {
+            get
+            {
+                return new Vector3(1f - 2f * (j * j + k * k), 2f * (i * j - r * k), 2f * (r * j + i * k));
+            }
+        }
+        public Vector3 Up
+        {
+            get
+            {
+                return new Vector3(2f * (i * j + r * k), 1f - 2f * (i * i + k * k), 2f * (j * k - r * i));
+            }
+        }
+        public Vector3 Forward
+        {
+            get
+            {
+                return new Vector3(2f * (i * k - r * j), 2f * (r * i + j * k), 1f - 2f * (i * i + j * j));
+            }
+        }
+
         //------------------------------------------------------------------------------------------------------------------------
         //													LookTowards()
         //------------------------------------------------------------------------------------------------------------------------

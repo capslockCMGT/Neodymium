@@ -302,19 +302,21 @@ namespace GXPEngine
         {
             if (_rotationMatrixIsUpToDate) return;
 
-            //as seen in https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Rotation_matrices
-            _matrix[0] = 1f - 2f * (_rotation.j * _rotation.j + _rotation.k * _rotation.k);
-            _matrix[1] = 2f * (_rotation.i * _rotation.j - _rotation.r * _rotation.k);
-            _matrix[2] = 2f * (_rotation.r * _rotation.j + _rotation.i * _rotation.k);
+            Vector3 iHat = _rotation.Left;
+            _matrix[0] = iHat.x;
+            _matrix[1] = iHat.y;
+            _matrix[2] = iHat.z;
 
-            _matrix[4] = 2f * (_rotation.i * _rotation.j + _rotation.r * _rotation.k);
-            _matrix[5] = 1f - 2f * (_rotation.i * _rotation.i + _rotation.k * _rotation.k);
-            _matrix[6] = 2f * (_rotation.j * _rotation.k - _rotation.r * _rotation.i);
+            Vector3 jHat = _rotation.Up;
+            _matrix[4] = jHat.x;
+            _matrix[5] = jHat.y;
+            _matrix[6] = jHat.z;
 
-            _matrix[8] = 2f * (_rotation.i * _rotation.k - _rotation.r * _rotation.j);
-            _matrix[9] = 2f * (_rotation.r * _rotation.i + _rotation.j * _rotation.k);
-            _matrix[10] = 1f - 2f * (_rotation.i * _rotation.i + _rotation.j * _rotation.j);
-            //the sludge is real
+            Vector3 kHat = _rotation.Forward;
+            _matrix[8] = kHat.x;
+            _matrix[9] = kHat.y;
+            _matrix[10] = kHat.z;
+
             _rotationMatrixIsUpToDate = true;
         }
 
