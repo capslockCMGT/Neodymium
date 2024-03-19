@@ -9,13 +9,13 @@ namespace GXPEngine.Editor
 {
     public class Editor : Game
     {
+        EditorCamera mainCam;
         public Editor() : base(1200, 600, false, true, false, "GXP Editor")
         {
             RenderMain = false;
-            Console.WriteLine("yeah that works");
-            GameObject t = new EditorCamera();
-            t.position = new Vector3(1, 1, 1);
-            AddChild(t);
+            mainCam = new EditorCamera();
+            mainCam.position = new Vector3(1, 1, 1);
+            AddChild(mainCam);
         }
 
         void Update()

@@ -78,8 +78,9 @@ namespace GXPEngine.Core
         /// </summary>
         public Vector3 Eulers
         {
-            get {
-                //ethically sourced from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+            //ethically sourced from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+            get
+            {
                 //a little optimisation
                 float slop = 2 * (r*j + i*k);
                 float jj = j * j;

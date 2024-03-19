@@ -297,9 +297,6 @@ namespace GXPEngine
         /// <summary>
         /// Internal function to update the rotation matrix.
         /// </summary>
-        /// <value>
-        /// The rotation.
-        /// </value>
         private void UpdateRotationMatrix()
         {
             if (_rotationMatrixIsUpToDate) return;
