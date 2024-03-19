@@ -334,6 +334,21 @@ namespace GXPEngine
         }
 
         //------------------------------------------------------------------------------------------------------------------------
+        //														LookTowards()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Rotate the object to face a certain direction.
+        /// </summary>
+        /// <param name='direction'>
+        /// The direction, in local space, to point towards.
+        /// </param>
+        public void LookTowards(Vector3 direction)
+        {
+            _rotation = Quaternion.LookTowards(direction);
+            _rotationMatrixIsUpToDate = false;
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
         //														Move()
         //------------------------------------------------------------------------------------------------------------------------
         /// <summary>
