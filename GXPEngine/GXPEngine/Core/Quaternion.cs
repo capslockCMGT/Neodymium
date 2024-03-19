@@ -179,6 +179,11 @@ namespace GXPEngine.Core
         {
             float magsq = r * r + i * i + j * j + k * k;
             if (magsq == 1) return;
+            if (magsq == 0)
+            {
+                this = Identity;
+                return;
+            }
             float invMag = 1.0f / Mathf.Sqrt(magsq);
             r *= invMag;
             i *= invMag;

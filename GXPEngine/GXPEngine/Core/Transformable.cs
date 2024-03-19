@@ -22,6 +22,7 @@ namespace GXPEngine
 			
 		protected Quaternion _rotation = Quaternion.Identity;
         protected bool _rotationMatrixIsUpToDate = true;
+        protected int _rotationUpdates = 0;
         protected float _scaleX = 1.0f;
 		protected float _scaleY = 1.0f;
         protected float _scaleZ = 1.0f;
@@ -286,6 +287,7 @@ namespace GXPEngine
             {
                 _rotation = value;
                 _rotationMatrixIsUpToDate = false;
+                _rotationUpdates = 0;
             }
         }
 
@@ -301,6 +303,11 @@ namespace GXPEngine
         private void UpdateRotationMatrix()
         {
             if (_rotationMatrixIsUpToDate) return;
+            if (_rotationUpdates > 10)
+            {
+                _rotationUpdates = 0;
+                _rotation.Normalize();
+            }
 
             Vector3 iHat = _rotation.Left;
             _matrix[0] = iHat.x;
@@ -333,6 +340,7 @@ namespace GXPEngine
         {
             _rotation *= q;
             _rotationMatrixIsUpToDate = false;
+            _rotationUpdates++;
         }
 
         //------------------------------------------------------------------------------------------------------------------------
@@ -348,6 +356,7 @@ namespace GXPEngine
         {
             _rotation = Quaternion.LookTowards(direction);
             _rotationMatrixIsUpToDate = false;
+            _rotationUpdates = 0;
         }
 
         //------------------------------------------------------------------------------------------------------------------------
