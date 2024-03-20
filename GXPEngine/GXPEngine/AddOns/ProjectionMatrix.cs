@@ -47,6 +47,11 @@ namespace GXPEngine
             _matrix[5] = 2f/dimensions.y;
             _matrix[10] = -2f / (far - near);
             _matrix[14] = -(far+near)/(far-near);
+
+            //x 0 0 0
+            //0 y 0 0 
+            //0 0 F 0
+            //0 0 N 0
         }
 
         private float _FOVX;
@@ -100,6 +105,11 @@ namespace GXPEngine
             _matrix[11] = -1;
             _matrix[14] = -far * near / (far - near);
             _matrix[15] = 0;
+
+            //X 0 0 0
+            //0 Y 0 0
+            //0 0 F-1
+            //0 0 N 0
         }
     }
 }

@@ -115,6 +115,8 @@ public class MyGame : Game {
 		Gizmos.DrawLine(0, 0, 0, 0, 1f, 0, this, 0xFF00FF00);
 		Gizmos.DrawLine(0, 0, 0, 0, 0, 1f, this, 0xFF0000FF);
 
+		butt.position = cam.GlobalToScreenPoint(new Vector3(0, 0, 0));
+
 		framesRotatedCube++;
 		if(framesRotatedCube == 360)
 		{

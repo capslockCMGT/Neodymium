@@ -42,7 +42,7 @@ namespace GXPEngine {
 		}
 
         /// <summary>
-        /// Translates a point from camera space to global space, taking the camera transform and window position into account.
+        /// Translates a point from camera space to global space, taking the camera transform into account.
         /// The input should be a point in screen space (coordinates between 0 and game.width/height), 
         /// that is covered by the camera window (use ScreenPointInWindow to check).
         /// You can combine this for instance with HitTestPoint and Input.mouseX/Y to check whether the
@@ -52,7 +52,6 @@ namespace GXPEngine {
         /// <param name="screenY">The y coordinate of a point in screen space (like Input.mouseY) </param>
         /// <param name="depth">The depth of the point in screen space, ranges from 0 to 1, meaning near and far plane of the camera respectively. </param>
         /// <returns>Global space coordinates (to be used e.g. with HitTestPoint) </returns>
-        // TODO: fix this.
         public Vector3 ScreenPointToGlobal(int screenX, int screenY, float depth = 0) {
 			Vector3 camSpace = new Vector3(screenX/(float)game.width*-2+1, screenY/(float)game.height*2-1, -projection.near - projection.far*depth);
 			camSpace.x /= projection.matrix[0];
@@ -60,6 +59,25 @@ namespace GXPEngine {
 			camSpace.x *= camSpace.z;
 			camSpace.y *= camSpace.z;
 			return TransformPoint(camSpace);
+		}
+
+        /// <summary>
+        /// Translates a point from global space to the screen, taking camera transform into account.
+		/// If its outside of the frustum, it'll land *somewhere*.
+		/// Z is depth ranging from -1 to 1.
+        /// </summary>
+        public Vector3 GlobalToScreenPoint(Vector3 point)
+		{
+			Vector3 camSpace = InverseTransformPoint(point);
+			camSpace.x *= projection.matrix[0];
+			camSpace.y *= projection.matrix[5];
+			camSpace.z = camSpace.z * projection.matrix[10] + projection.matrix[14];
+			camSpace /= -camSpace.z;
+			//why x keeps being negative in cam space is a mystery to me
+			//the joys of no good graphics library
+			camSpace.x = (1-camSpace.x)*.5f*game.width;
+			camSpace.y = (camSpace.y+1)*.5f*game.height;
+            return camSpace;
 		}
 
 		protected override void OnDestroy() {
