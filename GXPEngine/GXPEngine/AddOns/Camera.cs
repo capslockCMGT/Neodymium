@@ -64,21 +64,37 @@ namespace GXPEngine {
         /// <summary>
         /// Translates a point from global space to the screen, taking camera transform into account.
 		/// If its outside of the frustum, it'll land *somewhere*.
+		/// X and Y are screen coordinates ranging from 0 to width/height.
 		/// Z is depth ranging from -1 to 1.
         /// </summary>
         public Vector3 GlobalToScreenPoint(Vector3 point)
 		{
-			Vector3 camSpace = InverseTransformPoint(point);
-			camSpace.x *= projection.matrix[0];
-			camSpace.y *= projection.matrix[5];
-			camSpace.z = camSpace.z * projection.matrix[10] + projection.matrix[14];
-			camSpace /= -camSpace.z;
-			//why x keeps being negative in cam space is a mystery to me
-			//the joys of no good graphics library
-			camSpace.x = (1-camSpace.x)*.5f*game.width;
+			Vector3 camSpace = GlobalToCameraSpace(point);
+			camSpace.x = (camSpace.x+1)*.5f*game.width;
 			camSpace.y = (camSpace.y+1)*.5f*game.height;
             return camSpace;
 		}
+
+        /// <summary>
+        /// Translates a point from global space to the camera space, taking camera transform into account.
+        /// If its outside of the frustum, it'll land *somewhere*.
+        /// X and Y are screen coordinates ranging from -1 to 1.
+        /// Z is depth ranging from -1 to 1.
+        /// </summary>
+        public Vector3 GlobalToCameraSpace(Vector3 point)
+        {
+            Vector3 camSpace = InverseTransformPoint(point);
+            //why x keeps being negative in cam space is a mystery to me
+            //the joys of no good graphics library
+            camSpace.x *= -projection.matrix[0];
+            camSpace.y *= projection.matrix[5];
+            camSpace.z = camSpace.z * projection.matrix[10];
+			float tz = 1 / -camSpace.z;
+            camSpace.x *= tz;
+            camSpace.y *= tz;
+			camSpace.z += projection.matrix[14];
+			return camSpace;
+        }
 
 		protected override void OnDestroy() {
 			game.OnAfterRender -= _renderTarget.RenderWindow;
