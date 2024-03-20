@@ -30,7 +30,7 @@ namespace GXPEngine.Editor
             Gizmos.DrawLine(0, 0, 0, 0, 0, 1f, this, 0xFF0000FF, 5);
             for (int i = 0; i < 22; i++)
             {
-                uint col = i == 5 || i == 16 ? 0xFFFFFFFF : 0x99FFFFFF;
+                uint col = i == 5 || i == 16 ? 0xFFFFFFFF : 0x77FFFFFF;
                 if (i < 11) Gizmos.DrawLine(-6, 0, i - 5, 6, 0, i - 5, null, col, 1);
                 else Gizmos.DrawLine(i - 16, 0, -6, i - 16, 0, 6, null, col, 1);
             }
