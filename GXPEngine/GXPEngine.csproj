@@ -51,6 +51,7 @@
     <Compile Include="GXPEngine\Core\BoxCollider3D.cs" />
     <Compile Include="GXPEngine\Core\Quaternion.cs" />
     <Compile Include="GXPEngine\Core\Vector3.cs" />
+    <Compile Include="GXPEngine\DSCFSprite.cs" />
     <Compile Include="GXPEngine\Editor\BoxProxy.cs" />
     <Compile Include="GXPEngine\Editor\CustomProperty.cs" />
     <Compile Include="GXPEngine\Editor\Editor.cs" />

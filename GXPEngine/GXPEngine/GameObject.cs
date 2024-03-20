@@ -18,6 +18,8 @@ namespace GXPEngine
 		public bool visible = true;
 		private bool destroyed = false;
 
+		public bool registeredDepthSorted = false; //dont set this willy nilly. this is reserved for Window
+
 		//------------------------------------------------------------------------------------------------------------------------
 		//														GameObject()
 		//------------------------------------------------------------------------------------------------------------------------
@@ -125,6 +127,11 @@ namespace GXPEngine
 			//if (visible == false) return;
 			//glContext.PushMatrix(matrix);
 			//glContext.PopMatrix();
+		}
+
+		public virtual void RenderDepthSorted(GLContext gLContext, Vector3 cameraSpacePosition)
+		{
+
 		}
 
 

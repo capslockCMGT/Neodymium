@@ -92,9 +92,18 @@ public class MyGame : Game {
 
 		butt = new Button("circle.png", 0, 0);
 		//butt.SetOrigin(20, 20);
-		butt.scale = 1f;
+		//butt.scale = 1f;
 		butt.SetOrigin(butt.width * .5f, butt.height * .5f);
 		uiManager.Add(butt);
+
+		for(int i = 0;  i < 10; i++)
+		{
+			DSCFSprite obj = new DSCFSprite("circle.png");
+			obj.z = i;
+			obj.SetOrigin(obj.width*.5f, obj.height*.5f);
+			obj.scaleXYZ = new Vector3(10f/width, 10f/height, 1);
+			AddChild(obj);
+		}
     }
 
 	// For every game object, Update is called every frame, by the engine:
@@ -117,9 +126,9 @@ public class MyGame : Game {
 		Gizmos.DrawLine(0, 0, 0, 0, 1f, 0, this, 0xFF00FF00);
 		Gizmos.DrawLine(0, 0, 0, 0, 0, 1f, this, 0xFF0000FF);
 
-		butt.position = cam.GlobalToScreenPoint(new Vector3(1, 0, 0));
-		butt.scale = 1 / butt.z;
-		butt.z = 0;
+		//butt.position = cam.GlobalToScreenPoint(new Vector3(1, 0, 0));
+		//butt.scale = 1 / butt.z;
+		//butt.z = 0;
 
 		framesRotatedCube++;
 		if(framesRotatedCube == 360)

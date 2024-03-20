@@ -2,6 +2,8 @@ using GXPEngine.OpenGL;
 using GXPEngine.Core;
 using GXPEngine.UI;
 using System;
+using System.Collections.Generic;
+using System.Runtime.Remoting.Contexts;
 
 namespace GXPEngine {
 	/// <summary>
@@ -89,6 +91,34 @@ namespace GXPEngine {
 
 		public Transformable window;
 
+		public static Window ActiveWindow
+		{
+			get { return _ActiveWindow; }
+		}
+		private static Window _ActiveWindow = null;
+		private List<GameObjAndPos> depthSortedObjects = new List<GameObjAndPos>();
+
+		private class GameObjAndPos
+		{
+			public GameObject obj;
+			public Vector3 pos;
+			public GameObjAndPos(GameObject obj, Vector3 pos)
+			{
+				this.obj = obj;
+				this.pos = pos;
+			}
+		}
+		public void RegisterDepthSorted(GameObject toRegister)
+		{
+			toRegister.registeredDepthSorted = true;
+			bool inRegister = false;
+			foreach (GameObjAndPos obj in depthSortedObjects)
+				if (obj.obj == toRegister) inRegister = true;
+			if (inRegister) return;
+
+			depthSortedObjects.Add(new GameObjAndPos(toRegister, new Vector3() ));
+		}
+
 		/// <summary>
 		/// Creates a render window in the rectangle given by x,y,width,height.
 		/// The camera determines the focal point, rotation and scale of this window.
@@ -106,8 +136,11 @@ namespace GXPEngine {
 		/// <summary>
 		/// To render the scene in this window, subscribe this method to the main game's OnAfterRender event.
 		/// </summary>
-		public void RenderWindow(GLContext glContext) {
-			if (_dirty) {
+		public void RenderWindow(GLContext glContext)
+        {
+            _ActiveWindow = this;
+
+            if (_dirty) {
 				window.x = _windowX + _width / 2;
 				window.y = _windowY + _height / 2;
 				_dirty = false;
@@ -128,8 +161,9 @@ namespace GXPEngine {
 					break;
 				current = current.parent;
 			}
-			if (current is Game) {// otherwise, the camera is not in the scene hierarchy, so render nothing - not even a black background
-				Game main=Game.main;
+			if (current is Game)
+			{// otherwise, the camera is not in the scene hierarchy, so render nothing - not even a black background
+				Game main =Game.main;
 				
 				var oldRange = main.RenderRange;
 				SetRenderRange();
@@ -151,27 +185,57 @@ namespace GXPEngine {
 
 			if (current is Game)
             {
-               /* (i dunno, this is probably hardcode but I cannot think of any other way)
-                * 
-				* basically mapping from -1..1, -1..1 range of the window
-				* to 0..width, 0..height
-				*/
-                glContext.PushMatrix(new float[]
-                {
+				RenderDepthSortedObjects(glContext);
+				RenderUI(glContext);
+            }
+            _ActiveWindow = null;
+        }
+
+		void RenderDepthSortedObjects(GLContext glContext)
+        {
+			//glContext.PushMatrix(new ProjectionMatrix(new Vector2(2,2),10,-10).matrix);
+            for (int i = depthSortedObjects.Count-1; i > -1; i--)
+            {
+				if (!depthSortedObjects[i].obj.registeredDepthSorted) depthSortedObjects.RemoveAt(i);
+				else
+				{ 
+					depthSortedObjects[i].pos = ((Camera)camera).GlobalToCameraSpace(depthSortedObjects[i].obj.TransformPoint(0, 0, 0));
+					if (depthSortedObjects[i].pos.z < .1f) depthSortedObjects.RemoveAt(i);
+                }
+            }
+            depthSortedObjects.Sort(delegate (GameObjAndPos a, GameObjAndPos b)
+            {
+                return (b.pos.z).CompareTo(a.pos.z);
+            });
+            foreach (GameObjAndPos a in depthSortedObjects)
+            {
+                a.obj.RenderDepthSorted(glContext, a.pos);
+            }
+			//glContext.PopMatrix();
+        }
+
+		void RenderUI(GLContext glContext)
+        {
+            /* (i dunno, this is probably hardcode but I cannot think of any other way)
+            * 
+            * basically mapping from -1..1, -1..1 range of the window
+            * to 0..width, 0..height
+            */
+            glContext.PushMatrix(new float[]
+            {
                     2f/_width,0,0,0,
                     0,-2f/_height,0,0,
                     0,0,1,0,
                     -1f,1f,0,1
-                });
-                Game main = Game.main;
-                var oldRange = main.RenderRange;
-                SetRenderRange();
-                main.SetViewport(_windowX, _windowY, _width, _height, false);
-                GL.Clear(0x100);
-                main.uiManager.Render(glContext);
-                main.SetViewport((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height);
-                glContext.PopMatrix();
-            }
+            });
+            Game main = Game.main;
+            var oldRange = main.RenderRange;
+            SetRenderRange();
+            main.SetViewport(_windowX, _windowY, _width, _height, false);
+            GL.Clear(0x100);
+            main.uiManager.Render(glContext);
+            main.SetViewport((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height);
+            glContext.PopMatrix();
         }
 
 		void SetRenderRange() {
