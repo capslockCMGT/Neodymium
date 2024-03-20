@@ -15,6 +15,9 @@ namespace GXPEngine.Core
 			this.z = z;
 		}
         public static Vector3 zero = new Vector3(0,0,0);
+        public static Vector3 up = new Vector3(0, 1, 0);
+        public static Vector3 left = new Vector3(1, 0, 0);
+        public static Vector3 forward = new Vector3(0, 0, 1);
         public static Vector3 operator +(Vector3 v1, Vector3 v2)
         {
             return new Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
@@ -111,7 +114,7 @@ namespace GXPEngine.Core
                 );
         }
         override public string ToString() {
-			return "[Vector2 " + x + ", " + y + ", " + z + "]";
+			return "[Vector3 " + x + ", " + y + ", " + z + "]";
 		}
 	}
 }

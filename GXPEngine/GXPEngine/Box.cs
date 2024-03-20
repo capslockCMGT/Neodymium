@@ -170,7 +170,7 @@ namespace GXPEngine
             boxModel.WriteVertsToConsole();
         }
 
-        public Vector3[] GetExtents()
+        public override Vector3[] GetExtents()
         {
             Vector3[] res = new Vector3[8];
             for (int i = 0; i < 8; i++)

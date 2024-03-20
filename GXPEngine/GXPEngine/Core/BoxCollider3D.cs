@@ -22,12 +22,12 @@ namespace GXPEngine.Core
     /// </summary>
     public class BoxCollider3D : Collider
 	{
-		private Box _owner;
+		private GameObject _owner;
 		
 		//------------------------------------------------------------------------------------------------------------------------
 		//														BoxCollider()
 		//------------------------------------------------------------------------------------------------------------------------		
-		public BoxCollider3D(Box owner) {
+		public BoxCollider3D(GameObject owner) {
 			_owner = owner;
 		}
 

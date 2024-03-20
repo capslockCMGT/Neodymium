@@ -230,7 +230,7 @@ namespace GXPEngine
 		/// <returns>
 		/// The extents.
 		/// </returns>
-		public Vector3[] GetExtents() {
+		public override Vector3[] GetExtents() {
 			Vector3[] ret = new Vector3[4];
 			ret[0] = TransformPoint(_bounds.left, _bounds.top, 0);
 			ret[1] = TransformPoint(_bounds.right, _bounds.top, 0);
