@@ -193,7 +193,6 @@ namespace GXPEngine {
 
 		void RenderDepthSortedObjects(GLContext glContext)
         {
-			//glContext.PushMatrix(new ProjectionMatrix(new Vector2(2,2),10,-10).matrix);
             for (int i = depthSortedObjects.Count-1; i > -1; i--)
             {
 				if (!depthSortedObjects[i].obj.registeredDepthSorted) depthSortedObjects.RemoveAt(i);
@@ -211,7 +210,6 @@ namespace GXPEngine {
             {
                 a.obj.RenderDepthSorted(glContext, a.pos);
             }
-			//glContext.PopMatrix();
         }
 
 		void RenderUI(GLContext glContext)

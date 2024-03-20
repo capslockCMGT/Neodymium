@@ -1,7 +1,6 @@
 using GXPEngine.Core; // For Vector2
 
 namespace GXPEngine {
-	//TODO: make this thing have a projection, make it work in 3d, etc,
 	/// <summary>
 	/// A Camera gameobject, that owns a rectangular render window, and determines the focal point, rotation and scale
 	/// of what's rendered in that window.

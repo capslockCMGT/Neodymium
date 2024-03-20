@@ -101,7 +101,7 @@ public class MyGame : Game {
 			DSCFSprite obj = new DSCFSprite("circle.png");
 			obj.z = i;
 			obj.SetOrigin(obj.width*.5f, obj.height*.5f);
-			obj.scaleXYZ = new Vector3(10f/width, 10f/height, 1);
+			obj.scaleXYZ = new Vector3(10f/width, 10f/width, 1);
 			AddChild(obj);
 		}
     }

@@ -7,6 +7,9 @@ using GXPEngine.Core;
 
 namespace GXPEngine
 {
+    /// <summary>
+    /// DepthSortedCameraFacingSprite - a sprite that always faces the camera.
+    /// </summary>
     public class DSCFSprite : Sprite
     {
         public DSCFSprite(string filename, bool keepInCache = true, bool addCollider = false) : base(filename, keepInCache, addCollider)
@@ -27,7 +30,7 @@ namespace GXPEngine
             gLContext.PushMatrix(new float[]
             {
                 scaleX*zinv, 0,0,0,
-                0, scaleY*zinv, 0,0,
+                0, scaleY*zinv*game.width/(float)game.height, 0,0,
                 0,0,1,0,
                 -cameraSpacePosition.x, -cameraSpacePosition.y, z, 1
             });
