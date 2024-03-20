@@ -42,7 +42,7 @@ namespace GXPEngine.UI
             //Vector3 localM = new Vector3(Input.mouseX, Input.mouseY, 0);
             //Console.WriteLine(Input.mouseX + "\t" + Input.mouseY);
             prevStatus = status;
-            if (0 < localM.x && localM.x < texture.width && 0 < localM.y && localM.y < texture.height)
+            if (HitTest(Input.mouseX, Input.mouseY))
             {
                 if (!Input.GetMouseButton(0))
                     status = Status.HOVER;
@@ -58,6 +58,15 @@ namespace GXPEngine.UI
                 else
                     status = Status.REST;
             }
+        }
+        bool HitTest(int x, int y)
+        {
+            Vector3 local = InverseTransformPoint(x, y, 0);
+            if (local.x > _bounds.right) return false;
+            if (local.x < _bounds.left) return false;
+            if (local.y > _bounds.bottom) return false;
+            if (local.y < _bounds.top) return false;
+            return true;
         }
         void TriggerEvents()
         {
