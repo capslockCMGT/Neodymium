@@ -424,6 +424,11 @@ namespace GXPEngine
 			return _collider != null && other._collider != null && _collider.HitTest (other._collider);
 		}
 
+		virtual public Vector3[] GetExtents()
+		{
+			return null;
+		}
+
 		/// <summary>
 		/// If changing the x and y coordinates of this GameObject by vx and vy respectively
 		///   would cause a collision with the GameObject other, this method returns a 

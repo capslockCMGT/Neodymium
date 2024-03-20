@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -78,8 +78,9 @@ namespace GXPEngine.Core
         /// </summary>
         public Vector3 Eulers
         {
-            get {
-                //ethically sourced from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+            //ethically sourced from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+            get
+            {
                 //a little optimisation
                 float slop = 2 * (r*j + i*k);
                 float jj = j * j;
@@ -177,7 +178,14 @@ namespace GXPEngine.Core
         /// </summary>
         public void Normalize()
         {
-            float invMag = 1.0f / Mathf.Sqrt(r*r + i*i + j*j + k*k);
+            float magsq = r * r + i * i + j * j + k * k;
+            if (magsq == 1) return;
+            if (magsq == 0)
+            {
+                this = Identity;
+                return;
+            }
+            float invMag = 1.0f / Mathf.Sqrt(magsq);
             r *= invMag;
             i *= invMag;
             j *= invMag;
@@ -189,7 +197,7 @@ namespace GXPEngine.Core
         //													Normalized()
         //------------------------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Normalizes the quaternion in question.
+        /// Returns a normalized version of the quaternion in question.
         /// </summary>
         public Quaternion Normalized()
         {
@@ -207,6 +215,29 @@ namespace GXPEngine.Core
         public Quaternion Inverse()
         {
             return new Quaternion( r, -i, -j, -k);
+        }
+
+        //as seen in https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Rotation_matrices
+        public Vector3 Left
+        {
+            get
+            {
+                return new Vector3(1f - 2f * (j * j + k * k), 2f * (i * j - r * k), 2f * (r * j + i * k));
+            }
+        }
+        public Vector3 Up
+        {
+            get
+            {
+                return new Vector3(2f * (i * j + r * k), 1f - 2f * (i * i + k * k), 2f * (j * k - r * i));
+            }
+        }
+        public Vector3 Forward
+        {
+            get
+            {
+                return new Vector3(2f * (i * k - r * j), 2f * (r * i + j * k), 1f - 2f * (i * i + j * j));
+            }
         }
 
         //------------------------------------------------------------------------------------------------------------------------
@@ -227,6 +258,38 @@ namespace GXPEngine.Core
             float angle = Mathf.Acos(direction * forward);
             Vector3 axis = (direction ^ forward).normalized();
             return FromRotationAroundAxis(axis, angle);
+        }
+
+        public static Quaternion LookTowards(Vector3 direction)
+        {
+            float signX = Mathf.Sign(direction.x);
+            float signY = Mathf.Sign(direction.y);
+            
+            direction.Normalize();
+            Vector3 left = Vector3.up ^ direction;
+            left.Normalize();
+            Vector3 up = left ^ direction;
+
+            Quaternion res;
+
+            float AngleXZ = Mathf.Acos(left * Vector3.left);
+            float AngleY = Mathf.Acos(up * Vector3.up);
+
+            res = FromRotationAroundAxis(Vector3.up, -AngleXZ * signX);
+            res *= FromRotationAroundAxis(Vector3.left, -AngleY * signY);
+
+            /*if (Input.GetKeyDown(Key.H))
+            {
+                Console.WriteLine(left);
+                Console.WriteLine(up);
+                Console.WriteLine(direction);
+                Console.WriteLine("-------------");
+                Console.WriteLine(AngleXZ);
+                Console.WriteLine(AngleY);
+                Console.WriteLine("-----------");
+            }*/
+
+            return res;
         }
 
         //------------------------------------------------------------------------------------------------------------------------
@@ -264,10 +327,6 @@ namespace GXPEngine.Core
             float ratioB = Mathf.Sin(t*halfTheta) / sinHalfTheta;
 
             return q1*ratioA + q2*ratioB;
-        }
-        public void LerpTo(Quaternion q, float t)
-        {
-            this = SLerp(this, q, t);
         }
 
         override public string ToString()

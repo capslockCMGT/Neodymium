@@ -3,6 +3,7 @@ using GXPEngine;                                // GXPEngine contains the engine
 using System.Drawing;
 using GXPEngine.Core;                           // System.Drawing contains drawing tools such as Color definitions
 using GXPEngine.UI;
+using GXPEngine.Editor;
 
 public class MyGame : Game {
 
@@ -17,6 +18,8 @@ public class MyGame : Game {
 	bool showCursor;
 	Vector3 dir = new Vector3(1,0,0);
 	Button butt;
+
+	Vector3 gizPos;
 	
 	int framesRotatedCube= 0;
 	Quaternion cubeRotate = Quaternion.FromEulers(new Vector3(.01f, 0, 0));
@@ -62,13 +65,16 @@ public class MyGame : Game {
 		cam = new Camera(new ProjectionMatrix(90, 90*.75f, .1f, 10), true);
 		RenderMain = false;
 		AddChild(cam);
-		uiManager.AssignWindow(cam.RenderTarget);
+		cam.x = 1;
+		cam.y = .1f;
+
 
         test2 = new Box("cubeTex.png");
         test = new Box("cubeTex.png");
 
         test.z = 2;
         test2.z = 2;
+		test2.x = 3;
         
 		test.scale = .5f;
         test2.scale = .5f;
@@ -87,6 +93,7 @@ public class MyGame : Game {
 		butt = new Button("circle.png", 0, 0);
 		butt.SetOrigin(20, 20);
 		butt.scale = 1f;
+		butt.SetOrigin(butt.width * .5f, butt.height * .5f);
 		uiManager.Add(butt);
     }
 
@@ -96,7 +103,7 @@ public class MyGame : Game {
 		particles.Update();
         canvas.Rotate(camRotate);
 		//slopvas.Rotate(rotate);
-        slopvas.rotation = Quaternion.LookTowards(slopvas.TransformPoint(0, .01f, 0) - cam.TransformPoint(0,0, 0), new Vector3(0, 0, 1));
+        slopvas.rotation = Quaternion.LookTowards(slopvas.TransformPoint(0, .01f, 0) - cam.TransformPoint(0, 0, 0));
         
         //cam.Rotate(camRotate);
         Transformable inv = canvas.Inverse();
@@ -110,7 +117,11 @@ public class MyGame : Game {
 		Gizmos.DrawLine(0, 0, 0, 0, 1f, 0, this, 0xFF00FF00);
 		Gizmos.DrawLine(0, 0, 0, 0, 0, 1f, this, 0xFF0000FF);
 
-		framesRotatedCube++;
+		butt.position = cam.GlobalToScreenPoint(new Vector3(1, 0, 0));
+		butt.scale = 1/butt.z;
+		butt.z = 0;
+
+        framesRotatedCube++;
 		if(framesRotatedCube == 360)
 		{
 			switch(Utils.Random(0,6))
@@ -153,7 +164,10 @@ public class MyGame : Game {
 
 		Gizmos.DrawLine(dir.x, dir.y, dir.z, 0, 0, 0);
 
-		if (test.collider.GetCollisionInfo(test2.collider) != null) ;
+		gizPos = cam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0f);
+		Gizmos.DrawPlus(gizPos.x, gizPos.y, gizPos.z, .1f, null, 0xFFFFFFFF);
+
+		//if (test.collider.GetCollisionInfo(test2.collider) != null)
 			//Console.WriteLine("COLLIDED!! RAARR");
     }
 	public void FirstPersonViewUpdate()
@@ -200,6 +214,7 @@ public class MyGame : Game {
     }
     static void Main()                          // Main() is the first method that's called when the program is run
 	{
-		new MyGame().Start();                   // Create a "MyGame" and start it
+		new Editor().Start();                   // Create a "MyGame" and start it
+		//too bad im making an editor
 	}
 }
