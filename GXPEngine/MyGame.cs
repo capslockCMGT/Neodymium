@@ -91,7 +91,7 @@ public class MyGame : Game {
 		particles.lifetime = 1;
 
 		butt = new Button("circle.png", 0, 0);
-		butt.SetOrigin(20, 20);
+		//butt.SetOrigin(20, 20);
 		butt.scale = 1f;
 		butt.SetOrigin(butt.width * .5f, butt.height * .5f);
 		uiManager.Add(butt);
@@ -118,10 +118,10 @@ public class MyGame : Game {
 		Gizmos.DrawLine(0, 0, 0, 0, 0, 1f, this, 0xFF0000FF);
 
 		butt.position = cam.GlobalToScreenPoint(new Vector3(1, 0, 0));
-		butt.scale = 1/butt.z;
+		butt.scale = 1 / butt.z;
 		butt.z = 0;
 
-        framesRotatedCube++;
+		framesRotatedCube++;
 		if(framesRotatedCube == 360)
 		{
 			switch(Utils.Random(0,6))
@@ -214,7 +214,8 @@ public class MyGame : Game {
     }
     static void Main()                          // Main() is the first method that's called when the program is run
 	{
-		new Editor().Start();                   // Create a "MyGame" and start it
+		//new Editor().Start();                   // Create a "MyGame" and start it
+		new MyGame().Start();
 		//too bad im making an editor
 	}
 }
