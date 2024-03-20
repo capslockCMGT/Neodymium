@@ -72,6 +72,13 @@ namespace GXPEngine {
 			Vector3 camSpace = GlobalToCameraSpace(point);
 			camSpace.x = (camSpace.x+1)*.5f*game.width;
 			camSpace.y = (camSpace.y+1)*.5f*game.height;
+			if (camSpace.z < 0) // you can replace this test with min render distance and max render distance for more efficiency
+			{
+				//point is behind the screen so it shouldnt appear on it
+				// (this shit below is ugly ik)
+				camSpace.x = float.MaxValue;
+				camSpace.y = float.MaxValue;
+            }
             return camSpace;
 		}
 
