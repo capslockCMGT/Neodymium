@@ -91,6 +91,7 @@ public class MyGame : Game {
 		particles.lifetime = 1;
 
 		butt = new Button("circle.png", 0, 0);
+		butt.SetOrigin(20, 20);
 		butt.scale = 1f;
 		butt.SetOrigin(butt.width * .5f, butt.height * .5f);
 		uiManager.Add(butt);
