@@ -111,12 +111,13 @@ namespace GXPEngine {
 		public void RegisterDepthSorted(GameObject toRegister)
 		{
 			toRegister.registeredDepthSorted = true;
-			bool inRegister = false;
-			foreach (GameObjAndPos obj in depthSortedObjects)
-				if (obj.obj == toRegister) inRegister = true;
-			if (inRegister) return;
 
-			depthSortedObjects.Add(new GameObjAndPos(toRegister, new Vector3() ));
+			foreach (GameObjAndPos obj in depthSortedObjects)
+			{
+				if (obj.obj != toRegister) continue;
+                depthSortedObjects.Add(new GameObjAndPos(toRegister, new Vector3()));
+				return;
+			}
 		}
 
 		/// <summary>

@@ -24,7 +24,7 @@ public class MyGame : Game {
 	int framesRotatedCube= 0;
 	Quaternion cubeRotate = Quaternion.FromEulers(new Vector3(.01f, 0, 0));
 	Quaternion cubeRotation = Quaternion.Identity;
-	public MyGame() : base(800, 600, false, true, false, "ligma")
+	public MyGame() : base(800, 600, false, true, false, "something else")
 	{
 		rotate.Normalize();
 
@@ -103,7 +103,9 @@ public class MyGame : Game {
 			obj.SetOrigin(obj.width*.5f, obj.height*.5f);
 			obj.scaleXYZ = new Vector3(10f/width, 10f/width, 1);
 			AddChild(obj);
-		}
+        }
+        Panel leftPanel = new Panel(200, 600);
+        uiManager.Add(leftPanel);
     }
 
 	// For every game object, Update is called every frame, by the engine:
@@ -223,8 +225,8 @@ public class MyGame : Game {
     }
     static void Main()                          // Main() is the first method that's called when the program is run
 	{
-		//new Editor().Start();                   // Create a "MyGame" and start it
-		new MyGame().Start();
+		//new MyGame().Start();					// Create a "MyGame" and start it
+		new Editor().Start();                   
 		//too bad im making an editor
 	}
 }
