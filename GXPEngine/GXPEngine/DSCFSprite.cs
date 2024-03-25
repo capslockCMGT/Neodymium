@@ -12,6 +12,10 @@ namespace GXPEngine
     /// </summary>
     public class DSCFSprite : Sprite
     {
+        public DSCFSprite(Texture2D texture, bool addCollider) : base(texture, addCollider)
+        {
+        }
+
         public DSCFSprite(string filename, bool keepInCache = true, bool addCollider = false) : base(filename, keepInCache, addCollider)
         {
 

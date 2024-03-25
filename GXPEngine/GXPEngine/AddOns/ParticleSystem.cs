@@ -47,7 +47,7 @@ namespace GXPEngine
                 return magnitude / r / r / r * (pos - affectorPos);
             }
         }
-        internal class Particle : Sprite
+        internal class Particle : DSCFSprite
         {
             public Func<float, float> alphaCurve;
             public ParticleSystem ps;
@@ -83,8 +83,8 @@ namespace GXPEngine
             {
                 lifetime += Time.deltaTime / 1000f;
                 float fac = lifetime / totaltime;
-                if (cam != null)
-                    rotation = Quaternion.LookTowards(cam.position - position, new Vector3(0, 0, 1));
+                //if (cam != null)
+                //    rotation = Quaternion.LookTowards(cam.position - position, new Vector3(0, 0, 1));
                 switch (mode)
                 {
                     case Mode.position:

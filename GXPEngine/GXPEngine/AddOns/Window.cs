@@ -195,7 +195,7 @@ namespace GXPEngine {
         {
             for (int i = depthSortedObjects.Count-1; i > -1; i--)
             {
-				if (!depthSortedObjects[i].obj.registeredDepthSorted) depthSortedObjects.RemoveAt(i);
+				if (!depthSortedObjects[i].obj.registeredDepthSorted || !depthSortedObjects[i].obj.InHierarchy()) depthSortedObjects.RemoveAt(i);
 				else
 				{ 
 					depthSortedObjects[i].pos = ((Camera)camera).GlobalToCameraSpace(depthSortedObjects[i].obj.TransformPoint(0, 0, 0));
