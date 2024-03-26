@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GXPEngine.UI;
 using GXPEngine.Core;
 
 namespace GXPEngine.Editor
@@ -12,15 +13,27 @@ namespace GXPEngine.Editor
         EditorCamera mainCam;
         public Editor() : base(1200, 600, false, true, false, "GXP Editor")
         {
-            RenderMain = false;
-            mainCam = new EditorCamera();
-            mainCam.position = new Vector3(1, 1, 1);
-            AddChild(mainCam);
+            SetupCam();
+            SetupUI();
         }
 
         void Update()
         {
             DrawEditorGrid();
+        }
+
+        void SetupCam()
+        {
+            RenderMain = false;
+            mainCam = new EditorCamera();
+            mainCam.position = new Vector3(1, 1, 3);
+            AddChild(mainCam);
+        }
+
+        void SetupUI()
+        {
+            Panel leftPanel = new Panel(200,600);
+            uiManager.Add(leftPanel);
         }
 
         void DrawEditorGrid()

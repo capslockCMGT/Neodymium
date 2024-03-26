@@ -112,19 +112,19 @@ namespace GXPEngine {
 		{
 			toRegister.registeredDepthSorted = true;
 
-			foreach (GameObjAndPos obj in depthSortedObjects)
+            foreach (GameObjAndPos obj in depthSortedObjects)
 			{
 				if (obj.obj != toRegister) continue;
-                depthSortedObjects.Add(new GameObjAndPos(toRegister, new Vector3()));
 				return;
 			}
-		}
+			depthSortedObjects.Add(new GameObjAndPos(toRegister, new Vector3()));
+        }
 
-		/// <summary>
-		/// Creates a render window in the rectangle given by x,y,width,height.
-		/// The camera determines the focal point, rotation and scale of this window.
-		/// </summary>
-		public Window(int x, int y, int width, int height, GameObject camera, bool clearBackground=true) {
+        /// <summary>
+        /// Creates a render window in the rectangle given by x,y,width,height.
+        /// The camera determines the focal point, rotation and scale of this window.
+        /// </summary>
+        public Window(int x, int y, int width, int height, GameObject camera, bool clearBackground=true) {
 			_windowX = x;
 			_windowY = y;
 			_width = width;
@@ -196,7 +196,7 @@ namespace GXPEngine {
         {
             for (int i = depthSortedObjects.Count-1; i > -1; i--)
             {
-				if (!depthSortedObjects[i].obj.registeredDepthSorted || !depthSortedObjects[i].obj.InHierarchy()) depthSortedObjects.RemoveAt(i);
+				if (!depthSortedObjects[i].obj.registeredDepthSorted || !depthSortedObjects[i].obj.InHierarchy() ) depthSortedObjects.RemoveAt(i);
 				else
 				{ 
 					depthSortedObjects[i].pos = ((Camera)camera).GlobalToCameraSpace(depthSortedObjects[i].obj.TransformPoint(0, 0, 0));
