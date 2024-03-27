@@ -22,25 +22,13 @@ namespace GXPEngine.UI
         public Status status = Status.REST;
         public Button(string path, float x = 0, float y = 0) : base(path, x, y)
         {
-            this.x = x;
-            this.y = y;
-            z= 0;
         }
         public Button(int width, int height, float x = 0, float y = 0) : base(width, height, x, y)
         {
-            this.x = x;
-            this.y = y;
-            Fill(127, 127);
-            Stroke(255, 255);
-            Rect(width / 2, height / 2, width - 1, height - 1);
         }
 
         void CheckStatus()
         {
-            //Vector3 localM = TransformPoint(Input.mouseX, Input.mouseY, 0);
-            Vector3 localM = InverseTransformPoint(Input.mouseX, Input.mouseY, 0);
-            //Vector3 localM = new Vector3(Input.mouseX, Input.mouseY, 0);
-            //Console.WriteLine(Input.mouseX + "\t" + Input.mouseY);
             prevStatus = status;
             if (HitTest(Input.mouseX, Input.mouseY))
             {

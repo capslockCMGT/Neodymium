@@ -14,13 +14,16 @@ namespace GXPEngine.UI
         {
             this.x = x;
             this.y = y;
+            z = 0;
         }
         public Panel(int width, int height, float x = 0, float y = 0) : base(new Bitmap(width, height))
         {
             this.x = x;
             this.y = y;
-            Fill(127, 127);
+            z = 0;
+            ClearTransparent();
             Stroke(255, 255);
+            Fill(127,127, 127, 128);
             Rect(width / 2, height / 2, width - 1, height - 1);
         }
     }

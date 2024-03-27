@@ -17,6 +17,7 @@ namespace GXPEngine.UI
 
         private UpdateDelegate _updateDelegates;
         private Dictionary<GameObject, UpdateDelegate> _updateReferences = new Dictionary<GameObject, UpdateDelegate>();
+        private List<GameObject> _renderReferences = new List<GameObject>();
         public UIManager()
         {
 
@@ -28,7 +29,7 @@ namespace GXPEngine.UI
         public void Render(GLContext glContext)
         {
             glContext.PushMatrix(main.window.matrix);
-            foreach (GameObject panel in _updateReferences.Keys)
+            foreach (GameObject panel in _renderReferences)
             {
                 panel.Render(glContext);
             }
@@ -50,6 +51,10 @@ namespace GXPEngine.UI
                     _updateReferences[gameObject] = onUpdate;
                     _updateDelegates += onUpdate;
                 }
+            }
+            if (!_renderReferences.Contains(gameObject))
+            {
+                _renderReferences.Add(gameObject);
             }
         }
 
