@@ -90,8 +90,9 @@ namespace GXPEngine.UI
                     break;
             }
         }
-        public void Update()
+        public override void Update()
         {
+            base.Update();
             if (enabled)
                 CheckStatus();
 

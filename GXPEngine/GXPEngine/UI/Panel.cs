@@ -26,6 +26,13 @@ namespace GXPEngine.UI
             if(invisible) ClearTransparent();
             else SetupTexture();
         }
+        public virtual void Update()
+        {
+            foreach (Panel child in GetChildren())
+            {
+                child.Update();
+            }
+        }
         protected virtual void SetupTexture()
         {
             ClearTransparent();
