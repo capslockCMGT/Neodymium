@@ -33,14 +33,7 @@ namespace GXPEngine.Editor
         void SetupUI()
         {
             Panel leftPanel = new Panel(300,height);
-            Panel test1 = new Panel(30, 50);
-            Panel test2 = new Panel(270, 250);
-            Panel test3 = new Panel(200, 200);
             uiManager.Add(leftPanel);
-            leftPanel.AddChild(test1);
-            leftPanel.AddChild(test2);
-            leftPanel.AddChild(test3);
-            leftPanel.OrganiseChildrenVertical();
         }
 
         void DrawEditorGrid()

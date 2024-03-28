@@ -47,7 +47,7 @@ namespace GXPEngine.UI
                     break;
                 case CenterMode.Max:
                     vertAlignment = 1;
-                    currentY = height-marginHorizontal;
+                    currentY = height-marginVertical;
                     break;
                 case CenterMode.Center:
                     vertAlignment = 0f;
@@ -97,6 +97,74 @@ namespace GXPEngine.UI
                 foreach (GameObject obj in GetChildren(false))
                 {
                     obj.y += offset;
+                }
+            }
+        }
+
+        public void OrganiseChildrenHorizontal(float marginHorizontal = 5, float marginVertical = 5, CenterMode centerHorizontal = CenterMode.Min, CenterMode centerVertical = CenterMode.Min)
+        {
+            float currentX = marginHorizontal;
+            float horAlignment = 0;
+            _contentHeight = 0;
+            _contentWidth = 0;
+
+            switch (centerHorizontal)
+            {
+                case CenterMode.Min:
+                    horAlignment = 0;
+                    break;
+                case CenterMode.Max:
+                    horAlignment = 1;
+                    currentX = width - marginHorizontal;
+                    break;
+                case CenterMode.Center:
+                    horAlignment = 0f;
+                    currentX = 0;
+                    break;
+            }
+
+            for (int i = 0; i < GetChildCount(); i++)
+            {
+                GameObject obj = GetChildren(false)[(centerVertical == CenterMode.Max ? GetChildCount() - i - 1 : i)];
+                if (!(obj is Sprite)) continue;
+                Sprite sprite = (Sprite)obj;
+                switch (centerVertical)
+                {
+                    case CenterMode.Min:
+                        sprite.SetOrigin(horAlignment * sprite.width, - marginVertical);
+                        break;
+                    case CenterMode.Max:
+                        sprite.SetOrigin(horAlignment * sprite.width, sprite.height + marginVertical - height);
+                        break;
+                    default:
+                        sprite.SetOrigin(horAlignment * sprite.width, sprite.height * .5f);
+                        sprite.y = height * .5f;
+                        break;
+                }
+                sprite.x = currentX;
+                _contentHeight = Mathf.Max(sprite.height, _contentHeight);
+                _contentWidth += sprite.width + marginHorizontal;
+
+                switch (centerHorizontal)
+                {
+                    case CenterMode.Min:
+                        currentX += marginHorizontal + sprite.width;
+                        break;
+                    case CenterMode.Max:
+                        currentX -= marginHorizontal + sprite.width;
+                        break;
+                    default:
+                        currentX += marginHorizontal + sprite.width;
+                        break;
+                }
+            }
+
+            if (centerHorizontal == CenterMode.Center)
+            {
+                float offset = (width - _contentWidth) * .5f;
+                foreach (GameObject obj in GetChildren(false))
+                {
+                    obj.x += offset;
                 }
             }
         }
