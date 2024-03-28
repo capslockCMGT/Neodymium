@@ -32,7 +32,7 @@ namespace GXPEngine.Editor
 
         void SetupUI()
         {
-            Panel leftPanel = new Panel(200,600);
+            Panel leftPanel = new Panel(300,height);
             uiManager.Add(leftPanel);
         }
 
