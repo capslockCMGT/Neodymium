@@ -18,12 +18,13 @@ namespace GXPEngine.UI
             this.y = y;
             z = 0;
         }
-        public Panel(int width, int height, float x = 0, float y = 0) : base(new Bitmap(width, height))
+        public Panel(int width, int height, float x = 0, float y = 0, bool invisible = false) : base(new Bitmap(width, height))
         {
             this.x = x;
             this.y = y;
             z = 0;
-            SetupTexture();
+            if(invisible) ClearTransparent();
+            else SetupTexture();
         }
         protected virtual void SetupTexture()
         {

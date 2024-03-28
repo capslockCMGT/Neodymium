@@ -11,8 +11,8 @@ namespace GXPEngine.Editor
     public class Editor : Game
     {
         EditorCamera mainCam;
-        public Editor() : base(1200, 600, false, true, false, "GXP Editor")
-        {
+        public Editor() : base(1200, 600, false, true, true, "GXP Editor")
+        { 
             SetupCam();
             SetupUI();
         }
@@ -33,7 +33,15 @@ namespace GXPEngine.Editor
         void SetupUI()
         {
             Panel leftPanel = new Panel(300,height);
+            Panel buttonHolder = new Panel(1, 1, invisible: true);
+            buttonHolder.scale = 3;
+            buttonHolder.AddChild(new TexturedButton("editor/buttons/AddObject.png", "editor/buttons/AddObjectHover.png", "editor/buttons/AddObjectClick.png"));
+            buttonHolder.AddChild(new TexturedButton("editor/buttons/TranslateObject.png", "editor/buttons/TranslateObjectHover.png", "editor/buttons/TranslateObjectClick.png"));
+            buttonHolder.AddChild(new TexturedButton("editor/buttons/RotateObject.png", "editor/buttons/RotateObjectHover.png", "editor/buttons/RotateObjectClick.png"));
+            buttonHolder.AddChild(new TexturedButton("editor/buttons/ScaleObject.png", "editor/buttons/ScaleObjectHover.png", "editor/buttons/ScaleObjectClick.png"));
+            buttonHolder.OrganiseChildrenHorizontal();
             uiManager.Add(leftPanel);
+            leftPanel.AddChild(buttonHolder);
         }
 
         void DrawEditorGrid()

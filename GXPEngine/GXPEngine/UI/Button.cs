@@ -102,6 +102,13 @@ namespace GXPEngine.UI
             color = 0xff00ff00;
             OnClick?.Invoke();
         }
+
+        public virtual void TriggerRelease()
+        {
+            color = 0xffffffff;
+            OnRelease?.Invoke();
+
+        }
         public virtual void TriggerHover()
         {
             color = 0xffff0000;
@@ -114,16 +121,10 @@ namespace GXPEngine.UI
             OnUnhover?.Invoke();
 
         }
-        public virtual void TriggerRelease()
-        {
-            color = 0xffffffff;
-            OnRelease?.Invoke();
-
-        }
 
 
-        public virtual void Clicked() { }
-        public virtual void Hovered() { }
-        public virtual void Rest() { }
+        protected virtual void Clicked() { }
+        protected virtual void Hovered() { }
+        protected virtual void Rest() { }
     }
 }
