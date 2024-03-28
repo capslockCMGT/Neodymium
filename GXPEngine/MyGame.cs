@@ -18,8 +18,10 @@ public class MyGame : Game {
 	bool showCursor;
 	Vector3 dir = new Vector3(1,0,0);
 	Button butt;
+	Panel leftPanel;
 
-	Vector3 gizPos;
+
+    Vector3 gizPos;
 	
 	int framesRotatedCube= 0;
 	Quaternion cubeRotate = Quaternion.FromEulers(new Vector3(.01f, 0, 0));
@@ -90,7 +92,9 @@ public class MyGame : Game {
 		particles = new ParticleSystem("amongus.png", 0, 0, 0, ParticleSystem.EmitterType.rect, ParticleSystem.Mode.velocity, MyGame.main, cam);
 		particles.lifetime = 1;
 
-		butt = new Button("circle.png", 0, 0);
+        leftPanel = new Panel(200,100, 100, 100);
+        uiManager.Add(leftPanel);
+        butt = new Button("circle.png", 0, 0);
 		//butt.SetOrigin(20, 20);
 		//butt.scale = 1f;
 		butt.SetOrigin(butt.width * .5f, butt.height * .5f);
@@ -104,8 +108,6 @@ public class MyGame : Game {
 			obj.scaleXYZ = new Vector3(10f/width, 10f/width, 1);
 			AddChild(obj);
         }
-        Panel leftPanel = new Panel(200, 600);
-        uiManager.Add(leftPanel);
     }
 
 	// For every game object, Update is called every frame, by the engine:
