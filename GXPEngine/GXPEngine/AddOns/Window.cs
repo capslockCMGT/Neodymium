@@ -232,9 +232,11 @@ namespace GXPEngine {
             SetRenderRange();
             main.SetViewport(_windowX, _windowY, _width, _height, false);
             GL.Clear(0x100);
+			GL.Disable(0xb71);
             main.uiManager.Render(glContext);
             main.SetViewport((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height);
             glContext.PopMatrix();
+			GL.Enable(0xb71);
         }
 
 		void SetRenderRange() {
