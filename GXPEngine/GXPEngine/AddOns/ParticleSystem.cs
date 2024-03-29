@@ -47,7 +47,7 @@ namespace GXPEngine
                 return magnitude / r / r / r * (pos - affectorPos);
             }
         }
-        internal class Particle : DSCFSprite
+        private class Particle : DSCFSprite
         {
             public Func<float, float> alphaCurve;
             public ParticleSystem ps;

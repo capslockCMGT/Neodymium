@@ -26,7 +26,6 @@ namespace GXPEngine.UI
         }
         protected override void Hovered()
         {
-            Console.WriteLine("hovered");
             base.Hovered();
             if (Hovering != null)
             _texture = Hovering;

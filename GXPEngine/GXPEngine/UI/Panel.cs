@@ -11,6 +11,10 @@ namespace GXPEngine.UI
     public class Panel : EasyDraw
     {
         float _contentHeight;
+        public float ContentHeight
+        {
+            get { return _contentHeight; }
+        }
         float _contentWidth;
         public Panel(string path, float x = 0, float y = 0) : base(path)
         {
@@ -33,11 +37,19 @@ namespace GXPEngine.UI
                 child.Update();
             }
         }
+        public Panel ResizedToContent(int marginHorizontal = 5, int marginVertical = 5)
+        {
+            List<GameObject> kiddos = GetChildren();
+            Panel res = new Panel( (int)_contentWidth + marginHorizontal, (int)_contentHeight + marginVertical);
+            foreach(GameObject child in kiddos)
+                res.AddChild(child);
+            return res;
+        }
         protected virtual void SetupTexture()
         {
             ClearTransparent();
             Stroke(255, 255);
-            Fill(127, 127, 127, 127);
+            Fill(127, 127, 127, 63);
             Rect(width / 2, height / 2, width - 1, height - 1);
         }
 
@@ -83,7 +95,7 @@ namespace GXPEngine.UI
                 }
                 sprite.y = currentY;
                 _contentHeight += sprite.height+marginVertical;
-                _contentWidth = Mathf.Max(sprite.width, _contentWidth);
+                _contentWidth = Mathf.Max(sprite.width+marginHorizontal, _contentWidth);
 
                 switch (centerVertical)
                 {
@@ -150,7 +162,7 @@ namespace GXPEngine.UI
                         break;
                 }
                 sprite.x = currentX;
-                _contentHeight = Mathf.Max(sprite.height, _contentHeight);
+                _contentHeight = Mathf.Max(sprite.height+marginVertical, _contentHeight);
                 _contentWidth += sprite.width + marginHorizontal;
 
                 switch (centerHorizontal)

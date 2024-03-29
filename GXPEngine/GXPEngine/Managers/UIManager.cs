@@ -66,6 +66,10 @@ namespace GXPEngine.UI
                 if (onUpdate != null) _updateDelegates -= onUpdate;
                 _updateReferences.Remove(gameObject);
             }
+            if(_renderReferences.Contains(gameObject))
+            {
+                _renderReferences.Remove(gameObject);
+            }
         }
     }
 }

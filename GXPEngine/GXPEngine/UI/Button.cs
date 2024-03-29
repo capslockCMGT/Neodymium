@@ -23,7 +23,7 @@ namespace GXPEngine.UI
         public Button(string path, float x = 0, float y = 0) : base(path, x, y)
         {
         }
-        public Button(int width, int height, float x = 0, float y = 0) : base(width, height, x, y)
+        public Button(int width, int height, float x = 0, float y = 0, bool invisible = false) : base(width, height, x, y, invisible)
         {
         }
 
@@ -100,25 +100,25 @@ namespace GXPEngine.UI
         }
         public virtual void TriggerClick()
         {
-            color = 0xff00ff00;
+            //color = 0xff00ff00;
             OnClick?.Invoke();
         }
 
         public virtual void TriggerRelease()
         {
-            color = 0xffffffff;
+            //color = 0xffffffff;
             OnRelease?.Invoke();
 
         }
         public virtual void TriggerHover()
         {
-            color = 0xffff0000;
+            //color = 0xffff0000;
             OnHover?.Invoke();
 
         }
         public virtual void TriggerUnhover()
         {
-            color = 0xffffffff;
+            //color = 0xffffffff;
             OnUnhover?.Invoke();
 
         }

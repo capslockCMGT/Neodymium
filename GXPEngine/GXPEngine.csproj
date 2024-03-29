@@ -61,6 +61,8 @@
     <Compile Include="GXPEngine\UI\Button.cs" />
     <Compile Include="GXPEngine\UI\Panel.cs" />
     <Compile Include="GXPEngine\Managers\UIManager.cs" />
+    <Compile Include="GXPEngine\UI\TextButton.cs" />
+    <Compile Include="GXPEngine\UI\TextPanel.cs" />
     <Compile Include="GXPEngine\UI\TexturedButton.cs" />
     <Compile Include="MyGame.cs" />
     <Compile Include="GXPEngine\Core\Canvas.cs" />
