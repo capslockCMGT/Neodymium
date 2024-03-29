@@ -9,7 +9,7 @@ namespace GXPEngine.Editor
     public class BoxProxy : Box
     {
         public List<CustomProperty> properties = new List<CustomProperty>();
-        public string ObjectType;
+        public Type ObjectType;
         public BoxProxy() : base("editor/defaultCubeTex.png")
         {
 

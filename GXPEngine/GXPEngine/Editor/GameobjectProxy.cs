@@ -7,18 +7,22 @@ using GXPEngine.Core;
 
 namespace GXPEngine.Editor
 {
-    public class GameobjectProxy : GameObject
+    public class GameobjectProxy : DSCFSprite
     {
         public List<CustomProperty> properties = new List<CustomProperty>();
-        public string ObjectType;
+        public Type ObjectType;
         float radius = .25f;
-        public GameobjectProxy()
+        public GameobjectProxy() : base("editor/ProxyLogo")
         {
+            SetOrigin(width * .5f,height * .5f);
         }
 
         protected override void RenderSelf(GLContext glContext)
         {
-            Gizmos.DrawPlus(Vector3.zero, radius, this, 0xFFFFFFFF);
+            Vector3 baseScale = scaleXYZ;
+            scaleXYZ *= .1f/game.width;
+            base.RenderSelf(glContext);
+            scaleXYZ = baseScale;
         }
         protected override Collider createCollider()
         {
