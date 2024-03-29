@@ -54,8 +54,9 @@ namespace GXPEngine.Editor
             }
             if (inquestion == null) return;
             Panel constructorMenu = new Panel(1, 1);
-            constructorMenu.AddChild(new TextPanel(300, 15, "Pick constructor for "+inquestion.Name+":", 10, false));
+            constructorMenu.AddChild(new TextPanel(600, 15, "Pick constructor for "+inquestion.Name+":", 10, false));
             ConstructorInfo[] constructors = inquestion.GetConstructors();
+            Console.WriteLine(inquestion.Name);
             foreach(ConstructorInfo consInfo in constructors)
             {
                 string constructorText = "(";
@@ -64,11 +65,18 @@ namespace GXPEngine.Editor
                 {
                     constructorText += paramInfo.ParameterType.Name+" ";
                     constructorText += paramInfo.Name;
-                    if(paramInfo.HasDefaultValue) constructorText += " = "+paramInfo.DefaultValue.ToString();
+                    Console.WriteLine(paramInfo.Name);
+                    if (paramInfo.HasDefaultValue)
+                    {
+                        object value = paramInfo.DefaultValue;
+                        if (value != null)
+                            constructorText += " = " + value.ToString();
+                        else constructorText += " = null";
+                    }
                     constructorText += ", ";
                 }
                 if(constructorText.Length > 1) constructorText = constructorText.Substring(0, constructorText.Length - 2);
-                constructorMenu.AddChild(new TextButton(300, 14, constructorText+")", 7));
+                constructorMenu.AddChild(new TextButton(600, 14, constructorText+")", 7));
             }
             constructorMenu.OrganiseChildrenVertical();
             SetActiveSideMenu(constructorMenu.ResizedToContent());
