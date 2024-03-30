@@ -31,6 +31,13 @@ namespace GXPEngine.UI
             Fill(255);
             Text(txt, 3, height * .5f);
         }
+        public override void TriggerRelease()
+        {
+            base.TriggerUnhover();
+            SetupTexture();
+            Fill(255);
+            Text(txt, 3, height * .5f);
+        }
         public override void TriggerClick()
         {
             base.TriggerClick();
