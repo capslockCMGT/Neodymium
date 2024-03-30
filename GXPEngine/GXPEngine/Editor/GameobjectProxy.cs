@@ -22,6 +22,8 @@ namespace GXPEngine.Editor
         {
             Vector3 baseScale = scaleXYZ;
             scaleXYZ = baseScale*(16.0f/game.width);
+            if (((Editor)game).selectedGameobject == this)
+                slop.z = .1f;
             base.RenderDepthSorted(glContext, slop);
             scaleXYZ = baseScale;
         }

@@ -13,7 +13,7 @@ namespace GXPEngine.Editor
     {
         EditorCamera mainCam;
         GameObject mainGameObject;
-        GameObject selectedGameobject;
+        public GameObject selectedGameobject;
 
         GameObject activeSideMenu;
         Panel selectedGameObjectMenu;
@@ -35,6 +35,11 @@ namespace GXPEngine.Editor
         void Update()
         {
             DrawEditorGrid();
+            if(Input.GetMouseButtonDown(0))
+            {
+                Vector3 start = mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0);
+                Vector3 end = mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 1);
+            }
         }
 
 
