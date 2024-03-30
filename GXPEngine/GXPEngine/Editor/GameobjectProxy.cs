@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using GXPEngine.Core;
@@ -9,19 +10,19 @@ namespace GXPEngine.Editor
 {
     public class GameobjectProxy : DSCFSprite
     {
-        public List<CustomProperty> properties = new List<CustomProperty>();
+        public ConstructorInfo Constructor;
         public Type ObjectType;
         float radius = .25f;
-        public GameobjectProxy() : base("editor/ProxyLogo")
+        public GameobjectProxy() : base("editor/ProxyLogo.png")
         {
             SetOrigin(width * .5f,height * .5f);
         }
 
-        protected override void RenderSelf(GLContext glContext)
+        public override void RenderDepthSorted(GLContext glContext, Vector3 slop)
         {
             Vector3 baseScale = scaleXYZ;
-            scaleXYZ *= .1f/game.width;
-            base.RenderSelf(glContext);
+            scaleXYZ = baseScale*(16.0f/game.width);
+            base.RenderDepthSorted(glContext, slop);
             scaleXYZ = baseScale;
         }
         protected override Collider createCollider()

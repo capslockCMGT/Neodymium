@@ -12,24 +12,31 @@ namespace GXPEngine.Editor
     public class Editor : Game
     {
         EditorCamera mainCam;
+        GameObject mainGameObject;
+        GameObject selectedGameobject;
+
         GameObject activeSideMenu;
-        Type[] gameObjectTypes;
-        Panel AddObjectMenu;
-        Panel ObjectConstructorMenu;
+        Panel selectedGameObjectMenu;
+        
         TexturedButton AddObjectButton;
+        Panel AddObjectMenu;
+        Type[] gameObjectTypes;
+
+        Panel ObjectConstructorMenu;
+        ConstructorInfo[] constructors;
 
         public Editor() : base(1200, 600, false, true, true, "GXP Editor")
         { 
             SetupCam();
             SetupMainUI();
             SetupAddObjectMenu();
-            SetActiveSideMenu(AddObjectMenu);
         }
 
         void Update()
         {
             DrawEditorGrid();
         }
+
 
         void SetActiveSideMenu(GameObject menuInQuestion)
         {
@@ -39,33 +46,84 @@ namespace GXPEngine.Editor
                 uiManager.Remove(activeSideMenu);
                 activeSideMenu = menuInQuestion;
             }
+            if (activeSideMenu == null) return; 
             menuInQuestion.x = 310;
             menuInQuestion.y = 5;
             uiManager.Add(menuInQuestion);
         }
 
-        void TypeConstructorMenu()
+        void AddGameObject()
         {
-            Type inquestion = null;
-            for (int i = 1; i < AddObjectMenu.GetChildCount(); i++)
+            SetActiveSideMenu(null);
+            ConstructorInfo inquestion = null;
+            int selected = 0;
+            for (int i = 0; i < ObjectConstructorMenu.GetChildCount(); i++)
             {
-                if (AddObjectMenu.GetChildren(false)[i] is TextButton)
-                    if (((TextButton)AddObjectMenu.GetChildren(false)[i]).status == Button.Status.CLICKED) inquestion = gameObjectTypes[i-1];
+                if (!(ObjectConstructorMenu.GetChildren(false)[i] is TextButton)) continue;
+                if (((TextButton)ObjectConstructorMenu.GetChildren(false)[i]).status == Button.Status.CLICKED)
+                    inquestion = constructors[selected];
+                selected++;
             }
             if (inquestion == null) return;
-            Panel constructorMenu = new Panel(1, 1);
-            constructorMenu.AddChild(new TextPanel(600, 15, "Pick constructor for "+inquestion.Name+":", 10, false));
-            ConstructorInfo[] constructors = inquestion.GetConstructors();
-            Console.WriteLine(inquestion.Name);
+
+            Type gameObjectType = inquestion.DeclaringType;
+            if (gameObjectType.IsSubclassOf(typeof(Box)) || gameObjectType == typeof(Box))
+            {
+                BoxProxy newObject = new BoxProxy();
+                newObject.Constructor = inquestion;
+                newObject.ObjectType = gameObjectType;
+                selectedGameobject = newObject;
+                if(mainGameObject == null)
+                {
+                    mainGameObject = newObject;
+                    AddChild(newObject);
+                }
+                Console.WriteLine("added box");
+            }
+            else
+            {
+                GameobjectProxy newObject = new GameobjectProxy();
+                newObject.Constructor = inquestion;
+                newObject.ObjectType = gameObjectType;
+                selectedGameobject = newObject;
+                if (mainGameObject == null)
+                {
+                    mainGameObject = newObject;
+                    AddChild(newObject);
+                }
+                Console.WriteLine("added object");
+            }
+        }
+
+        void CreateTypeConstructorMenu()
+        {
+            Type inquestion = null;
+            int selected = 0;
+            for (int i = 0; i < AddObjectMenu.GetChildCount(); i++)
+            {
+                if (!(AddObjectMenu.GetChildren(false)[i] is TextButton)) continue;
+                selected++;
+                if (((TextButton)AddObjectMenu.GetChildren(false)[selected]).status == Button.Status.CLICKED) 
+                    inquestion = gameObjectTypes[i-1];
+            }
+            if (inquestion == null) return;
+
+            ObjectConstructorMenu = new Panel(1, 1);
+            ObjectConstructorMenu.AddChild(new TextPanel(width-630, 15, "Pick constructor for "+inquestion.Name+":", 10, false));
+            constructors = inquestion.GetConstructors();
+
             foreach(ConstructorInfo consInfo in constructors)
             {
                 string constructorText = "(";
                 ParameterInfo[] parameters = consInfo.GetParameters();
+                bool allowConstructor = true;
                 foreach(ParameterInfo paramInfo in parameters)
                 {
-                    constructorText += paramInfo.ParameterType.Name+" ";
+                    Type paramtype = paramInfo.ParameterType;
+                    //whitelisted types for the constructor (cannot input a straight bitmap in the editor!)
+                    allowConstructor &= paramInfo.HasDefaultValue || (paramtype == typeof(string)) || (paramtype == typeof(float)) || (paramtype == typeof(int)) || (paramtype == typeof(uint)) || (paramtype == typeof(bool));
+                    constructorText += paramtype.Name+" ";
                     constructorText += paramInfo.Name;
-                    Console.WriteLine(paramInfo.Name);
                     if (paramInfo.HasDefaultValue)
                     {
                         object value = paramInfo.DefaultValue;
@@ -76,12 +134,27 @@ namespace GXPEngine.Editor
                     constructorText += ", ";
                 }
                 if(constructorText.Length > 1) constructorText = constructorText.Substring(0, constructorText.Length - 2);
-                constructorMenu.AddChild(new TextButton(600, 14, constructorText+")", 7));
+                Panel constructorPanel = null;
+                if (allowConstructor)
+                {
+                    constructorPanel = new TextButton(width - 630, 14, constructorText + ")", 7);
+                    ((TextButton)constructorPanel).OnClick += AddGameObject;
+                }
+                else
+                { 
+                    constructorPanel = new TextPanel(width - 630, 14, constructorText + ") (disabled, constructor contains invalid types)", 7) { alpha = .4f };
+                    constructors = constructors.Where(testc => testc != consInfo).ToArray();
+                }
+                ObjectConstructorMenu.AddChild(constructorPanel);
             }
-            constructorMenu.OrganiseChildrenVertical();
-            SetActiveSideMenu(constructorMenu.ResizedToContent());
+            ObjectConstructorMenu.OrganiseChildrenVertical();
+            ObjectConstructorMenu = ObjectConstructorMenu.ResizedToContent();
+            SetActiveSideMenu(ObjectConstructorMenu);
         }
-
+        void SetAddObjectMenuActive()
+        {
+            SetActiveSideMenu(AddObjectMenu);
+        }
         void SetupAddObjectMenu()
         {
             var type = typeof(GameObject);
@@ -94,7 +167,7 @@ namespace GXPEngine.Editor
             {
                 TextButton txtButton = new TextButton(150, 15, typ.Name, 10);
                 AddObjectMenu.AddChild(txtButton);
-                txtButton.OnClick += TypeConstructorMenu;
+                txtButton.OnClick += CreateTypeConstructorMenu;
                 //Console.WriteLine(typ);
             }
             AddObjectMenu.OrganiseChildrenVertical();
@@ -114,14 +187,20 @@ namespace GXPEngine.Editor
             Panel leftPanel = new Panel(300,height-10, 5, 5);
             Panel buttonHolder = new Panel(1, 1, invisible: true);
             buttonHolder.scale = 3;
+
             AddObjectButton = new TexturedButton("editor/buttons/AddObject.png", "editor/buttons/AddObjectHover.png", "editor/buttons/AddObjectClick.png");
             buttonHolder.AddChild(AddObjectButton);
+            AddObjectButton.OnClick += SetAddObjectMenuActive;
+
             buttonHolder.AddChild(new TexturedButton("editor/buttons/TranslateObject.png", "editor/buttons/TranslateObjectHover.png", "editor/buttons/TranslateObjectClick.png"));
             buttonHolder.AddChild(new TexturedButton("editor/buttons/RotateObject.png", "editor/buttons/RotateObjectHover.png", "editor/buttons/RotateObjectClick.png"));
             buttonHolder.AddChild(new TexturedButton("editor/buttons/ScaleObject.png", "editor/buttons/ScaleObjectHover.png", "editor/buttons/ScaleObjectClick.png"));
             buttonHolder.OrganiseChildrenHorizontal();
             uiManager.Add(leftPanel);
             leftPanel.AddChild(buttonHolder);
+
+            selectedGameObjectMenu = new Panel(300, height - 10, width - 305, 5);
+            uiManager.Add(selectedGameObjectMenu);
         }
 
         void DrawEditorGrid()
@@ -131,6 +210,7 @@ namespace GXPEngine.Editor
             Gizmos.DrawLine(0, 0, 0, 0, 0, 1f, this, 0xFF0000FF, 5);
             for (int i = 0; i < 22; i++)
             {
+                //dw abt it
                 uint col = i == 5 || i == 16 ? 0xFFFFFFFF : 0x77FFFFFF;
                 if (i < 11) Gizmos.DrawLine(-6, 0, i - 5, 6, 0, i - 5, null, col, 1);
                 else Gizmos.DrawLine(i - 16, 0, -6, i - 16, 0, 6, null, col, 1);
