@@ -3,14 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 
 namespace GXPEngine.UI
 {
     public class Panel : EasyDraw
     {
         float _contentHeight;
+        public bool isMask;
+        float[] _mask;
         public float ContentHeight
         {
             get { return _contentHeight; }
@@ -21,6 +25,31 @@ namespace GXPEngine.UI
             this.x = x;
             this.y = y;
             z = 0;
+        }
+        /// <summary>
+        /// Work in progress
+        /// </summary>
+        /// <returns></returns>
+        public Vector2[] GetMask()
+        {
+            Vector2[] ret = GetExtents2D();
+            if (parent == null)
+            {
+                alpha= 1.0f;
+                return ret;
+            }
+                //return parent.GetMask(ret.x, ret.y, ret.z);
+            return ret;
+        }
+        internal override float[] GetArea()
+        {
+            
+            return new float[8] {
+                _bounds.left, _bounds.top,
+                _bounds.right, _bounds.top,
+                _bounds.right, _bounds.bottom,
+                _bounds.left, _bounds.bottom
+            };
         }
         public Panel(int width, int height, float x = 0, float y = 0, bool invisible = false) : base(new Bitmap(width, height))
         {
@@ -53,7 +82,7 @@ namespace GXPEngine.UI
             Rect(width / 2, height / 2, width - 1, height - 1);
         }
 
-        public void OrganiseChildrenVertical(float marginVertical = 5, float marginHorizontal = 5, CenterMode centerVertical = CenterMode.Min, CenterMode centerHorizontal = CenterMode.Min)
+        public virtual void OrganiseChildrenVertical(float marginVertical = 5, float marginHorizontal = 5, CenterMode centerVertical = CenterMode.Min, CenterMode centerHorizontal = CenterMode.Min)
         {
             float currentY = marginVertical;
             float vertAlignment = 0;
