@@ -84,7 +84,7 @@ public class MyGame : Game {
         AddChild(test);
 		AddChild(test2);
 
-		ModelRenderer sloppersludge = new ModelRenderer("test models/monki.obj", "test models/suzanne.png");
+		ModelRenderer sloppersludge = new ModelRenderer("test models/baketest.obj", "test models/bake.png");
 		AddChild(sloppersludge);
 		sloppersludge.x = 2;
 		sloppersludge.scale = .2f;
@@ -227,8 +227,8 @@ public class MyGame : Game {
     }
     static void Main()                          // Main() is the first method that's called when the program is run
 	{
-		//new MyGame().Start();					// Create a "MyGame" and start it
-		new Editor().Start();                   
+		new MyGame().Start();					// Create a "MyGame" and start it
+		//new Editor().Start();                   
 		//too bad im making an editor
 	}
 }
