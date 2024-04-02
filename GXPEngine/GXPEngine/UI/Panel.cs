@@ -12,7 +12,7 @@ namespace GXPEngine.UI
 {
     public class Panel : EasyDraw
     {
-        float _contentHeight;
+        protected float _contentHeight;
         public bool isMask;
         float[] _mask;
         public float ContentHeight
@@ -55,6 +55,8 @@ namespace GXPEngine.UI
         {
             this.x = x;
             this.y = y;
+            _contentWidth= width;
+            _contentHeight= height;
             z = 0;
             if(invisible) ClearTransparent();
             else SetupTexture();
@@ -68,11 +70,15 @@ namespace GXPEngine.UI
         }
         public Panel ResizedToContent(int marginHorizontal = 5, int marginVertical = 5)
         {
-            List<GameObject> kiddos = GetChildren();
-            Panel res = new Panel( (int)_contentWidth + marginHorizontal, (int)_contentHeight + marginVertical);
-            foreach(GameObject child in kiddos)
-                res.AddChild(child);
-            return res;
+            Panel sub = new Panel((int)_contentWidth + marginHorizontal, (int)_contentHeight + marginVertical);
+            initializeFromTexture(sub.texture);
+            return this;
+        }
+        public void Resize(int width, int height)
+        {
+            Panel sub = new Panel(width, height);
+            initializeFromTexture(sub.texture.Clone());
+            //sub.LateDestroy();
         }
         protected virtual void SetupTexture()
         {

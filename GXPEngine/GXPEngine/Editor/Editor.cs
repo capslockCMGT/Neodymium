@@ -7,6 +7,7 @@ using System.Reflection;
 using GXPEngine.UI;
 using GXPEngine.Core;
 using GXPEngine.GXPEngine.UI;
+using GXPEngine.GXPEngine.Editor;
 
 namespace GXPEngine.Editor
 {
@@ -18,7 +19,8 @@ namespace GXPEngine.Editor
 
         GameObject activeSideMenu;
         SliderPanel selectedGameObjectMenu;
-        
+        HierarchyItem editorDisplay;
+
         TexturedButton AddObjectButton;
         Panel AddObjectMenu;
         Type[] gameObjectTypes;
@@ -164,20 +166,29 @@ namespace GXPEngine.Editor
             SetActiveSideMenu(AddObjectMenu);
         }
 
+        void CreateHierarchy()
+        {
+            Panel targetWindow = selectedGameObjectMenu;
+            editorDisplay = new HierarchyItem(this,0,targetWindow.width - 30, 5,5);
+            editorDisplay.ReadChildren();
+            targetWindow.AddChild(editorDisplay);
+            //DisplayObject(this,new Vector2(0,0),display,ref items, ref displace);
+            //display.OrganiseChildrenVertical();
+        }
         void UpdateHierarchy()
         {
-            Panel display = selectedGameObjectMenu;
-            int items = 0;
-            int displace = 0;
-            DisplayObject(this,new Vector2(0,0),display,ref items, ref displace);
-            display.OrganiseChildrenVertical();
+            editorDisplay.UpdateChildren();
+            editorDisplay.UpdateDisplay();
         }
         void DisplayObject(GameObject go, Vector2 pos, Panel display, ref int items, ref int displace)
         {
+            Panel childDisplay = new Panel(display.width - (int)(pos.x) - 30, 15, 25);
             if (!gameObjectReferences.ContainsKey(go))
             {
                 TextButton tb = new TextButton(display.width - (int)(pos.x) - 30, 15, go.GetType().Name, 10);
                 display.AddChild(tb);
+                display.AddChild(childDisplay);
+
                 tb.x = pos.x;
                 tb.y = pos.y;
                 gameObjectReferences.Add(go, tb);
@@ -195,7 +206,7 @@ namespace GXPEngine.Editor
                 GameObject obj = kiddos[i];
                 //Vector2 newPos = new Vector2(pos.x + 15, display.y + items * 15);
                 Vector2 newPos = new Vector2(pos.x + 15, 0);
-                DisplayObject(obj,newPos, display, ref items, ref displace);
+                DisplayObject(obj,newPos, childDisplay, ref items, ref displace);
             }
         }
         void SetupAddObjectMenu()
@@ -249,7 +260,7 @@ namespace GXPEngine.Editor
             //selectedGameObjectMenu.AddElement(new Panel(270, 300));
             selectedGameObjectMenu.OrganiseChildrenVertical();
             uiManager.Add(selectedGameObjectMenu);
-            UpdateHierarchy();
+            CreateHierarchy();
         }
 
         void DrawEditorGrid()

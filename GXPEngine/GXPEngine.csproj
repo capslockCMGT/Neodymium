@@ -53,6 +53,7 @@
     <Compile Include="GXPEngine\Core\Vector3.cs" />
     <Compile Include="GXPEngine\DSCFSprite.cs" />
     <Compile Include="GXPEngine\Editor\BoxProxy.cs" />
+    <Compile Include="GXPEngine\Editor\HierarchyItem.cs" />
     <Compile Include="GXPEngine\Editor\CustomProperty.cs" />
     <Compile Include="GXPEngine\Editor\Editor.cs" />
     <Compile Include="GXPEngine\Editor\EditorCamera.cs" />
