@@ -203,7 +203,9 @@ namespace GXPEngine.OpenGL {
 		[DllImport("lib/glfw.dll")]
 		public static extern void glfwSetMouseButtonCallback(GLFWMouseButtonCallback callback);
 		[DllImport("lib/glfw.dll")]
-		public static extern void glfwEnable(int property);
+        public static extern void glfwGetMouseWheel(out int x);
+        [DllImport("lib/glfw.dll")]
+        public static extern void glfwEnable(int property);
 		[DllImport("lib/glfw.dll")]
 		public static extern void glfwDisable(int property);
 	}

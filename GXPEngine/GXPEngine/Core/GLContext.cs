@@ -109,6 +109,12 @@ namespace GXPEngine.Core {
 				buttons[_button] = press;
 			});
 
+			/*GL.glfwSetMouseWheelCallback(
+				(int _x) =>
+				{
+
+			});*/
+
 			GL.glfwSetWindowSizeCallback((int newWidth, int newHeight) => {
 				GL.Viewport(0, 0, newWidth, newHeight);	
 				GL.Enable(GL.MULTISAMPLE);	
@@ -362,6 +368,10 @@ namespace GXPEngine.Core {
 			GL.glfwGetMousePos(out mouseX, out mouseY);
 			mouseX = (int)(mouseX / _realToLogicWidthRatio);
 			mouseY = (int)(mouseY / _realToLogicHeightRatio);
+			//int xoff;
+			//GL.glfwGetMouseWheel(out xoff);
+			//Console.WriteLine(xoff);
+			//try this again later
 		}
 		
 		public int currentFps {
