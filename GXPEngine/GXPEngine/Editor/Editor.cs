@@ -37,7 +37,7 @@ namespace GXPEngine.Editor
 
         void Update()
         {
-            DrawEditorGrid();
+            DrawEditorGizmos();
             if(Input.GetMouseButtonDown(0))
             {
                 Vector3 start = mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0);
@@ -76,32 +76,16 @@ namespace GXPEngine.Editor
             if (inquestion == null) return;
 
             Type gameObjectType = inquestion.DeclaringType;
-            if (gameObjectType.IsSubclassOf(typeof(Box)) || gameObjectType == typeof(Box))
+            EditorGameObject newObject = new EditorGameObject();
+            newObject.Constructor = inquestion;
+            newObject.ObjectType = gameObjectType;
+            selectedGameobject = newObject;
+            if (mainGameObject == null)
             {
-                BoxProxy newObject = new BoxProxy();
-                newObject.Constructor = inquestion;
-                newObject.ObjectType = gameObjectType;
-                selectedGameobject = newObject;
-                if(mainGameObject == null)
-                {
-                    mainGameObject = newObject;
-                    AddChild(newObject);
-                }
-                Console.WriteLine("added box");
+                mainGameObject = newObject;
+                AddChild(newObject);
             }
-            else
-            {
-                GameobjectProxy newObject = new GameobjectProxy();
-                newObject.Constructor = inquestion;
-                newObject.ObjectType = gameObjectType;
-                selectedGameobject = newObject;
-                if (mainGameObject == null)
-                {
-                    mainGameObject = newObject;
-                    AddChild(newObject);
-                }
-                Console.WriteLine("added object");
-            }
+            Console.WriteLine("added object");
         }
 
         void CreateTypeConstructorMenu()
@@ -169,12 +153,17 @@ namespace GXPEngine.Editor
         {
             Panel targetWindow = selectedGameObjectMenu;
             //change 'this' in the line below to whatever the main gameobject is
-            editorDisplay = new HierarchyItem(this,0,targetWindow.width - 30, 5,5);
+            editorDisplay = new HierarchyItem(mainGameObject,0,targetWindow.width - 30, 5,5);
             editorDisplay.ReadChildren();
             targetWindow.AddChild(editorDisplay);
         }
         void UpdateHierarchy()
         {
+            if(editorDisplay == null)
+            {
+                if (mainGameObject == null) return;
+                CreateHierarchy();
+            }
             editorDisplay.UpdateChildren();
             editorDisplay.UpdateDisplay();
         }
@@ -227,12 +216,9 @@ namespace GXPEngine.Editor
             selectedGameObjectMenu.SetSliderBar(20, height - 10);
             selectedGameObjectMenu.OrganiseChildrenVertical();
             uiManager.Add(selectedGameObjectMenu);
-
-            //also see UpdateHierarchy() in the Update()
-            CreateHierarchy();
         }
 
-        void DrawEditorGrid()
+        void DrawEditorGizmos()
         {
             Gizmos.DrawLine(0, 0, 0, 1f, 0, 0, this, 0xFFFF0000, 5);
             Gizmos.DrawLine(0, 0, 0, 0, 1f, 0, this, 0xFF00FF00, 5);

@@ -8,22 +8,24 @@ using GXPEngine.Core;
 
 namespace GXPEngine.Editor
 {
-    public class GameobjectProxy : DSCFSprite
+    public class EditorGameObject : DSCFSprite
     {
         public ConstructorInfo Constructor;
         public Type ObjectType;
         float radius = .25f;
-        public GameobjectProxy() : base("editor/ProxyLogo.png")
+        public EditorGameObject() : base("editor/ProxyLogo.png")
         {
             SetOrigin(width * .5f,height * .5f);
         }
 
         public override void RenderDepthSorted(GLContext glContext, Vector3 slop)
         {
+            if (this == ((Editor)game).selectedGameobject)
+                _texture = Texture2D.GetInstance("editor/SelectedMarker.png");
+            else _texture = Texture2D.GetInstance("editor/ProxyLogo.png");
+            
             Vector3 baseScale = scaleXYZ;
             scaleXYZ = baseScale*(16.0f/game.width);
-            if (((Editor)game).selectedGameobject == this)
-                slop.z = .1f;
             base.RenderDepthSorted(glContext, slop);
             scaleXYZ = baseScale;
         }
