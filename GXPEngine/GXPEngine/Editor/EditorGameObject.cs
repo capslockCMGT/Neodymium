@@ -10,14 +10,26 @@ namespace GXPEngine.Editor
 {
     public class EditorGameObject : DSCFSprite
     {
-        public ConstructorInfo Constructor;
-        public Type ObjectType;
+        ConstructorInfo Constructor;
+        Type ObjectType;
+        object[] ConstructorParameters;
+        GameObject EditorDisplayObject;
         float radius = .25f;
-        public EditorGameObject() : base("editor/ProxyLogo.png")
+        public EditorGameObject(Type objectType, ConstructorInfo constructor) : base("editor/ProxyLogo.png")
         {
             SetOrigin(width * .5f,height * .5f);
+            ObjectType = objectType;
+            Constructor = constructor;
+            ConstructorParameters = new object[Constructor.GetParameters().Length];
+            BuildObject();
         }
 
+        void BuildObject()
+        {
+            if(EditorDisplayObject != null) EditorDisplayObject.Destroy();
+            EditorDisplayObject = (GameObject)Constructor.Invoke(ConstructorParameters);
+            AddChild(EditorDisplayObject);
+        }
         public override void RenderDepthSorted(GLContext glContext, Vector3 slop)
         {
             if (this == ((Editor)game).selectedGameobject)

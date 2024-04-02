@@ -1,4 +1,5 @@
 ﻿using GXPEngine.Core;
+using GXPEngine.Editor;
 using GXPEngine.UI;
 using System;
 using System.Collections.Generic;
@@ -105,6 +106,7 @@ namespace GXPEngine.GXPEngine.Editor
 
             foreach (GameObject child in gameObject.GetChildren())
             {
+                if (!(child is EditorGameObject)) continue;
                 HierarchyItem childItem = new HierarchyItem(child,iteration+1, childrenDisplay.width, 0, 0);
                 childItem.ReadChildren();
                 children.Add(childItem);
@@ -124,7 +126,7 @@ namespace GXPEngine.GXPEngine.Editor
             //opposite process here
             //check each child in scene, if there are some impostors in the hierarchy that are not parented to the corresponding item, add them
             foreach (GameObject child in gameObject.GetChildren())
-                if (!references.Keys.Contains(child))
+                if (!references.Keys.Contains(child) && child is EditorGameObject)
                     RegisterChild(child, this);
 
             foreach (HierarchyItem child in children)

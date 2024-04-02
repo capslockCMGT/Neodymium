@@ -76,9 +76,7 @@ namespace GXPEngine.Editor
             if (inquestion == null) return;
 
             Type gameObjectType = inquestion.DeclaringType;
-            EditorGameObject newObject = new EditorGameObject();
-            newObject.Constructor = inquestion;
-            newObject.ObjectType = gameObjectType;
+            EditorGameObject newObject = new EditorGameObject(gameObjectType, inquestion);
             selectedGameobject = newObject;
             if (mainGameObject == null)
             {
