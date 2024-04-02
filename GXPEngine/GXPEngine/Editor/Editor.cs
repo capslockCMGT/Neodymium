@@ -231,5 +231,11 @@ namespace GXPEngine.Editor
                 else Gizmos.DrawLine(i - 16, 0, -6, i - 16, 0, 6, null, col, 1);
             }
         }
+
+        public override void Add(GameObject gameObject)
+        {
+            if(gameObject.GetType().Namespace == typeof(Editor).Namespace)
+            base.Add(gameObject);
+        }
     }
 }

@@ -203,25 +203,25 @@ namespace GXPEngine
 			//empty
 		}
 
-		//------------------------------------------------------------------------------------------------------------------------
-		//														Add()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Should only be called from the GameObject class!
-		/// </summary>
-		internal void Add (GameObject gameObject)
+        //------------------------------------------------------------------------------------------------------------------------
+        //														Add()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Should only be called from the GameObject class!
+        /// </summary>
+        public virtual void Add (GameObject gameObject)
 		{
 			_updateManager.Add (gameObject);
 			_collisionManager.Add (gameObject);
 		}
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														Remove()
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Should only be called from the GameObject class!
-		/// </summary>
-		internal void Remove (GameObject gameObject)
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														Remove()
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Should only be called from the GameObject class!
+        /// </summary>
+        public virtual void Remove (GameObject gameObject)
 		{
 			_updateManager.Remove (gameObject);
 			_collisionManager.Remove (gameObject);
