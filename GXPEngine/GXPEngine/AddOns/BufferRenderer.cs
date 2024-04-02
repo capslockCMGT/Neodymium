@@ -147,7 +147,8 @@ namespace GXPEngine
                         float u, v;
                         float.TryParse(words[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out u);
                         float.TryParse(words[2], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out v);
-                        uvs.Add(new Vector2(u, v));
+                        //invert v cause it is upside down idk
+                        uvs.Add(new Vector2(u, 1-v));
 
                         break;
                     case "f ":

@@ -84,7 +84,7 @@ public class MyGame : Game {
         AddChild(test);
 		AddChild(test2);
 
-		ModelRenderer sloppersludge = new ModelRenderer("test models/monki.obj", "test models/suzanne.png");
+		ModelRenderer sloppersludge = new ModelRenderer("test models/baketest.obj", "test models/bake.png");
 		AddChild(sloppersludge);
 		sloppersludge.x = 2;
 		sloppersludge.scale = .2f;

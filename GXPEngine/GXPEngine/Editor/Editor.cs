@@ -7,6 +7,7 @@ using System.Reflection;
 using GXPEngine.UI;
 using GXPEngine.Core;
 using GXPEngine.GXPEngine.UI;
+using GXPEngine.GXPEngine.Editor;
 
 namespace GXPEngine.Editor
 {
@@ -18,14 +19,14 @@ namespace GXPEngine.Editor
 
         GameObject activeSideMenu;
         SliderPanel selectedGameObjectMenu;
-        
+        HierarchyItem editorDisplay;
+
         TexturedButton AddObjectButton;
         Panel AddObjectMenu;
         Type[] gameObjectTypes;
 
         Panel ObjectConstructorMenu;
         ConstructorInfo[] constructors;
-        Dictionary<GameObject,TextButton> gameObjectReferences = new Dictionary<GameObject,TextButton>();
 
         public Editor() : base(1200, 600, false, true, true, "GXP Editor")
         { 
@@ -164,40 +165,20 @@ namespace GXPEngine.Editor
             SetActiveSideMenu(AddObjectMenu);
         }
 
+        void CreateHierarchy()
+        {
+            Panel targetWindow = selectedGameObjectMenu;
+            //change 'this' in the line below to whatever the main gameobject is
+            editorDisplay = new HierarchyItem(this,0,targetWindow.width - 30, 5,5);
+            editorDisplay.ReadChildren();
+            targetWindow.AddChild(editorDisplay);
+        }
         void UpdateHierarchy()
         {
-            Panel display = selectedGameObjectMenu;
-            int items = 0;
-            int displace = 0;
-            DisplayObject(this,new Vector2(0,0),display,ref items, ref displace);
-            display.OrganiseChildrenVertical();
+            editorDisplay.UpdateChildren();
+            editorDisplay.UpdateDisplay();
         }
-        void DisplayObject(GameObject go, Vector2 pos, Panel display, ref int items, ref int displace)
-        {
-            if (!gameObjectReferences.ContainsKey(go))
-            {
-                TextButton tb = new TextButton(display.width - (int)(pos.x) - 30, 15, go.GetType().Name, 10);
-                display.AddChild(tb);
-                tb.x = pos.x;
-                tb.y = pos.y;
-                gameObjectReferences.Add(go, tb);
-                displace++;
-            }
-            else
-            {
-                TextButton tb = gameObjectReferences[go];
-                tb.y += displace * 15;
-            }
-            items++;
-            List<GameObject> kiddos = go.GetChildren();
-            for (int i=0; i<kiddos.Count; i++)
-            {
-                GameObject obj = kiddos[i];
-                //Vector2 newPos = new Vector2(pos.x + 15, display.y + items * 15);
-                Vector2 newPos = new Vector2(pos.x + 15, 0);
-                DisplayObject(obj,newPos, display, ref items, ref displace);
-            }
-        }
+        
         void SetupAddObjectMenu()
         {
             var type = typeof(GameObject);
@@ -244,12 +225,11 @@ namespace GXPEngine.Editor
 
             selectedGameObjectMenu = new SliderPanel(300, height - 10, width - 305, 5);
             selectedGameObjectMenu.SetSliderBar(20, height - 10);
-            //selectedGameObjectMenu.AddElement(new Panel(270, 300));
-            //selectedGameObjectMenu.AddElement(new Panel(270, 300));
-            //selectedGameObjectMenu.AddElement(new Panel(270, 300));
             selectedGameObjectMenu.OrganiseChildrenVertical();
             uiManager.Add(selectedGameObjectMenu);
-            UpdateHierarchy();
+
+            //also see UpdateHierarchy() in the Update()
+            CreateHierarchy();
         }
 
         void DrawEditorGrid()
