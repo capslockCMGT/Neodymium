@@ -15,7 +15,6 @@ namespace GXPEngine.Editor
         public static Dictionary<GameObject,HierarchyItem> references = new Dictionary<GameObject,HierarchyItem>();
 
         EditorGameObject gameObject;
-        Panel childrenDisplay;
         /// <summary>
         /// implement selecting objects from hierarchy as objectProxy.OnClick += SelectObject(gameObject)
         /// </summary>
@@ -46,13 +45,14 @@ namespace GXPEngine.Editor
                 objectProxy.color = 0xffffff00;
             AddChild(objectProxy);
 
-            childrenDisplay = new Panel(width, 20, 0, 25);
             children = new List<HierarchyItem>();
 
             childrenCounter = new TextPanel(20, 20, "0", 10,false);
             UpdateCounter(0);
             childrenCounter.SetXY(width-20,0,0);
             AddChild(childrenCounter);
+
+            Console.WriteLine(references.Count);
         }
         void ToggleChildren()
         {
@@ -69,16 +69,13 @@ namespace GXPEngine.Editor
             int res = 20;
             if (children != null && children.Count > 0 && !hideChildren)
             {
-                if (!GetChildren().Contains(childrenDisplay))
-                    AddChild(childrenDisplay);
                 foreach (HierarchyItem item in children)
                 {
-                    item.y = res - 20;
+                    item.y = y + res + 5;
+                    item.x = x + 10;
                     res += item.GetContentHeight() + 5;
                 }
             }
-            else if (GetChildren().Contains(childrenDisplay))
-                RemoveChild(childrenDisplay);
 
             if (height != res)
             {
@@ -101,16 +98,14 @@ namespace GXPEngine.Editor
                 return;
             }
 
-                childrenDisplay = new Panel(width - 10, 20, 10, 25);
-            AddChild(childrenDisplay);
-
             foreach (GameObject child in gameObject.GetChildren())
             {
                 if (!(child is EditorGameObject)) continue;
-                HierarchyItem childItem = new HierarchyItem((EditorGameObject)child,iteration+1, childrenDisplay.width, 0, 0);
+                HierarchyItem childItem = new HierarchyItem((EditorGameObject)child,iteration+1, width-10, 10, 25);
                 childItem.ReadChildren();
                 children.Add(childItem);
-                childrenDisplay.AddChild(childItem);
+                childItem.parent = this.parent;
+                //AddChild(childItem);
             }
             if (childrenCount != kiddos.Count)
                 UpdateCounter(kiddos.Count);
@@ -136,9 +131,10 @@ namespace GXPEngine.Editor
         {
             if (parentItem == null)
                 parentItem = references[gameObject.parent];
-            HierarchyItem childItem = new HierarchyItem(gameObject, parentItem.iteration + 1, parentItem.childrenDisplay.width, 0, 0);
+            HierarchyItem childItem = new HierarchyItem(gameObject, parentItem.iteration + 1, parentItem.width-10, 10, 25);
             parentItem.children.Add(childItem);
-            parentItem.childrenDisplay.AddChild(childItem);
+            childItem.parent = parentItem.parent;
+            //parentItem.AddChild(childItem);
         }
 
         public static void UnregisterChild(GameObject gameObject, HierarchyItem item = null)
