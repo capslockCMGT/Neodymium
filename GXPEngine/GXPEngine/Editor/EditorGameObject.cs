@@ -55,6 +55,7 @@ namespace GXPEngine.Editor
             try
             {
                 EditorDisplayObject = (GameObject)Activator.CreateInstance(ObjectType, ConstructorParameters);
+                AddChild(EditorDisplayObject);
                 // (GameObject)Constructor.Invoke(ConstructorParameters);
             }
             catch (Exception e)
