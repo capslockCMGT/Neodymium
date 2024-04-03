@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using GXPEngine.UI;
 using GXPEngine.Core;
-using GXPEngine.GXPEngine.UI;
-using GXPEngine.GXPEngine.Editor;
+using GXPEngine.Editor;
 
 namespace GXPEngine.Editor
 {

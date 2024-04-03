@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GXPEngine.GXPEngine.Editor
+namespace GXPEngine.Editor
 {
     public class HierarchyItem : Panel
     {

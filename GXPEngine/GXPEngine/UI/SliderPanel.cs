@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GXPEngine.GXPEngine.UI
+namespace GXPEngine.UI
 {
     public class SliderPanel : Panel
     {
