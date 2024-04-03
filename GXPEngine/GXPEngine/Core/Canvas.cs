@@ -100,7 +100,7 @@ namespace GXPEngine
 
 		// Called by the garbage collector
 		~Canvas() {
-			_graphics.Dispose();
+			_graphics?.Dispose();
 		}
 	}
 }
