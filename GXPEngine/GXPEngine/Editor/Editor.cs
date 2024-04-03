@@ -7,7 +7,6 @@ using System.Reflection;
 using GXPEngine.UI;
 using GXPEngine.Core;
 using GXPEngine.Editor;
-using GXPEngine.GXPEngine.UI;
 
 namespace GXPEngine.Editor
 {
