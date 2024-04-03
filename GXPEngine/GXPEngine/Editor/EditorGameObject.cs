@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using GXPEngine.Core;
@@ -35,16 +36,17 @@ namespace GXPEngine.Editor
 
                 Type t = ConstructorParams[i].ParameterType;
                 //accepted types:string, float, int, uint, bool, Texture2D
-                if (t == typeof(float))
-                    ConstructorParameters[i] = 0.0f;
+                //if (t == typeof(float))
+                //    ConstructorParameters[i] = 0.0f;
                 if (t == typeof(string))
                     ConstructorParameters[i] = "default text";
-                if (t == typeof(int))
-                    ConstructorParameters[i] = 0;
-                if (t == typeof(uint))
-                    ConstructorParameters[i] = 0;
-                if (t == typeof(bool))
-                    ConstructorParameters[i] = false;
+                //if (t == typeof(int))
+                //    ConstructorParameters[i] = 0;
+                //if (t == typeof(uint))
+                //    ConstructorParameters[i] = 0;
+                //if (t == typeof(bool))
+                //    ConstructorParameters[i] = false;
+                //commented values are handled by ConstructorInfo already
                 if (t == typeof(Texture2D))
                     ConstructorParameters[i] = Texture2D.GetInstance("editor/defaultCubeTex.png");
 
@@ -53,9 +55,11 @@ namespace GXPEngine.Editor
             try
             {
                 EditorDisplayObject = (GameObject)Constructor.Invoke(ConstructorParameters);
-                AddChild(EditorDisplayObject);
             }
-            catch (Exception e) { }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Could not display or create gameobject - invalid constructor: {e}");
+            }
         }
         public override void RenderDepthSorted(GLContext glContext, Vector3 slop)
         {
