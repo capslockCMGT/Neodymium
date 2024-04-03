@@ -74,6 +74,10 @@ namespace GXPEngine.UI
             initializeFromTexture(sub.texture);
             return this;
         }
+        public void ResizeToContent(int marginHorizontal = 5, int marginVertical = 5)
+        {
+            Resize((int)_contentWidth + marginHorizontal, (int)_contentHeight + marginVertical);
+        }
         public void Resize(int width, int height)
         {
             Panel sub = new Panel(width, height);

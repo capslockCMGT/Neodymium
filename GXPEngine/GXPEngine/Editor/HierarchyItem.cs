@@ -14,7 +14,7 @@ namespace GXPEngine.GXPEngine.Editor
     {
         public static Dictionary<GameObject,HierarchyItem> references = new Dictionary<GameObject,HierarchyItem>();
 
-        GameObject gameObject;
+        EditorGameObject gameObject;
         Panel childrenDisplay;
         /// <summary>
         /// implement selecting objects from hierarchy as objectProxy.OnClick += SelectObject(gameObject)
@@ -26,7 +26,7 @@ namespace GXPEngine.GXPEngine.Editor
         int iteration = 0;
         bool hideChildren = false;
         public List<HierarchyItem> children;
-        public HierarchyItem(GameObject gameObject, int iteration, int width, float x = 0, float y = 0) : base(width, 20, x, y, false)
+        public HierarchyItem(EditorGameObject gameObject, int iteration, int width, float x = 0, float y = 0) : base(width, 20, x, y, false)
         {
             this.gameObject = gameObject;
             this.iteration = iteration;
@@ -38,7 +38,7 @@ namespace GXPEngine.GXPEngine.Editor
             hideChildrenButton.OnClick += ToggleChildren;
             AddChild(hideChildrenButton);
 
-            objectProxy = new TextButton(width-25, 20, gameObject.GetType().Name, 10);
+            objectProxy = new TextButton(width-25, 20, gameObject.ObjectType.Name, 10);
             objectProxy.SetXY(25, 0, 0);
             if (iteration < 16)
                 objectProxy.color = 0xffffffff - (uint)(0x00000011 * iteration);
@@ -107,7 +107,7 @@ namespace GXPEngine.GXPEngine.Editor
             foreach (GameObject child in gameObject.GetChildren())
             {
                 if (!(child is EditorGameObject)) continue;
-                HierarchyItem childItem = new HierarchyItem(child,iteration+1, childrenDisplay.width, 0, 0);
+                HierarchyItem childItem = new HierarchyItem((EditorGameObject)child,iteration+1, childrenDisplay.width, 0, 0);
                 childItem.ReadChildren();
                 children.Add(childItem);
                 childrenDisplay.AddChild(childItem);
@@ -127,12 +127,12 @@ namespace GXPEngine.GXPEngine.Editor
             //check each child in scene, if there are some impostors in the hierarchy that are not parented to the corresponding item, add them
             foreach (GameObject child in gameObject.GetChildren())
                 if (!references.Keys.Contains(child) && child is EditorGameObject)
-                    RegisterChild(child, this);
+                    RegisterChild((EditorGameObject)child, this);
 
             foreach (HierarchyItem child in children)
                 child.UpdateChildren();
         }
-        public static void RegisterChild(GameObject gameObject, HierarchyItem parentItem = null)
+        public static void RegisterChild(EditorGameObject gameObject, HierarchyItem parentItem = null)
         {
             if (parentItem == null)
                 parentItem = references[gameObject.parent];

@@ -14,8 +14,8 @@ namespace GXPEngine.Editor
     public class Editor : Game
     {
         EditorCamera mainCam;
-        GameObject mainGameObject;
-        public GameObject selectedGameobject;
+        EditorGameObject mainGameObject;
+        public EditorGameObject selectedGameobject;
 
         GameObject activeSideMenu;
         SliderPanel selectedGameObjectMenu;
@@ -77,12 +77,16 @@ namespace GXPEngine.Editor
 
             Type gameObjectType = inquestion.DeclaringType;
             EditorGameObject newObject = new EditorGameObject(gameObjectType, inquestion);
-            selectedGameobject = newObject;
             if (mainGameObject == null)
             {
                 mainGameObject = newObject;
                 AddChild(newObject);
             }
+            if(selectedGameobject != null)
+            {
+                selectedGameobject.AddChild(newObject);
+            }
+            selectedGameobject = newObject;
             Console.WriteLine("added object");
         }
 
@@ -112,7 +116,7 @@ namespace GXPEngine.Editor
                 {
                     Type paramtype = paramInfo.ParameterType;
                     //whitelisted types for the constructor (cannot input a straight bitmap in the editor!)
-                    allowConstructor &= paramInfo.HasDefaultValue || (paramtype == typeof(string)) || (paramtype == typeof(float)) || (paramtype == typeof(int)) || (paramtype == typeof(uint)) || (paramtype == typeof(bool));
+                    allowConstructor &= paramInfo.HasDefaultValue || (paramtype == typeof(string)) || (paramtype == typeof(float)) || (paramtype == typeof(int)) || (paramtype == typeof(uint)) || (paramtype == typeof(bool) || paramtype == typeof(Texture2D));
                     constructorText += paramtype.Name+" ";
                     constructorText += paramInfo.Name;
                     if (paramInfo.HasDefaultValue)
@@ -139,7 +143,7 @@ namespace GXPEngine.Editor
                 ObjectConstructorMenu.AddChild(constructorPanel);
             }
             ObjectConstructorMenu.OrganiseChildrenVertical();
-            ObjectConstructorMenu = ObjectConstructorMenu.ResizedToContent();
+            ObjectConstructorMenu.ResizeToContent();
             SetActiveSideMenu(ObjectConstructorMenu);
         }
         void SetAddObjectMenuActive()
@@ -182,7 +186,8 @@ namespace GXPEngine.Editor
                 //Console.WriteLine(typ);
             }
             AddObjectMenu.OrganiseChildrenVertical();
-            AddObjectMenu = AddObjectMenu.ResizedToContent();
+            AddObjectMenu.ResizeToContent();
+            //AddObjectMenu = AddObjectMenu.ResizedToContent();
         }
 
         void SetupCam()

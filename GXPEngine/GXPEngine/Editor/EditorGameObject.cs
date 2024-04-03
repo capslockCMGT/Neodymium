@@ -11,7 +11,8 @@ namespace GXPEngine.Editor
     public class EditorGameObject : DSCFSprite
     {
         ConstructorInfo Constructor;
-        Type ObjectType;
+        public Type ObjectType;
+        ParameterInfo[] ConstructorParams;
         object[] ConstructorParameters;
         GameObject EditorDisplayObject;
         float radius = .25f;
@@ -20,13 +21,35 @@ namespace GXPEngine.Editor
             SetOrigin(width * .5f,height * .5f);
             ObjectType = objectType;
             Constructor = constructor;
-            ConstructorParameters = new object[Constructor.GetParameters().Length];
+            ConstructorParams = Constructor.GetParameters();
+            ConstructorParameters = new object[ConstructorParams.Length];
             BuildObject();
         }
 
         void BuildObject()
         {
             if(EditorDisplayObject != null) EditorDisplayObject.Destroy();
+            for(int i = 0; i< ConstructorParams.Length; i++)
+            {
+                if (ConstructorParameters[i] != null) continue;
+
+                Type t = ConstructorParams[i].ParameterType;
+                //accepted types:string, float, int, uint, bool, Texture2D
+                if (t == typeof(float))
+                    ConstructorParameters[i] = 0.0f;
+                if (t == typeof(string))
+                    ConstructorParameters[i] = "default text";
+                if (t == typeof(int))
+                    ConstructorParameters[i] = 0;
+                if (t == typeof(uint))
+                    ConstructorParameters[i] = 0;
+                if (t == typeof(bool))
+                    ConstructorParameters[i] = false;
+                if (t == typeof(Texture2D))
+                    ConstructorParameters[i] = Texture2D.GetInstance("editor/defaultCubeTex.png");
+
+                if (ConstructorParams[i].HasDefaultValue) ConstructorParameters[i] = ConstructorParams[i].DefaultValue;
+            }
             EditorDisplayObject = (GameObject)Constructor.Invoke(ConstructorParameters);
             AddChild(EditorDisplayObject);
         }
@@ -49,6 +72,7 @@ namespace GXPEngine.Editor
         {
             Vector3[] res = new Vector3[8];
             for (int i = 0; i < 8; i++)
+                //dw abt it
                 res[i] = TransformPoint((i & 1) != 0 ? -radius : radius, (i & 2) != 0 ? -radius : radius, (i & 4) != 0 ? -radius : radius);
             return res;
         }
