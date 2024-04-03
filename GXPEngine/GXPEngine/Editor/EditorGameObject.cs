@@ -50,8 +50,12 @@ namespace GXPEngine.Editor
 
                 if (ConstructorParams[i].HasDefaultValue) ConstructorParameters[i] = ConstructorParams[i].DefaultValue;
             }
-            EditorDisplayObject = (GameObject)Constructor.Invoke(ConstructorParameters);
-            AddChild(EditorDisplayObject);
+            try
+            {
+                EditorDisplayObject = (GameObject)Constructor.Invoke(ConstructorParameters);
+                AddChild(EditorDisplayObject);
+            }
+            catch (Exception e) { }
         }
         public override void RenderDepthSorted(GLContext glContext, Vector3 slop)
         {

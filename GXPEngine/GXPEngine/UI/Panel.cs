@@ -136,18 +136,9 @@ namespace GXPEngine.UI
                 _contentHeight += sprite.height+marginVertical;
                 _contentWidth = Mathf.Max(sprite.width+marginHorizontal, _contentWidth);
 
-                switch (centerVertical)
-                {
-                    case CenterMode.Min:
-                        currentY += marginVertical + sprite.height;
-                        break;
-                    case CenterMode.Max:
-                        currentY -= marginVertical + sprite.height;
-                        break;
-                    default:
-                        currentY += marginVertical + sprite.height;
-                        break;
-                }
+                if(centerVertical == CenterMode.Max)
+                    currentY -= marginVertical + sprite.height;
+                else currentY += marginVertical + sprite.height; 
             }
 
             if (centerVertical == CenterMode.Center)
@@ -204,18 +195,9 @@ namespace GXPEngine.UI
                 _contentHeight = Mathf.Max(sprite.height+marginVertical, _contentHeight);
                 _contentWidth += sprite.width + marginHorizontal;
 
-                switch (centerHorizontal)
-                {
-                    case CenterMode.Min:
-                        currentX += marginHorizontal + sprite.width;
-                        break;
-                    case CenterMode.Max:
-                        currentX -= marginHorizontal + sprite.width;
-                        break;
-                    default:
-                        currentX += marginHorizontal + sprite.width;
-                        break;
-                }
+                if(centerHorizontal == CenterMode.Max)
+                    currentX -= marginHorizontal + sprite.width;
+                else currentX += marginHorizontal + sprite.width;
             }
 
             if (centerHorizontal == CenterMode.Center)

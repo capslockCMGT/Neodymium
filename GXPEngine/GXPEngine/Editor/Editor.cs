@@ -57,7 +57,7 @@ namespace GXPEngine.Editor
             }
             if (activeSideMenu == null) return; 
             menuInQuestion.x = 310;
-            menuInQuestion.y = 5;
+            menuInQuestion.y = 85;
             uiManager.Add(menuInQuestion);
         }
 
@@ -201,7 +201,7 @@ namespace GXPEngine.Editor
         void SetupMainUI()
         {
             Panel leftPanel = new Panel(300,height-10, 5, 5);
-            Panel buttonHolder = new Panel(1, 1, invisible: true);
+            Panel buttonHolder = new Panel(1, 1, 310, 5, invisible: true);
             buttonHolder.scale = 3;
 
             AddObjectButton = new TexturedButton("editor/buttons/AddObject.png", "editor/buttons/AddObjectHover.png", "editor/buttons/AddObjectClick.png");
@@ -213,7 +213,7 @@ namespace GXPEngine.Editor
             buttonHolder.AddChild(new TexturedButton("editor/buttons/ScaleObject.png", "editor/buttons/ScaleObjectHover.png", "editor/buttons/ScaleObjectClick.png"));
             buttonHolder.OrganiseChildrenHorizontal();
             uiManager.Add(leftPanel);
-            leftPanel.AddChild(buttonHolder);
+            uiManager.Add(buttonHolder);
 
             selectedGameObjectMenu = new SliderPanel(300, height - 10, width - 305, 5);
             selectedGameObjectMenu.SetSliderBar(20, height - 10);
