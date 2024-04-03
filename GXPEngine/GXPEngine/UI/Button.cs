@@ -47,7 +47,7 @@ namespace GXPEngine.UI
                     status = Status.REST;
             }
         }
-        bool HitTest(int x, int y)
+        protected bool HitTest(int x, int y)
         {
             Vector3 local = InverseTransformPoint(x, y, 0);
             if (local.x > _bounds.right) return false;

@@ -7,6 +7,7 @@ using System.Reflection;
 using GXPEngine.UI;
 using GXPEngine.Core;
 using GXPEngine.Editor;
+using GXPEngine.GXPEngine.UI;
 
 namespace GXPEngine.Editor
 {
@@ -218,6 +219,7 @@ namespace GXPEngine.Editor
             selectedGameObjectMenu.SetSliderBar(20, height - 10);
             selectedGameObjectMenu.OrganiseChildrenVertical();
             uiManager.Add(selectedGameObjectMenu);
+            uiManager.Add(new InputField(100, 20, 100, 100, 10));
         }
 
         void DrawEditorGizmos()
