@@ -13,7 +13,11 @@ namespace GXPEngine.Editor
     public class Editor : Game
     {
         EditorCamera mainCam;
-        EditorGameObject mainGameObject;
+        EditorGameObject _mainGameObject;
+        public EditorGameObject mainGameObject
+        {
+            get { return _mainGameObject; }
+        }
         public EditorGameObject selectedGameobject;
 
         EditorUIHandler uiHandler;
@@ -26,29 +30,20 @@ namespace GXPEngine.Editor
             SetupCam();
             uiHandler = new EditorUIHandler();
 
-            SetupMainUI();
-            SetupAddObjectMenu();
+            uiHandler.SetupMainUI();
         }
 
-        void AddGameObject()
+        public void AddGameObject(object consInfo)
         {
             uiHandler.SetActiveSideMenu(null);
-            ConstructorInfo inquestion = null;
-            int selected = 0;
-            for (int i = 0; i < uiHandler.ObjectConstructorMenu.GetChildCount(); i++)
-            {
-                if (!(uiHandler.ObjectConstructorMenu.GetChildren(false)[i] is TextButton)) continue;
-                if (((TextButton)uiHandler.ObjectConstructorMenu.GetChildren(false)[i]).status == Button.Status.CLICKED)
-                    inquestion = constructors[selected];
-                selected++;
-            }
-            if (inquestion == null) return;
+            if (consInfo == null || !(consInfo is ConstructorInfo)) return;
+            ConstructorInfo constructorInfo = (ConstructorInfo) consInfo;
 
-            Type gameObjectType = inquestion.DeclaringType;
-            EditorGameObject newObject = new EditorGameObject(gameObjectType, inquestion);
-            if (mainGameObject == null)
+            Type gameObjectType = constructorInfo.DeclaringType;
+            EditorGameObject newObject = new EditorGameObject(gameObjectType, constructorInfo);
+            if (_mainGameObject == null)
             {
-                mainGameObject = newObject;
+                _mainGameObject = newObject;
                 AddChild(newObject);
             }
             if (selectedGameobject != null)
@@ -67,30 +62,8 @@ namespace GXPEngine.Editor
                 Vector3 start = mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0);
                 Vector3 end = mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 1);
             }
-            UpdateHierarchy();
+            uiHandler.UpdateHierarchy();
         }
-
-        
-
-        void CreateHierarchy()
-        {
-            Panel targetWindow = selectedGameObjectMenu;
-            //change 'this' in the line below to whatever the main gameobject is
-            editorDisplay = new HierarchyItem(mainGameObject,0,targetWindow.width - 30, 5,5);
-            editorDisplay.ReadChildren();
-            targetWindow.AddChild(editorDisplay);
-        }
-        void UpdateHierarchy()
-        {
-            if(editorDisplay == null)
-            {
-                if (mainGameObject == null) return;
-                CreateHierarchy();
-            }
-            editorDisplay.UpdateChildren();
-            editorDisplay.UpdateDisplay();
-        }
-        
 
         void SetupCam()
         {
@@ -99,7 +72,6 @@ namespace GXPEngine.Editor
             mainCam.position = new Vector3(1, 1, 3);
             AddChild(mainCam);
         }
-
 
         void DrawEditorGizmos()
         {

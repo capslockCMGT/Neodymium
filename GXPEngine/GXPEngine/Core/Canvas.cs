@@ -27,7 +27,7 @@ namespace GXPEngine
 		/// <param name='height'>
 		/// Height of the canvas in pixels.
 		/// </param>
-		public Canvas (int width, int height, bool addCollider=true) : this(new Bitmap (width, height), addCollider)
+		public Canvas (int width, int height, bool addCollider=true) : this(new Bitmap ((int)Mathf.Max(1,width), (int)Mathf.Max(1, height)), addCollider)
 		{
 			name = width + "x" + height;
 		}

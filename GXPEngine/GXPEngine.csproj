@@ -51,11 +51,13 @@
     <Compile Include="GXPEngine\Core\Quaternion.cs" />
     <Compile Include="GXPEngine\Core\Vector3.cs" />
     <Compile Include="GXPEngine\DSCFSprite.cs" />
+    <Compile Include="GXPEngine\Editor\EditorUIHandler.cs" />
     <Compile Include="GXPEngine\Editor\HierarchyItem.cs" />
     <Compile Include="GXPEngine\Editor\CustomProperty.cs" />
     <Compile Include="GXPEngine\Editor\Editor.cs" />
     <Compile Include="GXPEngine\Editor\EditorCamera.cs" />
     <Compile Include="GXPEngine\Editor\EditorGameObject.cs" />
+    <Compile Include="GXPEngine\Editor\TypeHandler.cs" />
     <Compile Include="GXPEngine\ModelRenderer.cs" />
     <Compile Include="GXPEngine\UI\Button.cs" />
     <Compile Include="GXPEngine\UI\InputField.cs" />
@@ -63,6 +65,7 @@
     <Compile Include="GXPEngine\Managers\UIManager.cs" />
     <Compile Include="GXPEngine\UI\SliderPanel.cs" />
     <Compile Include="GXPEngine\UI\TextButton.cs" />
+    <Compile Include="GXPEngine\UI\TextObjectButton.cs" />
     <Compile Include="GXPEngine\UI\TextPanel.cs" />
     <Compile Include="GXPEngine\UI\TexturedButton.cs" />
     <Compile Include="MyGame.cs" />

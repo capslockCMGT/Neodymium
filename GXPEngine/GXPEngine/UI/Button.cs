@@ -85,6 +85,9 @@ namespace GXPEngine.UI
                     if (prevStatus == Status.HOVER)
                         TriggerHover();
 
+                    if (prevStatus == Status.CLICKED)
+                        TriggerRelease();
+
                     Hovered();
 
                     break;

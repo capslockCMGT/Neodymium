@@ -12,102 +12,22 @@ namespace GXPEngine.Editor
 {
     public class EditorUIHandler : GameObject
     {
+        Editor editor;
+
         GameObject activeSideMenu;
         SliderPanel selectedGameObjectMenu;
         HierarchyItem editorDisplay;
 
-        public TexturedButton AddObjectButton;
-        public Panel AddObjectMenu;
+        TexturedButton AddObjectButton;
+        Panel AddObjectMenu;
 
-        public Panel ObjectConstructorMenu;
-        public void SetActiveSideMenu(GameObject menuInQuestion)
+        Panel ObjectConstructorMenu;
+
+        public EditorUIHandler()
         {
-            if (activeSideMenu == null) activeSideMenu = menuInQuestion;
-            else
-            {
-                game.uiManager.Remove(activeSideMenu);
-                activeSideMenu = menuInQuestion;
-            }
-            if (activeSideMenu == null) return;
-            menuInQuestion.x = 310;
-            menuInQuestion.y = 85;
-            game.uiManager.Add(menuInQuestion);
+            editor = (Editor)game;
         }
-        void CreateTypeConstructorMenu(object Type)
-        {
-            if (Type.GetType() != typeof(Type)) return;
-            Type inquestion = (Type)Type;
-
-            ObjectConstructorMenu = new Panel(1, 1);
-            ObjectConstructorMenu.AddChild(new TextPanel(game.width - 630, 15, "Pick constructor for " + inquestion.Name + ":", 10, false));
-            ConstructorInfo[] constructors = inquestion.GetConstructors();
-
-            foreach (ConstructorInfo consInfo in constructors)
-            {
-                string constructorText = "(";
-                ParameterInfo[] parameters = consInfo.GetParameters();
-                bool allowConstructor = true;
-                foreach (ParameterInfo paramInfo in parameters)
-                {
-                    Type paramtype = paramInfo.ParameterType;
-                    //whitelisted types for the constructor (cannot input a straight bitmap in the editor!)
-                    allowConstructor &= paramInfo.HasDefaultValue || (paramtype == typeof(string)) || (paramtype == typeof(float)) || (paramtype == typeof(int)) || (paramtype == typeof(uint)) || (paramtype == typeof(bool) || paramtype == typeof(Texture2D));
-                    constructorText += paramtype.Name + " ";
-                    constructorText += paramInfo.Name;
-                    if (paramInfo.HasDefaultValue)
-                    {
-                        object value = paramInfo.DefaultValue;
-                        if (value != null)
-                            constructorText += " = " + value.ToString();
-                        else constructorText += " = null";
-                    }
-                    constructorText += ", ";
-                }
-                if (constructorText.Length > 1) constructorText = constructorText.Substring(0, constructorText.Length - 2);
-                Panel constructorPanel = null;
-                if (allowConstructor)
-                {
-                    constructorPanel = new TextButton(width - 630, 14, constructorText + ")", 7);
-                    ((TextButton)constructorPanel).OnClick += AddGameObject;
-                }
-                else
-                {
-                    constructorPanel = new TextPanel(width - 630, 14, constructorText + ") (disabled, constructor contains invalid types)", 7) { alpha = .4f };
-                    constructors = constructors.Where(testc => testc != consInfo).ToArray();
-                }
-                ObjectConstructorMenu.AddChild(constructorPanel);
-            }
-            ObjectConstructorMenu.OrganiseChildrenVertical();
-            ObjectConstructorMenu.ResizeToContent();
-            SetActiveSideMenu(ObjectConstructorMenu);
-        }
-
-        void SetupAddObjectMenu()
-        {
-            var type = typeof(GameObject);
-            var assembly = type.Assembly;
-            //filtering out the ones i dont really like being able to add (game derivative classes, editor classes, ui classes etc)
-            var gameObjectTypes = assembly.GetTypes().Where(testc => testc.IsSubclassOf(type) && (testc.Namespace != this.GetType().Namespace) && (testc.Namespace != typeof(Button).Namespace) && (testc.Name != typeof(MyGame).Name) && (testc.Name != typeof(Game).Name)).ToArray();
-            AddObjectMenu = new Panel(1, 1);
-            AddObjectMenu.AddChild(new TextPanel(150, 15, "Add object of type:", 10, false));
-            foreach (Type typ in gameObjectTypes)
-            {
-                TextObjectButton txtButton = new TextObjectButton(150, 15, typ.Name, typ, 10);
-                AddObjectMenu.AddChild(txtButton);
-                txtButton.ObjOnClick += CreateTypeConstructorMenu;
-                //Console.WriteLine(typ);
-            }
-            AddObjectMenu.OrganiseChildrenVertical();
-            AddObjectMenu.ResizeToContent();
-            //AddObjectMenu = AddObjectMenu.ResizedToContent();
-        }
-
-        void SetAddObjectMenuActive()
-        {
-            SetActiveSideMenu(AddObjectMenu);
-        }
-
-        void SetupMainUI()
+        public void SetupMainUI()
         {
             Panel leftPanel = new Panel(300, game.height - 10, 5, 5);
             Panel buttonHolder = new Panel(1, 1, 310, 5, invisible: true);
@@ -129,6 +49,94 @@ namespace GXPEngine.Editor
             selectedGameObjectMenu.OrganiseChildrenVertical();
             game.uiManager.Add(selectedGameObjectMenu);
             game.uiManager.Add(new InputField(100, 20, 100, 100, 10));
+
+            SetupAddObjectMenu();
         }
+
+        public void SetActiveSideMenu(GameObject menuInQuestion)
+        {
+            if (activeSideMenu == null) activeSideMenu = menuInQuestion;
+            else
+            {
+                game.uiManager.Remove(activeSideMenu);
+                activeSideMenu = menuInQuestion;
+            }
+            //schizoid code
+            if (activeSideMenu == null) return;
+            menuInQuestion.x = 310;
+            menuInQuestion.y = 85;
+            game.uiManager.Add(menuInQuestion);
+        }
+        void CreateTypeConstructorMenu(object Type)
+        {
+            if (!(Type is Type)) return;
+            Type inquestion = (Type)Type;
+
+            ObjectConstructorMenu = new Panel(1, 1);
+            ObjectConstructorMenu.AddChild(new TextPanel(game.width - 630, 15, "Pick constructor for " + inquestion.Name + ":", 10, false));
+            ConstructorInfo[] constructors = inquestion.GetConstructors();
+
+            foreach (ConstructorInfo consInfo in constructors)
+            {
+                Panel constructorPanel = null;
+                bool allowConstructor = TypeHandler.IsValidConstructor(consInfo);
+                string constructorText = TypeHandler.GetConstructorAsText(consInfo);
+                if (allowConstructor)
+                {
+                    constructorPanel = new TextObjectButton(editor.width - 630, 14, constructorText + ")", consInfo, 7);
+                    ((TextObjectButton)constructorPanel).ObjOnRelease += editor.AddGameObject;
+                }
+                else
+                {
+                    constructorPanel = new TextPanel(game.width - 630, 14, constructorText + ") (disabled, constructor contains invalid types)", 7) { alpha = .4f };
+                }
+                ObjectConstructorMenu.AddChild(constructorPanel);
+            }
+            ObjectConstructorMenu.OrganiseChildrenVertical();
+            ObjectConstructorMenu.ResizeToContent();
+            SetActiveSideMenu(ObjectConstructorMenu);
+        }
+
+        public void SetupAddObjectMenu()
+        {
+            Type[] gameObjectTypes = TypeHandler.GetInstantiableObjects();
+            AddObjectMenu = new Panel(1, 1);
+            AddObjectMenu.AddChild(new TextPanel(150, 15, "Add object of type:", 10, false));
+            foreach (Type typ in gameObjectTypes)
+            {
+                TextObjectButton txtButton = new TextObjectButton(150, 15, typ.Name, typ, 10);
+                AddObjectMenu.AddChild(txtButton);
+                txtButton.ObjOnRelease += CreateTypeConstructorMenu;
+                //Console.WriteLine(typ);
+            }
+            AddObjectMenu.OrganiseChildrenVertical();
+            AddObjectMenu.ResizeToContent();
+            //AddObjectMenu = AddObjectMenu.ResizedToContent();
+        }
+
+        void SetAddObjectMenuActive()
+        {
+            SetActiveSideMenu(AddObjectMenu);
+        }
+
+        void CreateHierarchy()
+        {
+            Panel targetWindow = selectedGameObjectMenu;
+            //change 'this' in the line below to whatever the main gameobject is
+            editorDisplay = new HierarchyItem(editor.mainGameObject, 0, targetWindow.width - 30, 5, 5);
+            editorDisplay.ReadChildren();
+            targetWindow.AddChild(editorDisplay);
+        }
+        public void UpdateHierarchy()
+        {
+            if (editorDisplay == null)
+            {
+                if (editor.mainGameObject == null) return;
+                CreateHierarchy();
+            }
+            editorDisplay.UpdateChildren();
+            editorDisplay.UpdateDisplay();
+        }
+
     }
 }
