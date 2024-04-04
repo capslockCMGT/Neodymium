@@ -120,8 +120,11 @@ namespace GXPEngine.Core
         //------------------------------------------------------------------------------------------------------------------------
         //														RayCast()
         //------------------------------------------------------------------------------------------------------------------------		
-        public bool RayCast(Vector3 p1, Vector3 p2)
+        public bool RayCast(Vector3 p1, Vector3 p2, out float distance, out Vector3 normal)
         {
+            distance = float.MaxValue;
+            normal = Vector3.zero;
+
             Vector3[] c = _owner.GetExtents();
             if (c == null) return false;
             if (!RayCastTest(p1, p2))
@@ -130,8 +133,6 @@ namespace GXPEngine.Core
             Vector3 d2 = c[3] - c[0];
             Vector3 d3 = c[4] - c[0];
 			Vector3 a = p2 - p1;
-			float distance = float.MaxValue;
-			Vector3 normal = Vector3.zero;
 			bool change = false;
 			Vector3 intersection;
 
