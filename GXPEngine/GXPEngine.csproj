@@ -48,7 +48,6 @@
     <Compile Include="GXPEngine\AddOns\SpriteBatch.cs" />
     <Compile Include="GXPEngine\Box.cs" />
     <Compile Include="GXPEngine\Core\BoxCollider.cs" />
-    <Compile Include="GXPEngine\Core\BoxCollider3D.cs" />
     <Compile Include="GXPEngine\Core\Quaternion.cs" />
     <Compile Include="GXPEngine\Core\Vector3.cs" />
     <Compile Include="GXPEngine\DSCFSprite.cs" />

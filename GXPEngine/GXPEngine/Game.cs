@@ -108,6 +108,7 @@ namespace GXPEngine
 				_glContext.CreateWindow (pWidth, pHeight, pFullScreen, pVSync, gameName);
 
 				_renderRange = new Rectangle (0, 0, pWidth, pHeight);
+				_heightRatio = width/(float)height;
 
 				//register ourselves for updates
 				Add (this);
@@ -254,6 +255,12 @@ namespace GXPEngine
 		/// </summary>
 		public int height {
 			get { return _glContext.height; }
+		}
+
+		float _heightRatio;
+		public float heightRatio
+		{
+			get { return _heightRatio; }
 		}
 
 		//------------------------------------------------------------------------------------------------------------------------

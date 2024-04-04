@@ -71,12 +71,13 @@ namespace GXPEngine.Editor
             
             Vector3 baseScale = scaleXYZ;
             scaleXYZ = baseScale*(16.0f/game.width);
+            scaleZ = baseScale.z;
             base.RenderDepthSorted(glContext, slop);
             scaleXYZ = baseScale;
         }
         protected override Collider createCollider()
         {
-            return new BoxCollider3D(this);
+            return new BoxCollider(this);
         }
         public override Vector3[] GetExtents()
         {

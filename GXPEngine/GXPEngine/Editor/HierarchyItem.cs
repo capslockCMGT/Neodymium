@@ -39,6 +39,7 @@ namespace GXPEngine.Editor
 
             objectProxy = new TextButton(width-25, 20, gameObject.ObjectType.Name, 10);
             objectProxy.SetXY(25, 0, 0);
+            objectProxy.OnClick += SetSelectedObject;
             if (iteration < 16)
                 objectProxy.color = 0xffffffff - (uint)(0x00000011 * iteration);
             else
@@ -54,6 +55,10 @@ namespace GXPEngine.Editor
 
             Console.WriteLine(references.Count);
         }
+        void SetSelectedObject()
+        {
+            ((Editor)game).selectedGameobject = gameObject;
+        }
         void ToggleChildren()
         {
             hideChildren = !hideChildren;
@@ -66,6 +71,9 @@ namespace GXPEngine.Editor
         }
         public int GetContentHeight()
         {
+            if (gameObject == ((Editor)game).selectedGameobject)
+                objectProxy.color = 0xffff9900;
+            else objectProxy.color = 0xffffffff - (uint)(0x00000011 * iteration);
             int res = 20;
             if (children != null && children.Count > 0 && !hideChildren)
             {
