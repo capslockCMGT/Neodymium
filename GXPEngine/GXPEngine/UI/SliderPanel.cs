@@ -36,7 +36,7 @@ namespace GXPEngine.UI
         {
             bar = new Panel(width, height, this.width-width + x, y);
             bar.parent = this;
-            barButton = new Button(width, (int) ((area.ContentHeight > area.height) ? height * area.height / area.ContentHeight : height) , 0, 0);
+            barButton = new Button(width, (int) ((content.height > area.height) ? height * area.height / content.height : height) , 0, 0);
             bar.AddChild(barButton);
             barButton.OnClick += SaveMousePosition;
         }
@@ -69,7 +69,7 @@ namespace GXPEngine.UI
             base.Update();
             if (barButton != null && bar != null)
             {
-                barButton.height = (int)((area.ContentHeight > area.height) ? bar.height * area.height / area.ContentHeight : bar.height);
+                barButton.height = (int)((content.height > area.height) ? bar.height * area.height / content.height : bar.height);
                 if (barButton.status == Button.Status.CLICKED)
                 {
                     barButton.color = 0xff00aaaa;
@@ -93,6 +93,10 @@ namespace GXPEngine.UI
         {
             mouseClickPos = new Vector2(Input.mouseX, Input.mouseY);
             initialButtonPos = new Vector2(barButton.x, barButton.y);
+        }
+        public void ResizeContent(int width, int height)
+        {
+            content.Resize(width, height);
         }
     }
 }

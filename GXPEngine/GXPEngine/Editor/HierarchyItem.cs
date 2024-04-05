@@ -25,6 +25,7 @@ namespace GXPEngine.Editor
         int iteration = 0;
         bool hideChildren = false;
         public List<HierarchyItem> children;
+        public HierarchyItem parentItem = null;
         public HierarchyItem(EditorGameObject gameObject, int iteration, int width, float x = 0, float y = 0) : base(width, 20, x, y, false)
         {
             this.gameObject = gameObject;
@@ -67,7 +68,13 @@ namespace GXPEngine.Editor
         }
         public void UpdateDisplay()
         {
-            GetContentHeight();
+            int height = GetContentHeight();
+            if (parent is Panel)
+            {
+                Panel panel= (Panel)parent;
+                if (panel.height != height + 10)
+                    panel.Resize(panel.width, height + 10);
+            }
         }
         public int GetContentHeight()
         {
@@ -119,6 +126,7 @@ namespace GXPEngine.Editor
                 childItem.ReadChildren();
                 children.Add(childItem);
                 childItem.parent = this.parent;
+                childItem.parentItem = this;
                 //AddChild(childItem);
             }
             if (childrenCount != kiddos.Count)
@@ -148,6 +156,7 @@ namespace GXPEngine.Editor
             HierarchyItem childItem = new HierarchyItem(gameObject, parentItem.iteration + 1, parentItem.width-10, 10, 25);
             parentItem.children.Add(childItem);
             childItem.parent = parentItem.parent;
+            childItem.parentItem = parentItem;
             //parentItem.AddChild(childItem);
         }
 
@@ -155,7 +164,7 @@ namespace GXPEngine.Editor
         {
             if (item == null)
                 item = references[gameObject];
-            HierarchyItem parentItem = (HierarchyItem)item.parent.parent;
+            HierarchyItem parentItem = item.parentItem;
             parentItem.children.Remove(item);
             item.LateDestroy();
             references.Remove(gameObject);

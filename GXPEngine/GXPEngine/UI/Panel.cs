@@ -82,7 +82,7 @@ namespace GXPEngine.UI
         {
             Panel sub = new Panel(width, height);
             initializeFromTexture(sub.texture.Clone());
-            //sub.LateDestroy();
+            sub.LateDestroy();
         }
         protected virtual void SetupTexture()
         {
