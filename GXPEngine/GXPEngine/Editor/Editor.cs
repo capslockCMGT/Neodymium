@@ -26,6 +26,8 @@ namespace GXPEngine.Editor
         Type[] gameObjectTypes;
         ConstructorInfo[] constructors;
 
+        bool TryRaycastNextFrame = false;
+
         public Editor() : base(1200, 600, false, true, true, "GXP Editor")
         { 
             SetupCam();
@@ -58,7 +60,7 @@ namespace GXPEngine.Editor
         void Update()
         {
             DrawEditorGizmos();
-            if(Input.GetMouseButtonDown(0))
+            if(TryRaycastNextFrame && uiHandler.millisSinceButtonPressed > 100)
             {
                 Vector3 start = mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0.001f);
                 Vector3 end = mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 1);
@@ -68,12 +70,12 @@ namespace GXPEngine.Editor
                     raycastResult slop = raycastThroughChildren(mainGameObject, start, end);
                     selectedGameobject = slop.hitObject;
                 }
-
             }
+            TryRaycastNextFrame = Input.GetMouseButtonDown(0);
             uiHandler.UpdateHierarchy();
         }
 
-        static raycastResult raycastThroughChildren(EditorGameObject toCast, Vector3 rayStart, Vector3 rayEnd)
+        raycastResult raycastThroughChildren(EditorGameObject toCast, Vector3 rayStart, Vector3 rayEnd)
         {
             raycastResult result = new raycastResult();
             result.hitObject = null;
@@ -83,19 +85,22 @@ namespace GXPEngine.Editor
             {
                 if(go.collider == null) continue;
              
-                float point = float.MaxValue;
-                bool hit = false;
-                if (go.collider is BoxCollider)
-                    hit = ((BoxCollider)go.collider).RayCast(rayStart, rayEnd, out point, out normal);
-                else hit = go.collider.RayCastTest(rayStart, rayEnd);
-
-                if (hit)
-                    result.setIfCloser((go is EditorGameObject ? (EditorGameObject)go : toCast), point < float.MaxValue ? point : (go.TransformPoint(0, 0, 0) - rayStart).Magnitude());
 
                 if (go is EditorGameObject) result.setIfCloser(raycastThroughChildren((EditorGameObject)go, rayStart, rayEnd));
+                else
+                {
+                    float point = float.MaxValue;
+                    bool hit = false;
+                    if (go.collider is BoxCollider)
+                        hit = ((BoxCollider)go.collider).RayCast(rayStart, rayEnd, out point, out normal);
+                    else hit = go.collider.RayCastTest(rayStart, rayEnd);
+
+                    if (hit && toCast != selectedGameobject)
+                        result.setIfCloser(toCast, point < float.MaxValue ? point : (go.TransformPoint(0, 0, 0) - rayStart).Magnitude());
+                }
             }
             float d = float.MaxValue;
-            if(toCast.collider != null)
+            if(toCast.collider != null && toCast != selectedGameobject)
                 ((BoxCollider)toCast.collider).RayCast(rayStart, rayEnd, out d, out normal);
             result.setIfCloser(toCast, d);
             return result;

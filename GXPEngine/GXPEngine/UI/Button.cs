@@ -16,6 +16,7 @@ namespace GXPEngine.UI
         public NoArgs OnRelease = null;
         public NoArgs OnHover = null;
         public NoArgs OnUnhover = null;
+        public static NoArgs AnyButtonOnClick = null;
 
         public enum Status { CLICKED, HOVER, REST }
         public Status prevStatus = Status.REST;
@@ -105,6 +106,7 @@ namespace GXPEngine.UI
         {
             //color = 0xff00ff00;
             OnClick?.Invoke();
+            AnyButtonOnClick?.Invoke();
         }
 
         public virtual void TriggerRelease()

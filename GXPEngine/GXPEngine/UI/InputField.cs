@@ -14,7 +14,7 @@
         public InputField(int width, int height, float x = 0, float y = 0, int fontSize = 15, bool invisible = false) : base(width, height, x, y, invisible)
         {
             TextSize(fontSize);
-            TextAlign(CenterMode.Center, CenterMode.Center);
+            TextAlign(CenterMode.Max, CenterMode.Center);
             OnClick += EnableTyping;
         }
         public override void Update()

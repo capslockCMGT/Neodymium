@@ -23,9 +23,12 @@ namespace GXPEngine.Editor
 
         Panel ObjectConstructorMenu;
 
+        public int millisSinceButtonPressed = 0;
+
         public EditorUIHandler()
         {
             editor = (Editor)game;
+            Button.AnyButtonOnClick += AnyButtonPressed;
         }
         public void SetupMainUI()
         {
@@ -129,6 +132,7 @@ namespace GXPEngine.Editor
         }
         public void UpdateHierarchy()
         {
+            millisSinceButtonPressed += Time.deltaTime;
             if (editorDisplay == null)
             {
                 if (editor.mainGameObject == null) return;
@@ -137,6 +141,9 @@ namespace GXPEngine.Editor
             editorDisplay.UpdateChildren();
             editorDisplay.UpdateDisplay();
         }
-
+        void AnyButtonPressed()
+        {
+            millisSinceButtonPressed = 0;
+        }
     }
 }
