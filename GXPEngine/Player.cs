@@ -1,10 +1,7 @@
 ﻿using GXPEngine.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace GXPEngine
 {
@@ -13,11 +10,17 @@ namespace GXPEngine
         BoxCollider collider;
         public List<Collider> colliders;
         Camera cam;
-        Vector3 camOffset = new Vector3(0, 0, 0);
         Vector3 size = new Vector3(0.1f, 0.5f, 0.1f);
         Vector3 velocity = new Vector3(0, 0, 0);
         Vector3 groundNormal = Vector3.up;
         public bool grounded = false;
+
+        float cameraTilt, targetTilt = 0.1f;
+        Vector3 camOffset = new Vector3(0, 0, 0);
+        Vector3 targetOffset = new Vector3(0.3f,0.1f,0);
+        bool xChanged;
+
+        Timer tiltTimer;
         public override Vector3[] GetExtents()
         {
             Vector3[] res = new Vector3[]
@@ -35,11 +38,17 @@ namespace GXPEngine
                 res[i] = TransformPoint(res[i]);
             return res;
         }
-        public Player() : base() 
+        public Player() : base()
         {
             collider = new BoxCollider(this);
             colliders = new List<Collider>();
+            tiltTimer = new Timer();
+            tiltTimer.SetLaunch(0.5f);
+            tiltTimer.autoReset= true;
+            tiltTimer.OnTimerEnd += ChangeShakeDirection;
         }
+
+
         public void AssignCamera(Camera cam)
         {
             this.cam = cam;
@@ -48,10 +57,6 @@ namespace GXPEngine
         {
             position += velocity * Time.deltaTimeS;
             Vector3[] extents = GetExtents();
-            if (cam!= null)
-            {
-                cam.position = TransformPoint(camOffset);
-            }
             if (extents[2].y < -2)
             {
                 y += -extents[2].y-2;
@@ -89,6 +94,8 @@ namespace GXPEngine
                 }
             }
             ControlsUpdate();
+            if (cam != null)
+                cam.position = TransformPoint(camOffset);
             if (grounded)
             {
                 if (Input.GetKeyDown(Key.SPACE))
@@ -107,16 +114,29 @@ namespace GXPEngine
         }
         public void ControlsUpdate()
         {
+            float msex = Input.mouseX / 800f * Mathf.PI;
+            float msey = Input.mouseY / 600f * Mathf.PI;
+            cam.rotation = (Quaternion.FromRotationAroundAxis(0, 1, 0, msex));
+            rotation = cam.rotation;
+            cam.Rotate(Quaternion.FromRotationAroundAxis(1, 0, 0, msey));
             //minecraft creative mode controls
             if (Input.GetKey(Key.D))
                 position += (TransformDirection(new Vector3(0, 0, -1)) ^ groundNormal).normalized() * Time.deltaTimeS;
             if (Input.GetKey(Key.A))
                 position += (TransformDirection(new Vector3(0, 0, 1)) ^ groundNormal).normalized() * Time.deltaTimeS;
-            Console.WriteLine(groundNormal);
             if (Input.GetKey(Key.W))
                 position += (TransformDirection(new Vector3(-1, 0, 0)) ^ groundNormal).normalized() * Time.deltaTimeS;
             if (Input.GetKey(Key.S))
                 position += (TransformDirection(new Vector3(1, 0, 0)) ^ groundNormal).normalized() * Time.deltaTimeS;
+            if ((Input.GetKey(Key.D) || Input.GetKey(Key.A) || Input.GetKey(Key.W) || Input.GetKey(Key.S)) && grounded)
+                CameraShake();
+            else
+            {
+                camOffset = Vector3.Lerp(Time.deltaTimeS, camOffset, Vector3.zero);
+                cameraTilt = Mathf.Lerp(Time.deltaTimeS,cameraTilt, 0);
+                cam.Rotate(Quaternion.FromRotationAroundAxis(new Vector3(0, 0, 1), cameraTilt));
+            }
+                
         }
         public void DrawBB()
         {
@@ -124,6 +144,23 @@ namespace GXPEngine
             {
                 Gizmos.DrawBox(0, 0, 0, size.x, size.y, size.z, this, color: 0xff00ffff);
             }
+        }
+        public void CameraShake()
+        {
+            if (tiltTimer.time < tiltTimer.interval / 6 || tiltTimer.time > tiltTimer.interval * 2 / 3)
+                targetOffset.y = -0.2f;
+            else
+                targetOffset.y = +0.2f;
+
+
+            camOffset.x = Mathf.Lerp(Time.deltaTimeS, camOffset.x, targetOffset.x);
+            camOffset.y = Mathf.Lerp(Time.deltaTimeS, camOffset.y, targetOffset.y);
+            cameraTilt = camOffset.x * 0.7f;
+            cam.Rotate(Quaternion.FromRotationAroundAxis(new Vector3(0, 0, 1), cameraTilt));
+        }
+        public void ChangeShakeDirection()
+        {
+            targetOffset.x = -targetOffset.x;
         }
     }
 }

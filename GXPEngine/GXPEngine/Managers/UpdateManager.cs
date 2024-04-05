@@ -25,6 +25,7 @@ namespace GXPEngine.Managers
 		{
 			if (_updateDelegates != null)
 				_updateDelegates ();
+			Timer.Update ();
 		}
 
 		//------------------------------------------------------------------------------------------------------------------------
