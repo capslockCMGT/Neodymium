@@ -230,11 +230,11 @@ namespace GXPEngine {
             Game main = Game.main;
             var oldRange = main.RenderRange;
             SetRenderRange();
-            main.SetViewport(_windowX, _windowY, _width, _height, false);
+            main.SetViewport(_windowX, _windowY, _width, _height, true);
             GL.Clear(0x100);
 			GL.Disable(0xb71);
             main.uiManager.Render(glContext);
-            main.SetViewport((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height);
+            main.SetViewport((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height, true);
             glContext.PopMatrix();
 			GL.Enable(0xb71);
         }

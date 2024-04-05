@@ -49,7 +49,8 @@ namespace GXPEngine.UI
         {
             var oldRange = game.RenderRange;
             var c = GetArea();
-            game.SetViewport((int)(x-c[0]), (int)(y-c[3]), width, height, false);
+            Vector3 truepos = TransformPoint(0, 0, 0);
+            game.SetViewport((int)(truepos.x-c[0]), (int)(truepos.y-c[3]), width, height, false);
             base.Render(glContext);
             game.SetViewport((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height);
         }
