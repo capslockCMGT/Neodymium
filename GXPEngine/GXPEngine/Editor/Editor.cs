@@ -42,15 +42,16 @@ namespace GXPEngine.Editor
 
             Type gameObjectType = constructorInfo.DeclaringType;
             EditorGameObject newObject = new EditorGameObject(gameObjectType, constructorInfo);
-            if (_mainGameObject == null)
-            {
-                _mainGameObject = newObject;
-                AddChild(newObject);
-            }
             if (selectedGameobject != null)
             {
                 selectedGameobject.AddChild(newObject);
             }
+            else if (_mainGameObject == null || !_mainGameObject.InHierarchy())
+            {
+                _mainGameObject = newObject;
+                AddChild(newObject);
+            }
+            else _mainGameObject.AddChild(newObject);
             selectedGameobject = newObject;
             Console.WriteLine("added object");
         }
@@ -79,29 +80,25 @@ namespace GXPEngine.Editor
 
         static raycastResult raycastThroughChildren(EditorGameObject toCast, Vector3 rayStart, Vector3 rayEnd)
         {
+            Console.WriteLine(toCast.ObjectType);
             raycastResult result = new raycastResult();
             result.hitObject = null;
             result.distance = float.MaxValue;
             Vector3 normal;
             foreach(GameObject go in toCast.GetChildren())
             {
-                if(go.collider != null)
-                {
-                    float point = float.MaxValue;
-                    bool hit = false;
-                    if (go.collider is BoxCollider)
-                    {
-                        hit = ((BoxCollider)go.collider).RayCast(rayStart, rayEnd, out point, out normal);
-                        //Console.WriteLine(point);
-                    }
-                    if (!hit)
-                        hit = go.collider.RayCastTest(rayStart, rayEnd);
-                    if (hit)
-                    {
-                        result.setIfCloser((go is EditorGameObject ? (EditorGameObject)go : toCast), point < float.MaxValue ? point : (go.TransformPoint(0, 0, 0) - rayStart).Magnitude());
-                        //Console.WriteLine(go);
-                    }
-                }
+                if(go.collider == null) continue;
+             
+                float point = float.MaxValue;
+                bool hit = false;
+                if (go.collider is BoxCollider)
+                    hit = ((BoxCollider)go.collider).RayCast(rayStart, rayEnd, out point, out normal);
+                else hit = go.collider.RayCastTest(rayStart, rayEnd);
+
+                if (hit)
+                    result.setIfCloser((go is EditorGameObject ? (EditorGameObject)go : toCast), point < float.MaxValue ? point : (go.TransformPoint(0, 0, 0) - rayStart).Magnitude());
+
+                if (go is EditorGameObject) result.setIfCloser(raycastThroughChildren((EditorGameObject)go, rayStart, rayEnd));
             }
             float d = float.MaxValue;
             if(toCast.collider != null)
@@ -148,7 +145,7 @@ namespace GXPEngine.Editor
                 if (i < 11) Gizmos.DrawLine(-6, 0, i - 5, 6, 0, i - 5, this, col, 1);
                 else Gizmos.DrawLine(i - 16, 0, -6, i - 16, 0, 6, this, col, 1);
             }
-            if (selectedGameobject != null)
+            if (selectedGameobject != null && typeof(Box).IsAssignableFrom(selectedGameobject.ObjectType))
                 Gizmos.DrawBox(0, 0, 0, 2, 2, 2, selectedGameobject, 0xFFFF9900, 8);
         }
 
