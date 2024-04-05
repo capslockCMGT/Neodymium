@@ -47,8 +47,8 @@ namespace GXPEngine.Editor
             game.uiManager.Add(leftPanel);
             game.uiManager.Add(buttonHolder);
 
-            selectedGameObjectMenu = new SliderPanel(300, game.height - 10, game.width - 305, 5);
-            selectedGameObjectMenu.SetSliderBar(20, game.height - 10);
+            selectedGameObjectMenu = new SliderPanel(300, game.height - 410, game.width - 305, 5);
+            selectedGameObjectMenu.SetSliderBar(20, game.height - 410);
             selectedGameObjectMenu.OrganiseChildrenVertical();
             game.uiManager.Add(selectedGameObjectMenu);
             game.uiManager.Add(new InputField(100, 20, false, 100, 100, 10));
