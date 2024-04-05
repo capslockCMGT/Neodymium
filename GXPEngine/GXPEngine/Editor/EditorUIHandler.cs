@@ -19,8 +19,9 @@ namespace GXPEngine.Editor
         HierarchyItem editorDisplay;
 
         TexturedButton AddObjectButton;
-        Panel AddObjectMenu;
+        TexturedButton DestroyObjectButton;
 
+        Panel AddObjectMenu;
         Panel ObjectConstructorMenu;
 
         public int millisSinceButtonPressed = 0;
@@ -39,6 +40,10 @@ namespace GXPEngine.Editor
             AddObjectButton = new TexturedButton("editor/buttons/AddObject.png", "editor/buttons/AddObjectHover.png", "editor/buttons/AddObjectClick.png");
             buttonHolder.AddChild(AddObjectButton);
             AddObjectButton.OnClick += SetAddObjectMenuActive;
+
+            DestroyObjectButton = new TexturedButton("editor/buttons/DestroyObject.png", "editor/buttons/DestroyObjectHover.png", "editor/buttons/DestroyObjectClick.png");
+            buttonHolder.AddChild(DestroyObjectButton);
+            DestroyObjectButton.OnClick += destroySelectedObject;
 
             buttonHolder.AddChild(new TexturedButton("editor/buttons/TranslateObject.png", "editor/buttons/TranslateObjectHover.png", "editor/buttons/TranslateObjectClick.png"));
             buttonHolder.AddChild(new TexturedButton("editor/buttons/RotateObject.png", "editor/buttons/RotateObjectHover.png", "editor/buttons/RotateObjectClick.png"));
@@ -115,6 +120,13 @@ namespace GXPEngine.Editor
             AddObjectMenu.OrganiseChildrenVertical();
             AddObjectMenu.ResizeToContent();
             //AddObjectMenu = AddObjectMenu.ResizedToContent();
+        }
+
+        void destroySelectedObject()
+        {
+            if (editor.selectedGameobject == editor.mainGameObject) return;
+            editor.selectedGameobject?.Destroy();
+            editor.selectedGameobject = null;
         }
 
         void SetAddObjectMenuActive()
