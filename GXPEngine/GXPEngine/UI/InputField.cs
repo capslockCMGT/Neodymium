@@ -1,11 +1,4 @@
-﻿using GXPEngine.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GXPEngine.UI
+﻿namespace GXPEngine.UI
 {
     public class InputField : Button
     {
@@ -27,7 +20,8 @@ namespace GXPEngine.UI
         public override void Update()
         {
             base.Update();
-            switch (state){
+            switch (state)
+            {
                 case State.DISPLAY:
                     color = 0xffffffff;
                     break;
@@ -37,20 +31,30 @@ namespace GXPEngine.UI
                     {
                         DisableTyping();
                     }
-                    if (Input.AnyKeyDown())
+                    if (!Input.AnyKeyDown())
+                        break;
+
+                    for (int i = 30; i <= 90; i++)
                     {
-                        for (int i=30; i<=90; i++)
+                        if (Input.GetKeyDown(i))
                         {
-                            if (Input.GetKeyDown(i))
-                                displayedText += (char)i;
+                            char toadd = (char)i;
+                            if (!(Input.GetKey(Key.LEFT_SHIFT) || Input.GetKey(Key.RIGHT_SHIFT))) toadd = char.ToLower(toadd);
+                            displayedText += toadd;
                         }
-                        if (Input.GetKeyDown(Key.BACKSPACE))
-                        {
-                            if (displayedText.Length > 0)
-                                displayedText = displayedText.Remove(displayedText.Length - 1);
-                        }
-                        UpdateDisplay();
                     }
+                    if (Input.GetKeyDown(Key.BACKSPACE))
+                    {
+                        if (displayedText.Length > 0)
+                            displayedText = displayedText.Remove(displayedText.Length - 1);
+                    }
+                    if (Input.GetKeyDown(Key.V) && Input.GetKey(Key.LEFT_CTRL))
+                    {
+                        displayedText = displayedText.Remove(displayedText.Length - 1);
+                        displayedText += Input.GetClipboardText();
+                    }
+                    UpdateDisplay();
+
                     break;
             }
         }

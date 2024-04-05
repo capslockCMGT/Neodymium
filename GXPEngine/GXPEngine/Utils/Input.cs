@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using GXPEngine.Core;
 
 namespace GXPEngine
@@ -105,5 +106,22 @@ namespace GXPEngine
 		public static int mouseY {
 			get { return GLContext.mouseY; }
 		}
-	}
+
+        public static string GetClipboardText()
+        {
+            string ReturnValue = string.Empty;
+            Thread STAThread = new Thread(
+                delegate ()
+                {
+                    // Use a fully qualified name for Clipboard otherwise it
+                    // will end up calling itself.
+                    ReturnValue = System.Windows.Forms.Clipboard.GetText();
+                });
+            STAThread.SetApartmentState(ApartmentState.STA);
+            STAThread.Start();
+            STAThread.Join();
+
+            return ReturnValue;
+        }
+    }
 }
