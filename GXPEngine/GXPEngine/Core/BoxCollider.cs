@@ -124,7 +124,9 @@ namespace GXPEngine.Core
         {
 			if (worldSpace == null)
 				worldSpace = Game.main;
-			p1 = _owner.InverseTransformPoint(p1);
+            p1 = worldSpace.TransformPoint(p1);
+            p2 = worldSpace.TransformPoint(p2);
+            p1 = _owner.InverseTransformPoint(p1);
             p2 = _owner.InverseTransformPoint(p2);
             distance = float.MaxValue;
             normal = Vector3.zero;
