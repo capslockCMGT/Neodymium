@@ -79,12 +79,18 @@ namespace GXPEngine.Editor
             {
                 foreach (HierarchyItem item in children)
                 {
+                    if (item.parent != parent)
+                        item.parent = parent;
                     item.y = y + res + 5;
                     item.x = x + 10;
                     res += item.GetContentHeight() + 5;
                 }
             }
-
+            if (hideChildren)
+            {
+                foreach (HierarchyItem item in children)
+                    item.Hide();
+            }
             if (height != res)
             {
                 Resize(width, res);
@@ -153,6 +159,13 @@ namespace GXPEngine.Editor
             parentItem.children.Remove(item);
             item.LateDestroy();
             references.Remove(gameObject);
+        }
+
+        public void Hide()
+        {
+            parent = null;
+            foreach(HierarchyItem hi in children)
+                hi.Hide();
         }
     }
 }
