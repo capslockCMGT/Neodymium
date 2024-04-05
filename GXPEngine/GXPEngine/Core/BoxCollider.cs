@@ -98,6 +98,8 @@ namespace GXPEngine.Core
 			if (n * a == 0)
 				return new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
 			float d = (p0 - l0) * n / (a * n);
+			if (d<0)
+                return new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
             Vector3 p = l0 + a * d;
             Vector3 xraw = d1 ^ (p - p0);
             if (xraw * n > n * n || xraw * n < 0)
@@ -120,7 +122,7 @@ namespace GXPEngine.Core
         //------------------------------------------------------------------------------------------------------------------------
         //														RayCast()
         //------------------------------------------------------------------------------------------------------------------------		
-        public bool RayCast(Vector3 p1, Vector3 p2, out float distance, out Vector3 normal, GameObject worldSpace = null)
+        public override bool RayCast(Vector3 p1, Vector3 p2, out float distance, out Vector3 normal, GameObject worldSpace = null)
         {
 			if (worldSpace == null)
 				worldSpace = Game.main;
@@ -625,6 +627,8 @@ namespace GXPEngine.Core
 					{
 						float startPenetration = penetrationDepth;
 						n = cEdges[C] ^ dEdges[D];
+						if (n==Vector3.zero)
+							continue;
 						Vector3 p = boundDistance(n, cEdges[0], cEdges[1], cEdges[2]);
                         if (!updateCollisionPoint(
 							cO + p, n, - p * 2, d,

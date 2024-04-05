@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Security.Permissions;
+using System.Threading;
 using GXPEngine;
 using GXPEngine.Core;
 using GXPEngine.OpenGL;
@@ -32,6 +35,7 @@ namespace GXPEngine {
 		static Gizmos Instance = null;
 		static uint defaultColor = 0xffffffff;
 		static byte defaultWidth = 3;
+		static GameObject cameraSpace = null;
 
 		List<DrawLineCall> drawCalls;
 
@@ -91,17 +95,25 @@ namespace GXPEngine {
 			if (width == 0) {
 				width = defaultWidth;
 			}
+			Vector3 start = new Vector3(x1, y1, z1);
+			Vector3 end = new Vector3(x2, y2, z2);
 
-			if (space == null) {
-				Instance.drawCalls.Add(new DrawLineCall(x1, y1, z1, x2, y2, z2, color, width));
-			} else {
+            if (space != null)  {
 				// transform to the given parent space:
-				Vector3 start = space.TransformPoint(x1, y1, z1);
-				Vector3 end = space.TransformPoint(x2, y2, z2);
+				start = space.TransformPoint(x1, y1, z1);
+				end = space.TransformPoint(x2, y2, z2);
 
-				Instance.drawCalls.Add(new DrawLineCall(start.x, start.y, start.z, end.x, end.y, end.z, color, width));
 			}
-		}
+
+			//if (cameraSpace != null)
+			//{
+			//	start = cameraSpace.InverseTransformPoint(start);
+			//	end = cameraSpace.InverseTransformPoint(end);
+			//}
+
+			Instance.drawCalls.Add(new DrawLineCall(start.x, start.y, start.z, end.x, end.y, end.z, color, width));
+
+        }
         public static void DrawLine(Vector3 p1, Vector3 p2, GameObject space = null, uint color = 0, byte width = 0)
 		{
 			DrawLine(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z, space, color, width);
@@ -261,6 +273,10 @@ namespace GXPEngine {
 				}
 				drawCalls.Clear();
 			}
+		}
+		public static void GetCameraSpace(Camera cam)
+		{
+			cameraSpace = cam.parent;
 		}
 	}
 }

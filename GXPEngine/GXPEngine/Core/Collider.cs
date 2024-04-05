@@ -49,6 +49,20 @@ namespace GXPEngine.Core
             return false;
         }
 
+        //------------------------------------------------------------------------------------------------------------------------
+        //														RayCastTest()
+        //------------------------------------------------------------------------------------------------------------------------		
+        /// <summary>
+        /// If this collider is currently overlapping with the ray from point start to end 
+		/// returns <c>true</c>, <paramref name="normal"/> of the collision and the <paramref name="distance"/> to the point of impact.
+        /// </summary>
+        public virtual bool RayCast(Vector3 p1, Vector3 p2, out float distance, out Vector3 normal, GameObject worldSpace = null)
+        {
+			distance = float.MaxValue;
+			normal = Vector3.zero;
+            return false;
+        }
+
         /// <summary>
         /// If this collider would collide with collider other after moving by vx,vy,
         /// then this method returns the time of impact of the collision, which is a number between 
