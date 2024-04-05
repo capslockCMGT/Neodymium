@@ -31,7 +31,7 @@ namespace GXPEngine
 
                 if (OnScreen())
                 {
-                    _model._texture = _texture;
+                    _model.texture = _texture;
                     glContext.SetColor((byte)((_color >> 16) & 0xFF),
                                        (byte)((_color >> 8) & 0xFF),
                                        (byte)(_color & 0xFF),

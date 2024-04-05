@@ -59,6 +59,7 @@
     <Compile Include="GXPEngine\Editor\Editor.cs" />
     <Compile Include="GXPEngine\Editor\EditorCamera.cs" />
     <Compile Include="GXPEngine\Editor\EditorGameObject.cs" />
+    <Compile Include="GXPEngine\Editor\TransformGizmo.cs" />
     <Compile Include="GXPEngine\Editor\TypeHandler.cs" />
     <Compile Include="GXPEngine\ModelRenderer.cs" />
     <Compile Include="GXPEngine\UI\Button.cs" />

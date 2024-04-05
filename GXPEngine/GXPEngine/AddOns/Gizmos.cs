@@ -123,12 +123,12 @@ namespace GXPEngine {
         /// <summary>
         /// Draws a cross shape centered at the point x,y,z, with given radius, using DrawLine.
         /// </summary>
-        public static void DrawCross(float x, float y, float z, float radius, GameObject space = null, uint color = 0, byte width = 0) {
+        //public static void DrawCross(float x, float y, float z, float radius, GameObject space = null, uint color = 0, byte width = 0) {
 			//im not implementing this
 			/*
 			DrawLine(x - radius, y - radius, x + radius, y + radius, space, color, width);
 			DrawLine(x - radius, y + radius, x + radius, y - radius, space, color, width);*/
-		}
+		//}
 
 		/// <summary>
 		/// Draws a line segment from (x,y,z) to (x+dx, y+dy, z+dz), using DrawLine.
@@ -141,38 +141,38 @@ namespace GXPEngine {
 		/// Draws a line segment starting at (x,y), with the given length and angle in degrees,
 		/// using DrawLine.
 		/// </summary>
-		public static void DrawRayAngle(float x, float y, float angleDegrees, float length, GameObject space = null, uint color = 0, byte width = 0) {
+		//public static void DrawRayAngle(float x, float y, float angleDegrees, float length, GameObject space = null, uint color = 0, byte width = 0) {
 			//not implementing this either
 			/*
 			float dx = Mathf.Cos(angleDegrees * Mathf.PI / 180) * length;
 			float dy = Mathf.Sin(angleDegrees * Mathf.PI / 180) * length;
 			DrawLine(x, y, x + dx, y + dy, space, color, width);*/
-		}
+		//}
 
 		/// <summary>
 		/// Draws an arrow from (x,y) to (x+dx, y+dy), using DrawLine.
 		/// The relativeArrowSize is the size of the arrow head compared to the arrow length.
 		/// </summary>
-		public static void DrawArrow(float x, float y, float dx, float dy, float relativeArrowSize = 0.25f, GameObject space = null, uint color = 0, byte width = 0) {
+		//public static void DrawArrow(float x, float y, float dx, float dy, float relativeArrowSize = 0.25f, GameObject space = null, uint color = 0, byte width = 0) {
 			//seriously? who is using this?
 			/*
 			DrawLine(x, y, x + dx, y + dy, space, color, width);
 			DrawLine(x + dx, y + dy, x + dx * (1 - relativeArrowSize) - dy * relativeArrowSize, y + dy * (1 - relativeArrowSize) + dx * relativeArrowSize, space, color, width);
 			DrawLine(x + dx, y + dy, x + dx * (1 - relativeArrowSize) + dy * relativeArrowSize, y + dy * (1 - relativeArrowSize) - dx * relativeArrowSize, space, color, width);*/
-		}
+		//}
 
 		/// <summary>
 		/// Draws an arrow starting at (x,y), with the given length and angle in degrees,
 		/// using DrawLine.
 		/// The relativeArrowSize is the size of the arrow head compared to the arrow length.
 		/// </summary>
-		public static void DrawArrowAngle(float x, float y, float angleDegrees, float length, float relativeArrowSize = 0.25f, GameObject space = null, uint color = 0, byte width = 0) {
+		//public static void DrawArrowAngle(float x, float y, float angleDegrees, float length, float relativeArrowSize = 0.25f, GameObject space = null, uint color = 0, byte width = 0) {
             //not implementing this
             /*
 			float dx = Mathf.Cos(angleDegrees * Mathf.PI / 180) * length;
 			float dy = Mathf.Sin(angleDegrees * Mathf.PI / 180) * length;
 			DrawArrow(x, y, dx, dy, relativeArrowSize, space, color, width);*/
-        }
+        //}
 
         /// <summary>
         /// Draws an axis-aligned box centered at a given point, with given width, height and depth,
@@ -250,7 +250,7 @@ namespace GXPEngine {
 
 		public static void drawEverything(GLContext gLContext)
 		{
-			if(Instance != null)
+			if (Instance == null) return;
 			Instance.DrawLines(gLContext);
 		}
 

@@ -19,14 +19,14 @@ namespace GXPEngine
         protected float[] uvs;
         protected int numberOfVertices; // The number of rendered quads is numberOfVertices/6
 
-        public Texture2D _texture;
+        public Texture2D texture;
 
         List<float> vertList = new List<float>();
         List<float> uvList = new List<float>();
 
         public BufferRenderer(Texture2D texture)
         {
-            _texture = texture;
+            this.texture = texture;
         }
 
         public BufferRenderer()
@@ -70,7 +70,7 @@ namespace GXPEngine
 
         public void DrawBuffers(GLContext glContext)
         {
-            _texture.Bind();
+            texture.Bind();
 
             //glContext.SetColor(0xff, 0xff, 0xff, 0x99);
             GL.EnableClientState(GL.TEXTURE_COORD_ARRAY);
@@ -81,7 +81,7 @@ namespace GXPEngine
             GL.DisableClientState(GL.VERTEX_ARRAY);
             GL.DisableClientState(GL.TEXTURE_COORD_ARRAY);
 
-            _texture.Unbind();
+            texture.Unbind();
         }
 
         public void WriteVertsToConsole()

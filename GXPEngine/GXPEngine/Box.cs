@@ -154,7 +154,7 @@ namespace GXPEngine
 
                 if (OnScreen())
                 {
-                    boxModel._texture = _texture;
+                    boxModel.texture = _texture;
                     glContext.SetColor((byte)((_color >> 16) & 0xFF),
                                        (byte)((_color >> 8) & 0xFF),
                                        (byte)(_color & 0xFF),

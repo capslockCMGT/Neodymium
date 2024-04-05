@@ -15,6 +15,9 @@ namespace GXPEngine.Editor
     {
         EditorCamera mainCam;
         EditorGameObject _mainGameObject;
+
+        TransformGizmo transformer;
+
         public EditorGameObject mainGameObject
         {
             get { return _mainGameObject; }
@@ -32,6 +35,7 @@ namespace GXPEngine.Editor
         { 
             SetupCam();
             uiHandler = new EditorUIHandler();
+            transformer = new TransformGizmo();
 
             uiHandler.SetupMainUI();
         }
@@ -51,6 +55,7 @@ namespace GXPEngine.Editor
             else if (_mainGameObject == null || !_mainGameObject.InHierarchy())
             {
                 _mainGameObject = newObject;
+                _mainGameObject.AddChild(transformer);
                 AddChild(newObject);
             }
             else _mainGameObject.AddChild(newObject);

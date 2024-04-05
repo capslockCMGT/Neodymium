@@ -180,7 +180,6 @@ namespace GXPEngine {
 
             if (camera is Camera)
                 glContext.PopMatrix();
-			//ui render
             
             glContext.PopMatrix();
 
