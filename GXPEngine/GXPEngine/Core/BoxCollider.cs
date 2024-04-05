@@ -120,8 +120,12 @@ namespace GXPEngine.Core
         //------------------------------------------------------------------------------------------------------------------------
         //														RayCast()
         //------------------------------------------------------------------------------------------------------------------------		
-        public bool RayCast(Vector3 p1, Vector3 p2, out float distance, out Vector3 normal)
+        public bool RayCast(Vector3 p1, Vector3 p2, out float distance, out Vector3 normal, GameObject worldSpace = null)
         {
+			if (worldSpace == null)
+				worldSpace = Game.main;
+			p1 = _owner.InverseTransformPoint(p1);
+            p2 = _owner.InverseTransformPoint(p2);
             distance = float.MaxValue;
             normal = Vector3.zero;
 
