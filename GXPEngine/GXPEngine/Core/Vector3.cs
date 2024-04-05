@@ -38,14 +38,14 @@ namespace GXPEngine.Core
         {
             return new Vector3(v.x * s, v.y * s, v.z * s);
         }
-        public static bool operator ==(Vector3 v1, Vector3 v2)
+        /*public static bool operator ==(Vector3 v1, Vector3 v2)
         {
             return (v1.x - v2.x < 0.00001f && v1.y - v2.y < 0.00001f && v1.z - v2.z < 0.00001f);
         }
         public static bool operator !=(Vector3 v1, Vector3 v2)
         {
             return !(v1.x - v2.x < 0.00001f && v1.y - v2.y < 0.00001f && v1.z - v2.z < 0.00001f);
-        }
+        }*/
         //alternative dot product
         public static float operator *(Vector3 v1, Vector3 v2)
         {

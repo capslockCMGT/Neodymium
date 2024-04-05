@@ -16,7 +16,7 @@ namespace GXPEngine.Editor
         ParameterInfo[] ConstructorParams;
         object[] ConstructorParameters;
         GameObject EditorDisplayObject;
-        protected static Vector3[] _bounds;
+        protected static Vector3[] _boxbounds;
         float radius = .25f;
         public EditorGameObject(Type objectType, ConstructorInfo constructor) : base("editor/ProxyLogo.png", addCollider:true)
         {
@@ -26,7 +26,7 @@ namespace GXPEngine.Editor
             ConstructorParams = Constructor.GetParameters();
             ConstructorParameters = new object[ConstructorParams.Length];
             BuildObject();
-            if(_bounds == null) CreateBounds();
+            if(_boxbounds == null) CreateBounds();
         }
 
         void BuildObject()
@@ -55,12 +55,12 @@ namespace GXPEngine.Editor
             Vector3[] res = new Vector3[8];
             for (int i = 0; i < 8; i++)
                 //dw abt it
-                res[i] = TransformPoint(_bounds[i]*radius);
+                res[i] = TransformPoint(_boxbounds[i]*radius);
             return res;
         }
         void CreateBounds()
         {
-            _bounds = new Vector3[8];
+            _boxbounds = new Vector3[8];
             for (int i = 0; i < 6; i++)
             {
                 int sel = i % 3;
@@ -70,13 +70,13 @@ namespace GXPEngine.Editor
                 Vector3 y = new Vector3(sel == 0 ? 1 : 0, sel != 0 ? 1 : 0, 0);
                 Vector3 res;
                 res = normal - x - y;
-                if (sel == 1) _bounds[(dir == 1 ? 1 : 0) * 4 + 0] = res;
+                if (sel == 1) _boxbounds[(dir == 1 ? 1 : 0) * 4 + 0] = res;
                 res = normal + x - y;
-                if (sel == 1) _bounds[(dir == 1 ? 1 : 0) * 4 + 1] = res;
+                if (sel == 1) _boxbounds[(dir == 1 ? 1 : 0) * 4 + 1] = res;
                 res = normal + x + y;
-                if (sel == 1) _bounds[(dir == 1 ? 1 : 0) * 4 + 2] = res;
+                if (sel == 1) _boxbounds[(dir == 1 ? 1 : 0) * 4 + 2] = res;
                 res = normal - x + y;
-                if (sel == 1) _bounds[(dir == 1 ? 1 : 0) * 4 + 3] = res;
+                if (sel == 1) _boxbounds[(dir == 1 ? 1 : 0) * 4 + 3] = res;
             }
         }
     }

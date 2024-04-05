@@ -26,9 +26,6 @@ namespace GXPEngine.Editor
 
         EditorUIHandler uiHandler;
 
-        Type[] gameObjectTypes;
-        ConstructorInfo[] constructors;
-
         bool TryRaycastNextFrame = false;
 
         public Editor() : base(1200, 600, false, true, true, "GXP Editor")
