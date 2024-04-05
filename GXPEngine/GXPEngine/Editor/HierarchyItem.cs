@@ -137,9 +137,15 @@ namespace GXPEngine.Editor
         {
             if (hideChildren) return;
             //check each child in hierarchy, if there are some impostors in the scene that are not parented to the corresponding gameobject, remove them
+            List<HierarchyItem> kickedChildren = new List<HierarchyItem>();
             foreach (HierarchyItem child in children)
                 if (child.gameObject.parent != gameObject)
-                    UnregisterChild(child.gameObject, child);
+                    kickedChildren.Add(child);
+            for (int i=kickedChildren.Count-1; i>=0;i--)
+            {
+                HierarchyItem item = kickedChildren[i];
+                UnregisterChild(item.gameObject, item);
+            }
             //opposite process here
             //check each child in scene, if there are some impostors in the hierarchy that are not parented to the corresponding item, add them
             foreach (GameObject child in gameObject.GetChildren())
@@ -168,6 +174,11 @@ namespace GXPEngine.Editor
             parentItem.children.Remove(item);
             item.LateDestroy();
             references.Remove(gameObject);
+            for (int i=item.children.Count-1; i>=0;i--)
+            {
+                HierarchyItem child = item.children[i];
+                UnregisterChild(child.gameObject, child);
+            }
         }
 
         public void Hide()
