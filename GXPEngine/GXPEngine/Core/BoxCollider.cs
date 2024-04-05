@@ -13,10 +13,10 @@ namespace GXPEngine.Core
             return a + ", " + b + ", " + c + ", " + a0;
         }
 	}
-	public struct CollisionManifold
-	{
-		Vector3[] collisionPoints;
-	}
+	//public struct CollisionManifold
+	//{
+	//	Vector3[] collisionPoints;
+	//}
     /// <summary>
     /// Deprecated artefact from original GXP. Don't use this.
     /// </summary>

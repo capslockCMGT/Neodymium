@@ -14,7 +14,7 @@ namespace GXPEngine.UI
     {
         protected float _contentHeight;
         public bool isMask;
-        float[] _mask;
+        //float[] _mask;
         public float ContentHeight
         {
             get { return _contentHeight; }
