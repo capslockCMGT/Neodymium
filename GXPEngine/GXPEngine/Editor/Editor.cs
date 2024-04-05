@@ -67,9 +67,12 @@ namespace GXPEngine.Editor
                 //Gizmos.DrawPlus(start, .1f, this, 0xFFFFFFFF, 1);
                 //Gizmos.DrawPlus(end, 10f, this, 0xFFFFFFFF, 1);
                 //Gizmos.DrawLine(start, end, this, 0xFFFF0000, 1);
-                if(mainGameObject != null) 
-                    selectedGameobject = raycastThroughChildren(mainGameObject, start, end).hitObject;
-                
+                if(mainGameObject != null)
+                {
+                    raycastResult slop = raycastThroughChildren(mainGameObject, start, end);
+                    selectedGameobject = slop.hitObject;
+                }
+
             }
             uiHandler.UpdateHierarchy();
         }
@@ -89,12 +92,15 @@ namespace GXPEngine.Editor
                     if (go.collider is BoxCollider)
                     {
                         hit = ((BoxCollider)go.collider).RayCast(rayStart, rayEnd, out point, out normal);
-                        Console.WriteLine(point);
+                        //Console.WriteLine(point);
                     }
                     if (!hit)
                         hit = go.collider.RayCastTest(rayStart, rayEnd);
                     if (hit)
-                        result.setIfCloser((go is EditorGameObject ? (EditorGameObject)go : toCast), point < float.MaxValue ? point : (go.TransformPoint(0,0,0)-rayStart).Magnitude());
+                    {
+                        result.setIfCloser((go is EditorGameObject ? (EditorGameObject)go : toCast), point < float.MaxValue ? point : (go.TransformPoint(0, 0, 0) - rayStart).Magnitude());
+                        //Console.WriteLine(go);
+                    }
                 }
             }
             float d = float.MaxValue;
@@ -110,7 +116,7 @@ namespace GXPEngine.Editor
 
             public void setIfCloser(EditorGameObject hitObject, float distance)
             {
-                if(this.distance < distance)
+                if(this.distance > distance)
                 {
                     this.distance = distance;
                     this.hitObject = hitObject;
