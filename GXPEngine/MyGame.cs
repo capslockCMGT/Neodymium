@@ -12,6 +12,7 @@ public class MyGame : Game {
 	EasyDraw canvas;
 	EasyDraw slopvas;
 	Camera cam;
+	Player player;
 	GameObject antiSlop;
 	Box test, test2;
 	ParticleSystem particles;
@@ -67,8 +68,7 @@ public class MyGame : Game {
 		cam = new Camera(new ProjectionMatrix(90, 90*.75f, .1f, 10), true);
 		RenderMain = false;
 		AddChild(cam);
-		cam.x = 1;
-		cam.y = .1f;
+		cam.SetXY(0, 1, 0);
 
 
         test2 = new Box("cubeTex.png");
@@ -80,7 +80,7 @@ public class MyGame : Game {
         
 		test.scale = .5f;
         test2.scale = .5f;
-        test.Rotate(new Quaternion(0.5709415f, 0.1675188f, 0.5709415f, 0.5656758f));
+        test2.Rotate(new Quaternion(0.5709415f, 0.1675188f, 0.5709415f, 0.5656758f));
         AddChild(test);
 		AddChild(test2);
 
@@ -108,6 +108,12 @@ public class MyGame : Game {
 			obj.scaleXYZ = new Vector3(10f/width, 10f/width, 1);
 			AddChild(obj);
         }
+
+		player = new Player();
+        AddChild(player);
+        player.AssignCamera(cam);
+		Gizmos.GetCameraSpace(cam);
+		player.colliders.Add(test2.collider);
     }
 
 	// For every game object, Update is called every frame, by the engine:
@@ -124,9 +130,10 @@ public class MyGame : Game {
 		antiSlop.rotation = inv.rotation;
         antiSlop.scaleXYZ = inv.scaleXYZ;
 
-		FirstPersonViewUpdate();
+		//FirstPersonViewUpdate();
+		PlayerUpdate();
 		Gizmos.DrawBox(0,0,0, 150, 50, 150, canvas);
-		Gizmos.DrawLine(0, 0, 0, 1f, 0, 0, this, 0xFFFF0000);
+        Gizmos.DrawLine(0, 0, 0, 1f, 0, 0, this, 0xFFFF0000);
 		Gizmos.DrawLine(0, 0, 0, 0, 1f, 0, this, 0xFF00FF00);
 		Gizmos.DrawLine(0, 0, 0, 0, 0, 1f, this, 0xFF0000FF);
 
@@ -170,30 +177,31 @@ public class MyGame : Game {
 		if (Input.GetKeyDown(Key.E)) test2.DisplayExtents();
         if (Input.GetKeyDown(Key.Q)) test.DisplayExtents();
         if (Input.GetKey(Key.R)) dir = cam.position;
-        if (Input.GetKey(Key.L)) test2.Move(Time.deltaTimeS, 0, 0);
-        if (Input.GetKey(Key.J)) test2.Move(-Time.deltaTimeS, 0, 0);
-        if (Input.GetKey(Key.I)) test2.Move(0, Time.deltaTimeS, 0);
-        if (Input.GetKey(Key.K)) test2.Move(0, -Time.deltaTimeS, 0);
+		if (Input.GetKey(Key.L)) test2.position += new Vector3(Time.deltaTimeS, 0, 0);
+        if (Input.GetKey(Key.J)) test2.position += new Vector3(-Time.deltaTimeS, 0, 0);
+        if (Input.GetKey(Key.I)) test2.position += new Vector3(0, Time.deltaTimeS, 0);
+        if (Input.GetKey(Key.K)) test2.position += new Vector3(0, -Time.deltaTimeS, 0);
+
 
 		Gizmos.DrawLine(dir.x, dir.y, dir.z, 0, 0, 0);
 
 		gizPos = cam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0f);
 		Gizmos.DrawPlus(gizPos.x, gizPos.y, gizPos.z, .1f, null, 0xFFFFFFFF);
 
-		//if (test.collider.GetCollisionInfo(test2.collider) != null)
-			//Console.WriteLine("COLLIDED!! RAARR");
+        //if (test.collider.GetCollisionInfo(test2.collider) != null)
+        //Console.WriteLine("COLLIDED!! RAARR");
     }
 	public void FirstPersonViewUpdate()
 	{
         float msex = Input.mouseX / 800f * Mathf.PI;
         float msey = Input.mouseY / 600f * Mathf.PI;
-        cam.rotation = Quaternion.FromRotationAroundAxis(0, 1, 0, msex);
-        cam.Rotate(Quaternion.FromRotationAroundAxis(1, 0, 0, msey));
+        cam.rotation = (Quaternion.FromRotationAroundAxis(0, 1, 0, msex));
+		cam.Rotate(Quaternion.FromRotationAroundAxis(1, 0, 0, msey));
 		//cam.Rotate(Quaternion.FromRotationAroundAxis(cam.TransformDirection(-1, 0, 0), msey));
 
 		//minecraft creative mode controls
 		if (Input.GetKey(Key.D))
-			cam.Move(Time.deltaTimeS, 0, 0);
+            cam.Move(Time.deltaTimeS, 0, 0);
         if (Input.GetKey(Key.A))
             cam.Move(-Time.deltaTimeS, 0, 0);
 		if (Input.GetKey(Key.W))
@@ -208,7 +216,7 @@ public class MyGame : Game {
 			Vector3 delta = cam.TransformDirection(0, 0, 1);
 			delta.y = 0;
 			delta = delta.normalized() * (Time.deltaTimeS);
-			cam.position += delta;
+            cam.position += delta;
         }
         if (Input.GetKey(Key.LEFT_SHIFT))
         {
@@ -225,10 +233,20 @@ public class MyGame : Game {
             cam.position += delta;
         }
     }
+    public void PlayerUpdate()
+    {
+        float msex = Input.mouseX / 800f * Mathf.PI;
+        float msey = Input.mouseY / 600f * Mathf.PI;
+        cam.rotation = (Quaternion.FromRotationAroundAxis(0, 1, 0, msex));
+        player.rotation = cam.rotation;
+        cam.Rotate(Quaternion.FromRotationAroundAxis(1, 0, 0, msey));
+        //cam.Rotate(Quaternion.FromRotationAroundAxis(cam.TransformDirection(-1, 0, 0), msey));
+
+    }
     static void Main()                          // Main() is the first method that's called when the program is run
 	{
-		//new MyGame().Start();					// Create a "MyGame" and start it
-		new Editor().Start();                   
+		new MyGame().Start();					// Create a "MyGame" and start it
+		//new Editor().Start();                   
 		//too bad im making an editor
 	}
 }
