@@ -8,17 +8,20 @@ using GXPEngine.Core;
 
 namespace GXPEngine.Editor
 {
-    public class EditorCamera : GameObject
+    public class EditorCamera : Camera
     {
-        private Camera actualCam;
+        //private Camera actualCam;
         private Vector2 screenRotation = new Vector2(0,0);
         private Vector2 mousePosition;
         private Vector2 mouseVelocity;
-        public EditorCamera(float FOV = 90, float near = .1f, float far = 100)
+        public EditorCamera(float FOV = 90, float near = .1f, float far = 100) : base(new ProjectionMatrix(FOV, (FOV * Game.main.height) / Game.main.width, near, far))
         {
-            actualCam = new Camera(new ProjectionMatrix(FOV, (FOV * game.height) / game.width, near, far));
-            AddChild(actualCam);
+
         }
+        //{
+        //    actualCam = new Camera(new ProjectionMatrix(FOV, (FOV * game.height) / game.width, near, far));
+        //    AddChild(actualCam);
+        //}
 
         void Update()
         {
@@ -26,10 +29,10 @@ namespace GXPEngine.Editor
             UpdatePosition();
         }
 
-        public Vector3 ScreenPointToGlobal(int screenX, int screenY, float depth)
-        {
-            return actualCam.ScreenPointToGlobal(screenX, screenY, depth);
-        }
+        //public Vector3 ScreenPointToGlobal(int screenX, int screenY, float depth)
+        //{
+        //    return actualCam.ScreenPointToGlobal(screenX, screenY, depth);
+        //}
 
         void UpdatePosition()
         {
@@ -40,7 +43,7 @@ namespace GXPEngine.Editor
             {
                 float vec = Input.GetKey(Key.S) ? vel : 0;
                 vec -= Input.GetKey(Key.W) ? vel : 0;
-                position += actualCam.TransformDirection(0, 0, vec);
+                position += TransformDirection(0, 0, vec);
             }
             if (Input.GetKey(Key.A) || Input.GetKey(Key.D))
             {
@@ -67,9 +70,9 @@ namespace GXPEngine.Editor
                 if (screenRotation.y < -.5f * Mathf.PI) screenRotation.y = Mathf.PI * -.499f;
 
                 screenRotation.x %= 2 * Mathf.PI;
-                rotation = Quaternion.FromRotationAroundAxis(Vector3.up, screenRotation.x);
 
-                actualCam.rotation = Quaternion.FromRotationAroundAxis(Vector3.left, screenRotation.y);
+                rotation = Quaternion.FromRotationAroundAxis(Vector3.up, screenRotation.x);
+                Rotate( Quaternion.FromRotationAroundAxis(Vector3.left, screenRotation.y));
             }
 
             mousePosition = new Vector2(Input.mouseX, Input.mouseY);

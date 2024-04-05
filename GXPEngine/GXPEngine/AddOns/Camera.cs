@@ -58,6 +58,7 @@ namespace GXPEngine {
 			camSpace.x *= camSpace.z;
 			camSpace.y *= camSpace.z;
 			return TransformPoint(camSpace);
+			//this doesnt work. only if camera is child of game
 		}
 
         /// <summary>
