@@ -44,6 +44,16 @@ namespace GXPEngine.UI
         {
             content.OrganiseChildrenVertical(marginVertical, marginHorizontal, centerVertical, centerHorizontal);
         }
+
+        public override void Render(GLContext glContext)
+        {
+            var oldRange = game.RenderRange;
+            var c = GetArea();
+            game.SetViewport((int)(x-c[0]), (int)(y-c[3]), width, height, false);
+            base.Render(glContext);
+            game.SetViewport((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height);
+        }
+
         /// <summary>
         /// Adds child to content instead of this in order to not interrupt the structure
         /// Please dont use AddChild

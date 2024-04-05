@@ -2,20 +2,24 @@
 {
     public class InputField : Button
     {
+        public delegate void TextUpdated(string newText);
+        public TextUpdated OnTextChanged = null;
         public string message;
         string displayedText;
         public State state;
         public int cursorPos;
+        bool _resetOnClick = false;
         public enum State
         {
             DISPLAY,
             TYPE
         }
-        public InputField(int width, int height, float x = 0, float y = 0, int fontSize = 15, bool invisible = false) : base(width, height, x, y, invisible)
+        public InputField(int width, int height, bool resetOnClick = false, float x = 0, float y = 0, int fontSize = 15, bool invisible = false) : base(width, height, x, y, invisible)
         {
             TextSize(fontSize);
             TextAlign(CenterMode.Max, CenterMode.Center);
             OnClick += EnableTyping;
+            _resetOnClick = resetOnClick;
         }
         public override void Update()
         {
@@ -62,7 +66,8 @@
         {
             if (state == State.TYPE) return;
             state = State.TYPE;
-            displayedText = string.Empty;
+            if(_resetOnClick)
+                displayedText = string.Empty;
             UpdateDisplay();
         }
         public void DisableTyping()
@@ -77,6 +82,7 @@
             SetupTexture();
             Fill(255);
             Text(displayedText);
+            OnTextChanged?.Invoke(displayedText);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace GXPEngine.Editor
             selectedGameObjectMenu.SetSliderBar(20, game.height - 10);
             selectedGameObjectMenu.OrganiseChildrenVertical();
             game.uiManager.Add(selectedGameObjectMenu);
-            game.uiManager.Add(new InputField(100, 20, 100, 100, 10));
+            game.uiManager.Add(new InputField(100, 20, false, 100, 100, 10));
 
             SetupAddObjectMenu();
         }
