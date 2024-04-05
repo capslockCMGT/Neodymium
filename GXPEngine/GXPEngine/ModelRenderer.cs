@@ -13,7 +13,7 @@ namespace GXPEngine
         BufferRenderer _model;
         Texture2D _texture;
 
-        public uint _color = 0xFFFFFF;
+        public uint color = 0xFFFFFF;
         public ModelRenderer(string modelFilename, string textureFilename)
         {
             if (Game.main == null)
@@ -32,9 +32,9 @@ namespace GXPEngine
                 if (OnScreen())
                 {
                     _model.texture = _texture;
-                    glContext.SetColor((byte)((_color >> 16) & 0xFF),
-                                       (byte)((_color >> 8) & 0xFF),
-                                       (byte)(_color & 0xFF),
+                    glContext.SetColor((byte)((color >> 16) & 0xFF),
+                                       (byte)((color >> 8) & 0xFF),
+                                       (byte)(color & 0xFF),
                                        (byte)(0xFF));
                     _model.DrawBuffers(glContext);
                     glContext.SetColor(255, 255, 255, 255);

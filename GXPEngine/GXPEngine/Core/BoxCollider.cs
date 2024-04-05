@@ -627,7 +627,7 @@ namespace GXPEngine.Core
 					{
 						float startPenetration = penetrationDepth;
 						n = cEdges[C] ^ dEdges[D];
-						if (n==Vector3.zero)
+						if (n.MagnitudeSquared() < 0.00001f)
 							continue;
 						Vector3 p = boundDistance(n, cEdges[0], cEdges[1], cEdges[2]);
                         if (!updateCollisionPoint(

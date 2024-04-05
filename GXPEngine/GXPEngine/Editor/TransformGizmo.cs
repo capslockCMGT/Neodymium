@@ -4,34 +4,39 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GXPEngine.Core;
+using GXPEngine.OpenGL;
 
 namespace GXPEngine.Editor
 {
     public class TransformGizmo : GameObject
     {
-        protected BufferRenderer gizmo;
+        protected ModelRenderer gizmo;
         static Editor editor;
-
+        Quaternion forward, up, left;
         public TransformGizmo()
         {
             editor = ((Editor)game);
-            gizmo = new BufferRenderer("editor/arrow.obj");
-            gizmo.texture = Texture2D.GetInstance("editor/whitePixel.png");
+            gizmo = new ModelRenderer("editor/arrow.obj", "editor/whitePixel.png");
+            forward = new Quaternion();
+            up = Quaternion.FromRotationAroundAxis(new Vector3(0, 0, 1), Mathf.PI * .5f);
+            left = Quaternion.FromRotationAroundAxis(new Vector3(0, 1, 0), Mathf.PI * .5f);
         }
 
         protected override void RenderSelf(GLContext glContext)
         {
-            glContext.PushMatrix(new float[]
-            {
-                 1f,  0,  0,  0,
-                  0, 1f,  0,  0,
-                  0,  0, 1f,  0,
-                  0,  0,  0,  1
-            });
-            glContext.SetColor(0, 0xFF, 0, 0xFF);
-            gizmo.DrawBuffers(glContext);
-            glContext.SetColor(0xFF, 0xFF, 0xFF, 0xFF);
-            glContext.PopMatrix();
+            GL.Disable(0xb71);
+
+            gizmo.rotation = forward;
+            gizmo.color = 0x0000FF;
+            gizmo.Render(glContext);
+            gizmo.rotation = up;
+            gizmo.color = 0x00FF00;
+            gizmo.Render(glContext);
+            gizmo.rotation = left;
+            gizmo.color = 0xFF0000;
+            gizmo.Render(glContext);
+
+            GL.Enable(0xb71);
         }
     }
 }
