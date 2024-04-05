@@ -94,16 +94,16 @@ namespace GXPEngine.Core
             //Gizmos.DrawParallelogram(p0, d1, d2);
             change = false;
 			a.Normalize();
-			Vector3 n = (d1 ^ d2).normalized();
+			Vector3 n = (d1 ^ d2);
 			if (n * a == 0)
 				return new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
 			float d = (p0 - l0) * n / (a * n);
             Vector3 p = l0 + a * d;
             Vector3 xraw = d1 ^ (p - p0);
-            if (xraw * n > 1 || xraw * n < 0)
+            if (xraw * n > n * n || xraw * n < 0)
 				return new Vector3(float.MaxValue, float.MaxValue, float.MaxValue); ;
             Vector3 yraw = - d2 ^ (p - p0);
-            if (yraw * n > 1 || yraw * n < 0)
+            if (yraw * n > n * n || yraw * n < 0)
                 return new Vector3(float.MaxValue, float.MaxValue, float.MaxValue); ;
 
             //Gizmos.DrawPlus(p.x, p.y, p.z, 0.05f, color: 0xff0044ff);
@@ -124,10 +124,10 @@ namespace GXPEngine.Core
         {
 			if (worldSpace == null)
 				worldSpace = Game.main;
-            p1 = worldSpace.TransformPoint(p1);
-            p2 = worldSpace.TransformPoint(p2);
-            p1 = _owner.InverseTransformPoint(p1);
-            p2 = _owner.InverseTransformPoint(p2);
+            //p1 = worldSpace.TransformPoint(p1);
+            //p2 = worldSpace.TransformPoint(p2);
+            //p1 = _owner.InverseTransformPoint(p1);
+            //p2 = _owner.InverseTransformPoint(p2);
             distance = float.MaxValue;
             normal = Vector3.zero;
 
@@ -138,7 +138,12 @@ namespace GXPEngine.Core
             Vector3 d1 = c[1] - c[0];
             Vector3 d2 = c[3] - c[0];
             Vector3 d3 = c[4] - c[0];
-			Vector3 a = p2 - p1;
+
+			Gizmos.DrawLine(c[1], c[0], color:0xff55ff55);
+            Gizmos.DrawLine(c[3], c[0], color: 0xff55ff55);
+            Gizmos.DrawLine(c[4], c[0], color: 0xff55ff55);
+
+            Vector3 a = p2 - p1;
 			bool change = false;
 			Vector3 intersection;
 
@@ -154,8 +159,9 @@ namespace GXPEngine.Core
             if (change) minIntersection = intersection;
             intersection = lineVSPara(c[6], -d1, -d3, p1, a, ref distance, ref normal, out change);
             if (change) minIntersection = intersection;
-            //Console.WriteLine(minIntersection);
+			//Console.WriteLine(minIntersection);
 
+			Gizmos.DrawLine(p1, p2);
             Gizmos.DrawPlus(minIntersection.x, minIntersection.y, minIntersection.z, 0.05f, color: 0xff0044ff);
             Gizmos.DrawLine(minIntersection.x, minIntersection.y, minIntersection.z, 
 							minIntersection.x + normal.x * 0.1f, minIntersection.y + normal.y * 0.1f, minIntersection.z + normal.z * 0.1f, color: 0xff00ff00);
