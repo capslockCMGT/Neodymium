@@ -53,7 +53,6 @@ namespace GXPEngine.Editor
             }
             else _mainGameObject.AddChild(newObject);
             selectedGameobject = newObject;
-            Console.WriteLine("added object");
         }
 
         void Update()
@@ -63,11 +62,7 @@ namespace GXPEngine.Editor
             {
                 Vector3 start = mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0.001f);
                 Vector3 end = mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 1);
-                for (float d = 0; d < 1; d += .001f)
-                    Gizmos.DrawPlus(mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, d), .1f, this, 0xFF00FF00, 1);
-                //Gizmos.DrawPlus(start, .1f, this, 0xFFFFFFFF, 1);
-                //Gizmos.DrawPlus(end, 10f, this, 0xFFFFFFFF, 1);
-                //Gizmos.DrawLine(start, end, this, 0xFFFF0000, 1);
+                
                 if(mainGameObject != null)
                 {
                     raycastResult slop = raycastThroughChildren(mainGameObject, start, end);
@@ -80,7 +75,6 @@ namespace GXPEngine.Editor
 
         static raycastResult raycastThroughChildren(EditorGameObject toCast, Vector3 rayStart, Vector3 rayEnd)
         {
-            Console.WriteLine(toCast.ObjectType);
             raycastResult result = new raycastResult();
             result.hitObject = null;
             result.distance = float.MaxValue;

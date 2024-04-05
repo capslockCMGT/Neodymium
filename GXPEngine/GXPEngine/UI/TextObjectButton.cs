@@ -20,7 +20,6 @@ namespace GXPEngine.UI
         public override void TriggerRelease()
         {
             ObjOnRelease?.Invoke(_object);
-            Console.WriteLine("released");
             base.TriggerRelease();
         }
 

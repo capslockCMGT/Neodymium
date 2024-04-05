@@ -42,8 +42,7 @@ namespace GXPEngine.Editor
             else _texture = Texture2D.GetInstance("editor/ProxyLogo.png");
             
             Vector3 baseScale = scaleXYZ;
-            scaleXYZ = baseScale*(32.0f/game.width);
-            scaleZ = baseScale.z;
+            scaleXYZ = radius*baseScale*(128.0f/game.width);
             base.RenderDepthSorted(glContext, slop);
             scaleXYZ = baseScale;
         }

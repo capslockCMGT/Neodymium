@@ -53,7 +53,7 @@ namespace GXPEngine.Editor
             childrenCounter.SetXY(width-20,0,0);
             AddChild(childrenCounter);
 
-            Console.WriteLine(references.Count);
+            //Console.WriteLine(references.Count);
         }
         void SetSelectedObject()
         {
