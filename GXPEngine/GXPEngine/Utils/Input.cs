@@ -109,12 +109,11 @@ namespace GXPEngine
 
         public static string GetClipboardText()
         {
+            //thank you stackoverflow: https://stackoverflow.com/questions/35867427/read-text-from-clipboard
             string ReturnValue = string.Empty;
             Thread STAThread = new Thread(
                 delegate ()
                 {
-                    // Use a fully qualified name for Clipboard otherwise it
-                    // will end up calling itself.
                     ReturnValue = System.Windows.Forms.Clipboard.GetText();
                 });
             STAThread.SetApartmentState(ApartmentState.STA);
