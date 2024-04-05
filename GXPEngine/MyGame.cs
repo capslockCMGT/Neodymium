@@ -235,11 +235,6 @@ public class MyGame : Game {
     }
     public void PlayerUpdate()
     {
-        float msex = Input.mouseX / 800f * Mathf.PI;
-        float msey = Input.mouseY / 600f * Mathf.PI;
-        cam.rotation = (Quaternion.FromRotationAroundAxis(0, 1, 0, msex));
-        player.rotation = cam.rotation;
-        cam.Rotate(Quaternion.FromRotationAroundAxis(1, 0, 0, msey));
         //cam.Rotate(Quaternion.FromRotationAroundAxis(cam.TransformDirection(-1, 0, 0), msey));
 
     }

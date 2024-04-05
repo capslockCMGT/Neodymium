@@ -70,6 +70,7 @@
     <Compile Include="GXPEngine\UI\TextObjectButton.cs" />
     <Compile Include="GXPEngine\UI\TextPanel.cs" />
     <Compile Include="GXPEngine\UI\TexturedButton.cs" />
+    <Compile Include="GXPEngine\Utils\Timer.cs" />
     <Compile Include="MyGame.cs" />
     <Compile Include="GXPEngine\Core\Canvas.cs" />
     <Compile Include="GXPEngine\Game.cs" />
