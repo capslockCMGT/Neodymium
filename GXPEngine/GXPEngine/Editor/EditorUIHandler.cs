@@ -19,8 +19,9 @@ namespace GXPEngine.Editor
         HierarchyItem editorDisplay;
 
         TexturedButton AddObjectButton;
-        Panel AddObjectMenu;
+        TexturedButton DestroyObjectButton;
 
+        Panel AddObjectMenu;
         Panel ObjectConstructorMenu;
 
         public int millisSinceButtonPressed = 0;
@@ -40,6 +41,10 @@ namespace GXPEngine.Editor
             buttonHolder.AddChild(AddObjectButton);
             AddObjectButton.OnClick += SetAddObjectMenuActive;
 
+            DestroyObjectButton = new TexturedButton("editor/buttons/DestroyObject.png", "editor/buttons/DestroyObjectHover.png", "editor/buttons/DestroyObjectClick.png");
+            buttonHolder.AddChild(DestroyObjectButton);
+            DestroyObjectButton.OnClick += destroySelectedObject;
+
             buttonHolder.AddChild(new TexturedButton("editor/buttons/TranslateObject.png", "editor/buttons/TranslateObjectHover.png", "editor/buttons/TranslateObjectClick.png"));
             buttonHolder.AddChild(new TexturedButton("editor/buttons/RotateObject.png", "editor/buttons/RotateObjectHover.png", "editor/buttons/RotateObjectClick.png"));
             buttonHolder.AddChild(new TexturedButton("editor/buttons/ScaleObject.png", "editor/buttons/ScaleObjectHover.png", "editor/buttons/ScaleObjectClick.png"));
@@ -47,8 +52,8 @@ namespace GXPEngine.Editor
             game.uiManager.Add(leftPanel);
             game.uiManager.Add(buttonHolder);
 
-            selectedGameObjectMenu = new SliderPanel(300, game.height - 10, game.width - 305, 5);
-            selectedGameObjectMenu.SetSliderBar(20, game.height - 10);
+            selectedGameObjectMenu = new SliderPanel(300, game.height - 410, game.width - 305, 5);
+            selectedGameObjectMenu.SetSliderBar(20, game.height - 410);
             selectedGameObjectMenu.OrganiseChildrenVertical();
             game.uiManager.Add(selectedGameObjectMenu);
             game.uiManager.Add(new InputField(100, 20, false, 100, 100, 10));
@@ -115,6 +120,13 @@ namespace GXPEngine.Editor
             AddObjectMenu.OrganiseChildrenVertical();
             AddObjectMenu.ResizeToContent();
             //AddObjectMenu = AddObjectMenu.ResizedToContent();
+        }
+
+        void destroySelectedObject()
+        {
+            if (editor.selectedGameobject == editor.mainGameObject) return;
+            editor.selectedGameobject?.Destroy();
+            editor.selectedGameobject = null;
         }
 
         void SetAddObjectMenuActive()
