@@ -109,7 +109,7 @@ namespace GXPEngine
 
         public static string GetClipboardText()
         {
-            //thank you stackoverflow: https://stackoverflow.com/questions/35867427/read-text-from-clipboard
+            //thank you stackoverflow: https://github.com/slyd0g/SharpClipboard/blob/master/SharpClipboard/Program.cs
             string ReturnValue = string.Empty;
             Thread STAThread = new Thread(
                 delegate ()
