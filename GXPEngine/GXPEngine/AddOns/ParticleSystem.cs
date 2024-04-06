@@ -81,7 +81,7 @@ namespace GXPEngine
             public GameObject cam = null;
             public void Update()
             {
-                lifetime += Time.deltaTime / 1000f;
+                lifetime += Time.deltaTimeS;
                 float fac = lifetime / totaltime;
                 //if (cam != null)
                 //    rotation = Quaternion.LookTowards(cam.position - position, new Vector3(0, 0, 1));
@@ -155,9 +155,7 @@ namespace GXPEngine
             this.texturePath = path;
             this.emitterType = emitter;
             this.mode = mode;
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            position = new Vector3(x, y, z);
 
             this.cam = cam;
             if (worldSpace == null)
@@ -225,8 +223,9 @@ namespace GXPEngine
             //p.endAngle = Utils.Random(endAngle -endAngleDelta, endAngle + endAngleDelta);
             p.cam = cam;
 
-            p.spawnPos = Utils.Random(worldSpace.TransformPoint(startPos.x, startPos.y, startPos.z), startPosDelta);
-            p.x = p.spawnPos.x; p.y = p.spawnPos.y;
+            p.spawnPos = Utils.Random(TransformPoint(startPos), startPosDelta);
+            
+            p.position = startPos;
 
             p.totaltime = Utils.Random(lifetime - lifetimeDelta, lifetime + lifetimeDelta);
             p.blendMode = blendMode;

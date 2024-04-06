@@ -328,16 +328,21 @@ namespace GXPEngine
 			byte rb = (byte)Math.Floor((b * 255));
 			color = (uint)rb + (uint)(rg << 8) + (uint)(rr << 16);
 		}
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														alpha
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Gets or sets the alpha value of the sprite. 
-		/// Setting this value allows you to make the sprite (semi-)transparent.
-		/// The alpha value should be in the range 0...1, where 0 is fully transparent and 1 is fully opaque.
-		/// </summary>
-		public float alpha {
+
+        public void SetColor(byte r, byte g, byte b)
+        {
+            color = (uint)b + (uint)(g << 8) + (uint)(r << 16);
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														alpha
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets or sets the alpha value of the sprite. 
+        /// Setting this value allows you to make the sprite (semi-)transparent.
+        /// The alpha value should be in the range 0...1, where 0 is fully transparent and 1 is fully opaque.
+        /// </summary>
+        public float alpha {
 			get { return _alpha; }
 			set { _alpha = value; }
 		}

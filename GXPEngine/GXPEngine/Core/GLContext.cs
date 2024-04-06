@@ -127,8 +127,6 @@ namespace GXPEngine.Core {
 
 				//enable depth buffer
                 GL.Enable(0xb71);
-                GL.Enable(0x809e);
-				//GL.Enable(0xbc0);
 
                 // Load the basic projection settings:
                 GL.MatrixMode(GL.PROJECTION);

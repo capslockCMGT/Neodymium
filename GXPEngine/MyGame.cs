@@ -89,16 +89,16 @@ public class MyGame : Game {
 		sloppersludge.x = 2;
 		sloppersludge.scale = .2f;
 
-		particles = new ParticleSystem("amongus.png", 0, 0, 0, ParticleSystem.EmitterType.rect, ParticleSystem.Mode.velocity, MyGame.main, cam);
-		particles.lifetime = 1;
+		//particles = new ParticleSystem("amongus.png", 0, 0, 0, ParticleSystem.EmitterType.rect, ParticleSystem.Mode.velocity, MyGame.main, cam);
+		//particles.lifetime = 1;
 
         leftPanel = new Panel(200,100, 100, 100);
-        uiManager.Add(leftPanel);
+        //uiManager.Add(leftPanel);
         butt = new Button("circle.png", 0, 0);
 		//butt.SetOrigin(20, 20);
 		//butt.scale = 1f;
 		butt.SetOrigin(butt.width * .5f, butt.height * .5f);
-		uiManager.Add(butt);
+		//uiManager.Add(butt);
 
 		for(int i = 0;  i < 10; i++)
 		{
@@ -109,17 +109,20 @@ public class MyGame : Game {
 			AddChild(obj);
         }
 
-		player = new Player();
+        SetupScene();
+
+        player = new Player();
         AddChild(player);
         player.AssignCamera(cam);
 		Gizmos.GetCameraSpace(cam);
 		player.colliders.Add(test2.collider);
+
     }
 
 	// For every game object, Update is called every frame, by the engine:
 	void Update()
     {
-		particles.Update();
+		//particles.Update();
         canvas.Rotate(camRotate);
 		//slopvas.Rotate(rotate);
         slopvas.rotation = Quaternion.LookTowards(slopvas.TransformPoint(0, .01f, 0) - cam.TransformPoint(0, 0, 0));
@@ -131,7 +134,6 @@ public class MyGame : Game {
         antiSlop.scaleXYZ = inv.scaleXYZ;
 
 		//FirstPersonViewUpdate();
-		PlayerUpdate();
 		Gizmos.DrawBox(0,0,0, 150, 50, 150, canvas);
         Gizmos.DrawLine(0, 0, 0, 1f, 0, 0, this, 0xFFFF0000);
 		Gizmos.DrawLine(0, 0, 0, 0, 1f, 0, this, 0xFF00FF00);
@@ -186,7 +188,7 @@ public class MyGame : Game {
 		Gizmos.DrawLine(dir.x, dir.y, dir.z, 0, 0, 0);
 
 		gizPos = cam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0f);
-		Gizmos.DrawPlus(gizPos.x, gizPos.y, gizPos.z, .1f, null, 0xFFFFFFFF);
+		//Gizmos.DrawPlus(gizPos.x, gizPos.y, gizPos.z, .1f, null, 0xFFFFFFFF);
 
         //if (test.collider.GetCollisionInfo(test2.collider) != null)
         //Console.WriteLine("COLLIDED!! RAARR");
@@ -233,10 +235,45 @@ public class MyGame : Game {
             cam.position += delta;
         }
     }
-    public void PlayerUpdate()
-    {
-        //cam.Rotate(Quaternion.FromRotationAroundAxis(cam.TransformDirection(-1, 0, 0), msey));
-
+	public void SetupScene()
+	{
+		for (int i=GetChildren().Count-1; i>=0; i--)
+		{
+			GameObject child = GetChildren()[i];
+			if (!(child is Camera))
+				RemoveChild(child);
+		}
+		string sceneFolder = "testScene/";
+		
+		ModelRenderer floor = new ModelRenderer(sceneFolder + "floor.obj", sceneFolder + "floor_texture.png");
+		AddChild(floor);
+		floor.y = -2;
+        ModelRenderer walls = new ModelRenderer(sceneFolder + "walls.obj", sceneFolder + "walls_texture.png");
+        AddChild(walls);
+        walls.y = -2;
+        ModelRenderer lights = new ModelRenderer(sceneFolder + "lights.obj", "editor/whitePixel.png");
+        AddChild(lights);
+        lights.y = -2;
+        ModelRenderer ceiling = new ModelRenderer(sceneFolder + "ceiling.obj", sceneFolder + "ceiling_texture.png");
+        AddChild(ceiling);
+        ceiling.y = -2;
+        ModelRenderer tube1 = new ModelRenderer(sceneFolder + "tube1.obj", sceneFolder + "tube1_texture.png");
+        AddChild(tube1);
+        tube1.y = -2;
+		ParticleSystem ps = new ParticleSystem(sceneFolder + "smoke.png",1,1,1,ParticleSystem.EmitterType.rect,ParticleSystem.Mode.velocity,worldSpace:this);
+		ps.startPos = new Vector3(0.265f, 1.44f - 2f, 2.2f);
+		ps.startSpeedDelta = new Vector3(0.001f,0.001f,0.001f);
+        ps.startSpeed = new Vector3(0.001f, -0.01f, -0.01f);
+        ps.endSpeed = Vector3.zero;
+		ps.endSpeedDelta = new Vector3(0, 0, 0);
+		ps.startSize = 0.0005f;
+		ps.endSize = 0.001f;
+        ps.startAlpha = 1f;
+		ps.endAlpha = 0f;
+		ps.startColor = Color.Gray; 
+		ps.endColor = Color.White;
+		ps.enabled = true;
+		AddChild(ps);
     }
     static void Main()                          // Main() is the first method that's called when the program is run
 	{
