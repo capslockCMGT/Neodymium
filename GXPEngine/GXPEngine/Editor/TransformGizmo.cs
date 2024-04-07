@@ -17,6 +17,7 @@ namespace GXPEngine.Editor
         {
             editor = ((Editor)game);
             gizmo = new ModelRenderer("editor/arrow.obj", "editor/whitePixel.png");
+            gizmo.scaleXYZ = new Vector3(1f, 0.2f, .2f);
             forward = new Quaternion();
             up = Quaternion.FromRotationAroundAxis(new Vector3(0, 0, 1), Mathf.PI * .5f);
             left = Quaternion.FromRotationAroundAxis(new Vector3(0, 1, 0), Mathf.PI * .5f);

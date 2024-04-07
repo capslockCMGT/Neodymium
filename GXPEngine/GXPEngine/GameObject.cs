@@ -685,6 +685,39 @@ namespace GXPEngine
 			}
 		}
 
+        /// <summary>
+        /// NOTE: UNTESTED!!!!!!!!!!!
+        /// </summary>
+        public Quaternion TransformRotation(Quaternion dir)
+		{
+			dir *= rotation;
+			if (parent == null){
+				return dir;
+			}
+			else
+			{
+				return parent.TransformRotation(dir);
+			}
+		}
+
+        /// <summary>
+        /// NOTE: UNTESTED!!!!!!!!!!!
+        /// </summary>
+        public Vector3 globalPosition
+		{
+			get { if (parent == null) return position;
+			return parent.TransformPoint(position); }
+		}
+
+		/// <summary>
+		/// NOTE: UNTESTED!!!!!!!!!!!
+		/// </summary>
+		public Quaternion globalRotation
+		{
+			get { if (parent == null) return rotation;
+			return parent.TransformRotation(rotation);}
+		}
+
 		/// <summary>
 		/// Returns the first object of the given type, found within the descendants of this game object
 		/// (including this game object itself).
