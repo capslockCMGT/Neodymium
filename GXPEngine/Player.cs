@@ -100,7 +100,7 @@ namespace GXPEngine
             {
                 if (Input.GetKeyDown(Key.SPACE))
                 {
-                    velocity.y += 5;
+                    velocity.y += 3;
                     grounded = false;
                 }
                 else
