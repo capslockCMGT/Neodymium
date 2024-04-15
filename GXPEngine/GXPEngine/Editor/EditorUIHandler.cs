@@ -23,6 +23,8 @@ namespace GXPEngine.Editor
 
         Panel AddObjectMenu;
         Panel ObjectConstructorMenu;
+        SliderPanel SelectedObjectPropertyPanel;
+        Panel ObjectPropertyListContainer;
 
         public int millisSinceButtonPressed = 0;
 
@@ -33,7 +35,7 @@ namespace GXPEngine.Editor
         }
         public void SetupMainUI()
         {
-            Panel leftPanel = new Panel(300, game.height - 10, 5, 5);
+            SelectedObjectPropertyPanel = new SliderPanel(300, game.height - 10, 5, 5);
             Panel buttonHolder = new Panel(1, 1, 310, 5, invisible: true);
             buttonHolder.scale = 3;
 
@@ -49,16 +51,38 @@ namespace GXPEngine.Editor
             buttonHolder.AddChild(new TexturedButton("editor/buttons/RotateObject.png", "editor/buttons/RotateObjectHover.png", "editor/buttons/RotateObjectClick.png"));
             buttonHolder.AddChild(new TexturedButton("editor/buttons/ScaleObject.png", "editor/buttons/ScaleObjectHover.png", "editor/buttons/ScaleObjectClick.png"));
             buttonHolder.OrganiseChildrenHorizontal();
-            game.uiManager.Add(leftPanel);
+            game.uiManager.Add(SelectedObjectPropertyPanel);
             game.uiManager.Add(buttonHolder);
 
             selectedGameObjectMenu = new SliderPanel(300, game.height - 410, game.width - 305, 5);
             selectedGameObjectMenu.SetSliderBar(20, game.height - 410);
             selectedGameObjectMenu.OrganiseChildrenVertical();
             game.uiManager.Add(selectedGameObjectMenu);
-            game.uiManager.Add(new InputField(100, 20, false, 100, 100, 10));
+            //game.uiManager.Add(new InputField(100, 20, false, 100, 100, 10));
 
             SetupAddObjectMenu();
+        }
+        public void UpdateGameObjectPropertyMenu()
+        {
+            ObjectPropertyListContainer?.Destroy();
+            if (editor.selectedGameobject == null) return;
+            if (editor.selectedGameobject.ObjectType == null) return;
+            ObjectPropertyListContainer = new Panel(1, 1, invisible:true);
+            Type objType = editor.selectedGameobject.ObjectType;
+            FieldInfo[] fields = TypeHandler.GetPublicVariables(objType);
+            for(int i = 0; i<fields.Length; i++)
+            {
+                FieldInfo field = fields[i];
+                TextPanel fieldname = new TextPanel(110,15,field.Name,8);
+                ObjectPropertyListContainer.AddChild(fieldname);
+                IndexedInputField input = new IndexedInputField(i, 150, 15, 125, 0, TypeHandler.GetDefaultPropertyValue(field.FieldType).ToString(), 10);
+                Console.WriteLine(TypeHandler.GetDefaultPropertyValue(field.FieldType).ToString());
+                fieldname.AddChild(input);
+            }
+            ObjectPropertyListContainer.OrganiseChildrenVertical();
+            ObjectPropertyListContainer.ResizeToContent();
+            SelectedObjectPropertyPanel.AddChild(ObjectPropertyListContainer);
+            SelectedObjectPropertyPanel.SetSliderBar(15, SelectedObjectPropertyPanel.height, 0, 0);
         }
 
         public void SetActiveSideMenu(GameObject menuInQuestion)

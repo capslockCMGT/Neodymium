@@ -10,8 +10,13 @@ using GXPEngine.UI;
 
 namespace GXPEngine.Editor
 {
+
     static class TypeHandler
     {
+        public static FieldInfo[] GetPublicVariables(Type obj)
+        {
+            return obj.GetFields().Where(testc => IsAllowedProperty(testc.FieldType)).ToArray();
+        }
         public static GameObject BuildFromConstructor(object[] ConstructorParameters, ParameterInfo[] ConstructorParams, Type ObjectType)
         {
             GameObject ret = null;
@@ -20,20 +25,7 @@ namespace GXPEngine.Editor
                 if (ConstructorParameters[i] != null) continue;
 
                 Type t = ConstructorParams[i].ParameterType;
-                //accepted types:string, float, int, uint, bool, Texture2D
-                //if (t == typeof(float))
-                //    ConstructorParameters[i] = 0.0f;
-                if (t == typeof(string))
-                    ConstructorParameters[i] = "default text";
-                //if (t == typeof(int))
-                //    ConstructorParameters[i] = 0;
-                //if (t == typeof(uint))
-                //    ConstructorParameters[i] = 0;
-                //if (t == typeof(bool))
-                //    ConstructorParameters[i] = false;
-                //commented values are handled by ConstructorInfo already
-                if (t == typeof(Texture2D))
-                    ConstructorParameters[i] = Texture2D.GetInstance("editor/defaultCubeTex.png");
+                ConstructorParameters[i] = GetDefaultPropertyValue(t);
 
                 if (ConstructorParams[i].HasDefaultValue) ConstructorParameters[i] = ConstructorParams[i].DefaultValue;
             }
@@ -55,17 +47,43 @@ namespace GXPEngine.Editor
             {
                 //whitelisted types for the constructor (cannot input a straight bitmap in the editor after all! (sorry im not making ms paint for gxp))
                 Type paramtype = paramInfo.ParameterType;
-                allowConstructor &=
-                    paramInfo.HasDefaultValue ||
-                    (paramtype == typeof(float)) ||
+                allowConstructor &= paramInfo.HasDefaultValue || IsAllowedProperty(paramtype);
+            }
+            return allowConstructor;
+        }
+        public static bool IsAllowedProperty(Type paramtype)
+        {
+            return  (paramtype == typeof(float)) ||
                     (paramtype == typeof(int)) ||
                     (paramtype == typeof(bool)) ||
                     (paramtype == typeof(string)) ||
                     (paramtype == typeof(uint)) ||
+                    (paramtype == typeof(Quaternion)) ||
+                    (paramtype == typeof(Vector3)) ||
                     (paramtype == typeof(Texture2D))
                     ;
-            }
-            return allowConstructor;
+        }
+        public static object GetDefaultPropertyValue(Type property)
+        {
+            //accepted types:string, float, int, uint, bool, Texture2D, Vector3, Quaternion
+            if (property == typeof(float))
+                return 0.0f;
+            if (property == typeof(string))
+                return "default text";
+            if (property == typeof(int))
+               return 0;
+            if (property == typeof(uint))
+                return 0;
+            if (property == typeof(bool))
+                return false;
+            //commented values are handled by ConstructorInfo already
+            if (property == typeof(Texture2D))
+                return Texture2D.GetInstance("editor/defaultCubeTex.png");
+            if (property == typeof(Vector3))
+                return Vector3.zero;
+            if (property == typeof(Quaternion))
+                return Quaternion.Identity;
+            return null;
         }
         public static string GetConstructorAsText(ConstructorInfo consInfo)
         {

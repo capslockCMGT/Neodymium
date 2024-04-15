@@ -22,7 +22,16 @@ namespace GXPEngine.Editor
         {
             get { return _mainGameObject; }
         }
-        public EditorGameObject selectedGameobject;
+        EditorGameObject _selectedGameObject;
+        public EditorGameObject selectedGameobject
+        {
+            get { return _selectedGameObject; }
+            set
+            {
+                _selectedGameObject = value;
+                uiHandler.UpdateGameObjectPropertyMenu();
+            }
+        }
 
         EditorUIHandler uiHandler;
 
@@ -142,7 +151,7 @@ namespace GXPEngine.Editor
             for (int i = 0; i < 22; i++)
             {
                 //dw abt it
-                uint col = i == 5 || i == 16 ? 0xFFFFFFFF : 0x77FFFFFF;
+                uint col = i == 5 || i == 16 ? 0xFFFFFFFF : 0xFF777777;
                 if (i < 11) Gizmos.DrawLine(-6, 0, i - 5, 6, 0, i - 5, this, col, 1);
                 else Gizmos.DrawLine(i - 16, 0, -6, i - 16, 0, 6, this, col, 1);
             }

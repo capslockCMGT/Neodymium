@@ -4,7 +4,7 @@
     {
         public delegate void TextUpdated(string newText);
         public TextUpdated OnTextChanged = null;
-        public string message;
+        public string message { get { return displayedText; } set { displayedText = value; UpdateDisplay(); } }
         string displayedText;
         public State state;
         public int cursorPos;
