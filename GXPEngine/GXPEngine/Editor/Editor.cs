@@ -46,14 +46,13 @@ namespace GXPEngine.Editor
             uiHandler.SetupMainUI();
         }
 
-        public void AddGameObject(object consInfo)
+        public void AddGameObject(ConstructorInfo consInfo)
         {
             uiHandler.SetActiveSideMenu(null);
-            if (consInfo == null || !(consInfo is ConstructorInfo)) return;
-            ConstructorInfo constructorInfo = (ConstructorInfo) consInfo;
+            if (consInfo == null) return;
 
-            Type gameObjectType = constructorInfo.DeclaringType;
-            EditorGameObject newObject = new EditorGameObject(gameObjectType, constructorInfo);
+            Type gameObjectType = consInfo.DeclaringType;
+            EditorGameObject newObject = new EditorGameObject(gameObjectType, consInfo);
             if (selectedGameobject != null)
             {
                 selectedGameobject.AddChild(newObject);

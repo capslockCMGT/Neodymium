@@ -21,6 +21,10 @@
             OnClick += EnableTyping;
             _resetOnClick = resetOnClick;
         }
+        public InputField(int width, int height, float x = 0, float y = 0, string defaultText = "", int fontSize = 15, bool invisible = false) : this(width, height, false, x, y, fontSize, invisible)
+        {
+            message = defaultText;
+        }
         public override void Update()
         {
             base.Update();

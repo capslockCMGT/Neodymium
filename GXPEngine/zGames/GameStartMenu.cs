@@ -22,19 +22,21 @@ namespace GXPEngine
             for (int i = 0; i < games.Length; i++)
             {
                 var game = games[i];
-                IndexedInputField button = new IndexedInputField(i, width - 20, 20, 0, 0, game.Name);
+                TextButton button = new TextButton(width - 20, 20, game.Name);
                 p.AddChild(button);
-                button.IndexedOnTextChanged += StartGame;
+                //interestingly, has to be a unique int that gets created in the loop. i will have to remember this for later use of delegates
+                int index = i;
+                button.OnClick += delegate() { StartGame(index); };
             } 
             p.OrganiseChildrenVertical();
             p.ResizeToContent();
             panel.SetSliderBar(20, panel.height);
         }
 
-        void StartGame(int index, string t)
+        void StartGame(int index)
         {
             DestroyRetainProgram();
-            Console.WriteLine(t);
+            Console.WriteLine(index);
             games[index].GetConstructor(new Type[0]).Invoke(new object[0]);
             main.Start();
         }

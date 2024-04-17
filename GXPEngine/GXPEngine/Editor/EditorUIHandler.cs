@@ -41,7 +41,7 @@ namespace GXPEngine.Editor
 
             AddObjectButton = new TexturedButton("editor/buttons/AddObject.png", "editor/buttons/AddObjectHover.png", "editor/buttons/AddObjectClick.png");
             buttonHolder.AddChild(AddObjectButton);
-            AddObjectButton.OnClick += SetAddObjectMenuActive;
+            AddObjectButton.OnClick += delegate () { SetActiveSideMenu(AddObjectMenu); };
 
             DestroyObjectButton = new TexturedButton("editor/buttons/DestroyObject.png", "editor/buttons/DestroyObjectHover.png", "editor/buttons/DestroyObjectClick.png");
             buttonHolder.AddChild(DestroyObjectButton);
@@ -73,15 +73,15 @@ namespace GXPEngine.Editor
             ObjectPropertyListContainer.AddChild(new TextPanel(276, 15, "Transform:", 10, false));
             TextPanel pos = new TextPanel(110, 15, "Vector3 position:", 8, false);
             ObjectPropertyListContainer.AddChild(pos);
-            IndexedInputField input = new IndexedInputField(0, 150, 15, 125, 0, editor.selectedGameobject.position.ToString(), 10);
+            InputField input = new InputField(150, 15, 125, 0, editor.selectedGameobject.position.ToString(), 10);
             pos.AddChild(input);
             TextPanel rot = new TextPanel(110, 15, "Quaternion rotation:", 8, false);
             ObjectPropertyListContainer.AddChild(rot);
-            input = new IndexedInputField(0, 150, 15, 125, 0, editor.selectedGameobject.rotation.ToString(), 10);
+            input = new InputField(150, 15, 125, 0, editor.selectedGameobject.rotation.ToString(), 10);
             rot.AddChild(input);
             TextPanel scale = new TextPanel(110, 15, "Vector3 scale:", 8, false);
             ObjectPropertyListContainer.AddChild(scale);
-            input = new IndexedInputField(0, 150, 15, 125, 0, editor.selectedGameobject.scaleXYZ.ToString(), 10);
+            input = new InputField(150, 15, 125, 0, editor.selectedGameobject.scaleXYZ.ToString(), 10);
             scale.AddChild(input);
 
             ObjectPropertyListContainer.AddChild(new TextPanel(276, 15, "Constructor:", 10, false));
@@ -91,7 +91,7 @@ namespace GXPEngine.Editor
                 TextPanel fieldname = new TextPanel(110, 15, field.ParameterType.Name + " " + field.Name, 8, false);
                 ObjectPropertyListContainer.AddChild(fieldname);
                 var value = editor.selectedGameobject.ConstructorParameters[i];
-                input = new IndexedInputField(i, 150, 15, 125, 0, value == null ? "null" : value.ToString(), 10);
+                input = new InputField(150, 15, 125, 0, value == null ? "null" : value.ToString(), 10);
                 fieldname.AddChild(input);
             }
 
@@ -102,7 +102,7 @@ namespace GXPEngine.Editor
                 TextPanel fieldname = new TextPanel(110,15,field.FieldType.Name +" "+ field.Name,8, false);
                 ObjectPropertyListContainer.AddChild(fieldname);
                 var value = field.GetValue(editor.selectedGameobject.EditorDisplayObject);
-                input = new IndexedInputField(i, 150, 15, 125, 0, value == null ? "null" : value.ToString(), 10);
+                input = new InputField(150, 15, 125, 0, value == null ? "null" : value.ToString(), 10);
                 fieldname.AddChild(input);
             }
             ObjectPropertyListContainer.OrganiseChildrenVertical();
@@ -125,14 +125,11 @@ namespace GXPEngine.Editor
             menuInQuestion.y = 85;
             game.uiManager.Add(menuInQuestion);
         }
-        void CreateTypeConstructorMenu(object Type)
+        void CreateTypeConstructorMenu(Type type)
         {
-            if (!(Type is Type)) return;
-            Type inquestion = (Type)Type;
-
             ObjectConstructorMenu = new Panel(1, 1);
-            ObjectConstructorMenu.AddChild(new TextPanel(game.width - 630, 15, "Pick constructor for " + inquestion.Name + ":", 10, false));
-            ConstructorInfo[] constructors = inquestion.GetConstructors();
+            ObjectConstructorMenu.AddChild(new TextPanel(game.width - 630, 15, "Pick constructor for " + type.Name + ":", 10, false));
+            ConstructorInfo[] constructors = type.GetConstructors();
 
             foreach (ConstructorInfo consInfo in constructors)
             {
@@ -141,8 +138,8 @@ namespace GXPEngine.Editor
                 string constructorText = TypeHandler.GetConstructorAsText(consInfo);
                 if (allowConstructor)
                 {
-                    constructorPanel = new TextObjectButton(editor.width - 630, 14, constructorText + ")", consInfo, 7);
-                    ((TextObjectButton)constructorPanel).ObjOnRelease += editor.AddGameObject;
+                    constructorPanel = new TextButton(editor.width - 630, 14, constructorText + ")", 7);
+                    ((TextButton)constructorPanel).OnRelease += delegate() { editor.AddGameObject(consInfo); } ;
                 }
                 else
                 {
@@ -162,9 +159,9 @@ namespace GXPEngine.Editor
             AddObjectMenu.AddChild(new TextPanel(150, 15, "Add object of type:", 10, false));
             foreach (Type typ in gameObjectTypes)
             {
-                TextObjectButton txtButton = new TextObjectButton(150, 15, typ.Name, typ, 10);
+                TextButton txtButton = new TextButton(150, 15, typ.Name, 10);
                 AddObjectMenu.AddChild(txtButton);
-                txtButton.ObjOnRelease += CreateTypeConstructorMenu;
+                txtButton.OnRelease += delegate() { CreateTypeConstructorMenu(typ); };
                 //Console.WriteLine(typ);
             }
             AddObjectMenu.OrganiseChildrenVertical();
@@ -177,11 +174,6 @@ namespace GXPEngine.Editor
             if (editor.selectedGameobject == editor.mainGameObject) return;
             editor.selectedGameobject?.Destroy();
             editor.selectedGameobject = null;
-        }
-
-        void SetAddObjectMenuActive()
-        {
-            SetActiveSideMenu(AddObjectMenu);
         }
 
         void CreateHierarchy()

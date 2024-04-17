@@ -65,12 +65,10 @@
     <Compile Include="GXPEngine\ModelRenderer.cs" />
     <Compile Include="GXPEngine\UI\Button.cs" />
     <Compile Include="GXPEngine\UI\InputField.cs" />
-    <Compile Include="GXPEngine\UI\IndexedInputField.cs" />
     <Compile Include="GXPEngine\UI\Panel.cs" />
     <Compile Include="GXPEngine\Managers\UIManager.cs" />
     <Compile Include="GXPEngine\UI\SliderPanel.cs" />
     <Compile Include="GXPEngine\UI\TextButton.cs" />
-    <Compile Include="GXPEngine\UI\TextObjectButton.cs" />
     <Compile Include="GXPEngine\UI\TextPanel.cs" />
     <Compile Include="GXPEngine\UI\TexturedButton.cs" />
     <Compile Include="GXPEngine\Utils\Timer.cs" />
