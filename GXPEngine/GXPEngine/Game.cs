@@ -14,7 +14,7 @@ namespace GXPEngine
 	{
 		internal static Game main = null;
 
-		private GLContext _glContext;
+		protected GLContext _glContext;
 
 		private UpdateManager _updateManager;
 		private CollisionManager _collisionManager;
@@ -176,9 +176,9 @@ namespace GXPEngine
 		{
 			if (OnBeforeStep != null)
 				OnBeforeStep ();
-			_updateManager.Step ();
-			_collisionManager.Step ();
-			uiManager.Step();
+			_updateManager?.Step ();
+			_collisionManager?.Step ();
+			uiManager?.Step();
 			if (OnAfterStep != null)
 				OnAfterStep ();
 		}
@@ -273,6 +273,14 @@ namespace GXPEngine
 		{
 			base.Destroy();
 			_glContext.Close();
+			main = null;
+        }
+
+		protected void DestroyRetainProgram()
+        {
+            _glContext.CloseRetainProgram();
+            base.Destroy();
+            main = null;
 		}
 
 		public int currentFps {

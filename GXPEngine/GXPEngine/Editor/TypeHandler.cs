@@ -117,7 +117,7 @@ namespace GXPEngine.Editor
             (!testc.IsSubclassOf(typeof(Game))) &&
             (testc.Namespace != typeof(Editor).Namespace) && 
             (testc.Namespace != typeof(Button).Namespace) && 
-            (testc.Name != typeof(MyGame).Name)
+            (testc.Name != typeof(GameStarter).Name)
             ).ToArray();
             //In the editor, thou shalt instantiate:
             //Gameobjects
