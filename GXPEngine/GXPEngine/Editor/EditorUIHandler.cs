@@ -67,16 +67,42 @@ namespace GXPEngine.Editor
             ObjectPropertyListContainer?.Destroy();
             if (editor.selectedGameobject == null) return;
             if (editor.selectedGameobject.ObjectType == null) return;
+            if (editor.selectedGameobject.EditorDisplayObject == null) return;
             ObjectPropertyListContainer = new Panel(1, 1, invisible:true);
-            Type objType = editor.selectedGameobject.ObjectType;
-            FieldInfo[] fields = TypeHandler.GetPublicVariables(objType);
-            for(int i = 0; i<fields.Length; i++)
+
+            ObjectPropertyListContainer.AddChild(new TextPanel(276, 15, "Transform:", 10, false));
+            TextPanel pos = new TextPanel(110, 15, "Vector3 position:", 8, false);
+            ObjectPropertyListContainer.AddChild(pos);
+            IndexedInputField input = new IndexedInputField(0, 150, 15, 125, 0, editor.selectedGameobject.position.ToString(), 10);
+            pos.AddChild(input);
+            TextPanel rot = new TextPanel(110, 15, "Quaternion rotation:", 8, false);
+            ObjectPropertyListContainer.AddChild(rot);
+            input = new IndexedInputField(0, 150, 15, 125, 0, editor.selectedGameobject.rotation.ToString(), 10);
+            rot.AddChild(input);
+            TextPanel scale = new TextPanel(110, 15, "Vector3 scale:", 8, false);
+            ObjectPropertyListContainer.AddChild(scale);
+            input = new IndexedInputField(0, 150, 15, 125, 0, editor.selectedGameobject.scaleXYZ.ToString(), 10);
+            scale.AddChild(input);
+
+            ObjectPropertyListContainer.AddChild(new TextPanel(276, 15, "Constructor:", 10, false));
+            for (int i = 0; i < editor.selectedGameobject.ConstructorParameters.Length; i++)
             {
-                FieldInfo field = fields[i];
-                TextPanel fieldname = new TextPanel(110,15,field.Name,8);
+                ParameterInfo field = editor.selectedGameobject.ConstructorParams[i];
+                TextPanel fieldname = new TextPanel(110, 15, field.ParameterType.Name + " " + field.Name, 8, false);
                 ObjectPropertyListContainer.AddChild(fieldname);
-                IndexedInputField input = new IndexedInputField(i, 150, 15, 125, 0, TypeHandler.GetDefaultPropertyValue(field.FieldType).ToString(), 10);
-                Console.WriteLine(TypeHandler.GetDefaultPropertyValue(field.FieldType).ToString());
+                var value = editor.selectedGameobject.ConstructorParameters[i];
+                input = new IndexedInputField(i, 150, 15, 125, 0, value == null ? "null" : value.ToString(), 10);
+                fieldname.AddChild(input);
+            }
+
+            ObjectPropertyListContainer.AddChild(new TextPanel(150,15,"Public variables:", 10, false));
+            for (int i = 0; i<editor.selectedGameobject.fields.Length; i++)
+            {
+                FieldInfo field = editor.selectedGameobject.fields[i];
+                TextPanel fieldname = new TextPanel(110,15,field.FieldType.Name +" "+ field.Name,8, false);
+                ObjectPropertyListContainer.AddChild(fieldname);
+                var value = field.GetValue(editor.selectedGameobject.EditorDisplayObject);
+                input = new IndexedInputField(i, 150, 15, 125, 0, value == null ? "null" : value.ToString(), 10);
                 fieldname.AddChild(input);
             }
             ObjectPropertyListContainer.OrganiseChildrenVertical();

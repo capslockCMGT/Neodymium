@@ -15,7 +15,7 @@ namespace GXPEngine.Editor
     {
         public static FieldInfo[] GetPublicVariables(Type obj)
         {
-            return obj.GetFields().Where(testc => IsAllowedProperty(testc.FieldType)).ToArray();
+            return obj.GetFields().Where(testc => IsAllowedProperty(testc.FieldType) && testc.IsPublic).ToArray();
         }
         public static GameObject BuildFromConstructor(object[] ConstructorParameters, ParameterInfo[] ConstructorParams, Type ObjectType)
         {

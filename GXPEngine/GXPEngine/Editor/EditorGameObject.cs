@@ -13,9 +13,11 @@ namespace GXPEngine.Editor
     {
         ConstructorInfo Constructor;
         public Type ObjectType;
-        ParameterInfo[] ConstructorParams;
-        object[] ConstructorParameters;
-        GameObject EditorDisplayObject;
+        public ParameterInfo[] ConstructorParams;
+        public object[] ConstructorParameters;
+        GameObject _EditorDisplayObject;
+        public GameObject EditorDisplayObject {  get { return _EditorDisplayObject; } }
+        public FieldInfo[] fields;
         protected static Vector3[] _boxbounds;
         float radius = .25f;
         public EditorGameObject(Type objectType, ConstructorInfo constructor) : base("editor/ProxyLogo.png", addCollider:true)
@@ -25,15 +27,16 @@ namespace GXPEngine.Editor
             Constructor = constructor;
             ConstructorParams = Constructor.GetParameters();
             ConstructorParameters = new object[ConstructorParams.Length];
+            fields = TypeHandler.GetPublicVariables(ObjectType);
             BuildObject();
-            if(_boxbounds == null) CreateBounds();
+            if (_boxbounds == null) CreateBounds();
         }
 
         void BuildObject()
         {
-            if(EditorDisplayObject != null) EditorDisplayObject.Destroy();
-            EditorDisplayObject = TypeHandler.BuildFromConstructor(ConstructorParameters, ConstructorParams, ObjectType);
-            if(EditorDisplayObject != null) AddChild(EditorDisplayObject);
+            _EditorDisplayObject?.Destroy();
+            _EditorDisplayObject = TypeHandler.BuildFromConstructor(ConstructorParameters, ConstructorParams, ObjectType);
+            if(_EditorDisplayObject != null) AddChild(_EditorDisplayObject);
         }
         public override void RenderDepthSorted(GLContext glContext, Vector3 slop)
         {
