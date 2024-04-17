@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameStartMenu.cs" />
+    <Compile Include="zGames\GameStartMenu.cs" />
     <Compile Include="GXPEngine\AddOns\BufferRenderer.cs" />
     <Compile Include="GXPEngine\AddOns\Gizmos.cs" />
     <Compile Include="GXPEngine\AddOns\ParticleSystem.cs" />
@@ -74,7 +74,7 @@
     <Compile Include="GXPEngine\UI\TextPanel.cs" />
     <Compile Include="GXPEngine\UI\TexturedButton.cs" />
     <Compile Include="GXPEngine\Utils\Timer.cs" />
-    <Compile Include="GameStarter.cs" />
+    <Compile Include="zGames\GameStarter.cs" />
     <Compile Include="GXPEngine\Core\Canvas.cs" />
     <Compile Include="GXPEngine\Game.cs" />
     <Compile Include="GXPEngine\GameObject.cs" />
@@ -111,9 +111,9 @@
     <Compile Include="GXPEngine\FMOD\FMODSoundSystem.cs" />
     <Compile Include="GXPEngine\SoLoud\Soloud.cs" />
     <Compile Include="GXPEngine\SoLoud\SoloudSoundSystem.cs" />
-    <Compile Include="IvansTestScene.cs" />
+    <Compile Include="zGames\IvansTestScene.cs" />
     <Compile Include="Player.cs" />
-    <Compile Include="CapsTestScene.cs" />
+    <Compile Include="zGames\CapsTestScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

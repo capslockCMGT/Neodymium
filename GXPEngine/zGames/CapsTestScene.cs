@@ -91,8 +91,8 @@ namespace GXPEngine
             sloppersludge.x = 2;
             sloppersludge.scale = .2f;
 
-            //particles = new ParticleSystem("amongus.png", 0, 0, 0, ParticleSystem.EmitterType.rect, ParticleSystem.Mode.velocity, MyGame.main, cam);
-            //particles.lifetime = 1;
+            particles = new ParticleSystem("amongus.png", 0, 0, 0, ParticleSystem.EmitterType.rect, ParticleSystem.Mode.velocity, main, cam);
+            particles.lifetime = 1;
 
             leftPanel = new Panel(200, 100, 100, 100);
             //uiManager.Add(leftPanel);

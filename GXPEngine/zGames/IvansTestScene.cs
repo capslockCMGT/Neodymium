@@ -13,7 +13,6 @@ namespace GXPEngine
     {
         bool showCursor;
         Player player;
-        Box test, test2;
         Camera cam;
         public IvansTestScene() : base(800, 600, false, true, false, "actual cool test scene")
         {
@@ -22,21 +21,13 @@ namespace GXPEngine
             AddChild(cam);
             cam.SetXY(0, 1, 0);
 
-
-            test2 = new Box("cubeTex.png");
-            test = new Box("cubeTex.png");
-
-            test.z = 2;
-            test2.z = 2;
-            test2.x = 3;
-
             SetupScene();
 
             player = new Player();
             AddChild(player);
             player.AssignCamera(cam);
             Gizmos.GetCameraSpace(cam);
-            player.colliders.Add(test2.collider);
+            player.colliders.Add(new Box("cubeTex.png").collider);
         }
         void Update()
         {
