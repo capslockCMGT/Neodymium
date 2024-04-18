@@ -45,7 +45,7 @@ namespace GXPEngine.UI
                 _value = defaul;
 
                 propertyValueSetter = new InputField(150, 15, 125, 0, defaul, 10);
-                ((InputField)propertyValueSetter).OnTextChanged += delegate (string newtext) { Value = newtext; };
+                ((InputField)propertyValueSetter).OnStoppedTyping += delegate (string newtext) { Value = newtext; };
 
                 AddChild(propertyValueSetter);
                 initializeFromTexture(transparent276x15);
@@ -58,7 +58,7 @@ namespace GXPEngine.UI
                 _value = defaul;
 
                 propertyValueSetter = new InputField(150, 15, 125, 0, defaul.ToString(), 10);
-                ((InputField)propertyValueSetter).OnTextChanged += delegate (string newtext) {
+                ((InputField)propertyValueSetter).OnStoppedTyping += delegate (string newtext) {
                     float next;
                     if(float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
                     Value = next; 
@@ -73,9 +73,10 @@ namespace GXPEngine.UI
                 if (defaultValue != null) defaul = (int)defaultValue;
                 else defaul = (int)TypeHandler.GetDefaultPropertyValue(typeof(int));
                 _value = defaul;
+                Console.WriteLine("yuh!");
 
                 propertyValueSetter = new InputField(150, 15, 125, 0, defaul.ToString(), 10);
-                ((InputField)propertyValueSetter).OnTextChanged += delegate (string newtext) {
+                ((InputField)propertyValueSetter).OnStoppedTyping += delegate (string newtext) {
                     int next;
                     if(int.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
                     Value = next;
@@ -92,7 +93,7 @@ namespace GXPEngine.UI
                 _value = defaul;
 
                 propertyValueSetter = new InputField(150, 15, 125, 0, defaul.ToString(), 10);
-                ((InputField)propertyValueSetter).OnTextChanged += delegate (string newtext) {
+                ((InputField)propertyValueSetter).OnStoppedTyping += delegate (string newtext) {
                     uint next;
                     if(uint.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
                     Value = next;
@@ -127,21 +128,21 @@ namespace GXPEngine.UI
                 InputField inY = new InputField(45, 15, 175, 0, defaul.y.ToString(), 10);
                 InputField inZ = new InputField(45, 15, 225, 0, defaul.z.ToString(), 10);
 
-                (inX).OnTextChanged += delegate (string newtext) {
+                (inX).OnStoppedTyping += delegate (string newtext) {
                     float next;
                     if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
                         Value = new Vector3(next, ((Vector3)_value).y, ((Vector3)_value).z);
                 };
                 propertyValueSetter.AddChild(inX);
 
-                inY.OnTextChanged += delegate (string newtext) {
+                inY.OnStoppedTyping += delegate (string newtext) {
                     float next;
                     if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
                         Value = new Vector3(((Vector3)_value).x, next, ((Vector3)_value).z);
                 };
                 propertyValueSetter.AddChild(inY);
 
-                (inZ).OnTextChanged += delegate (string newtext) {
+                (inZ).OnStoppedTyping += delegate (string newtext) {
                     float next;
                     if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
                         Value = new Vector3(((Vector3)_value).x, ((Vector3)_value).y, next);
@@ -164,28 +165,28 @@ namespace GXPEngine.UI
                 InputField inJ = new InputField(32, 15, 200, 0, defaul.j.ToString(), 10);
                 InputField inK = new InputField(32, 15, 237.5f, 0, defaul.k.ToString(), 10);
 
-                (inR).OnTextChanged += delegate (string newtext) {
+                (inR).OnStoppedTyping += delegate (string newtext) {
                     float next;
                     if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
                         Value = new Quaternion(next, ((Quaternion)_value).i, ((Quaternion)_value).j, ((Quaternion)_value).k);
                 };
                 propertyValueSetter.AddChild(inR);
 
-                inI.OnTextChanged += delegate (string newtext) {
+                inI.OnStoppedTyping += delegate (string newtext) {
                     float next;
                     if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
                         Value = new Quaternion(((Quaternion)_value).r, next, ((Quaternion)_value).j, ((Quaternion)_value).k);
                 };
                 propertyValueSetter.AddChild(inI);
 
-                (inJ).OnTextChanged += delegate (string newtext) {
+                (inJ).OnStoppedTyping += delegate (string newtext) {
                     float next;
                     if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
                         Value = new Quaternion(((Quaternion)_value).r, ((Quaternion)_value).i, next, ((Quaternion)_value).k);
                 };
                 propertyValueSetter.AddChild(inJ);
 
-                (inK).OnTextChanged += delegate (string newtext) {
+                (inK).OnStoppedTyping += delegate (string newtext) {
                     float next;
                     if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
                         Value = new Quaternion(((Quaternion)_value).r, ((Quaternion)_value).i, ((Quaternion)_value).j, next);

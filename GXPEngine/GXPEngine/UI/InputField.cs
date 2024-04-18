@@ -4,6 +4,7 @@
     {
         public delegate void TextUpdated(string newText);
         public TextUpdated OnTextChanged = null;
+        public TextUpdated OnStoppedTyping = null;
         public string message { get { return displayedText; } set { displayedText = value; UpdateDisplay(); } }
         string displayedText;
         public State state;
@@ -79,6 +80,7 @@
             state = State.DISPLAY;
             message = displayedText;
             UpdateDisplay();
+            OnStoppedTyping?.Invoke(displayedText);
         }
         public void UpdateDisplay()
         {

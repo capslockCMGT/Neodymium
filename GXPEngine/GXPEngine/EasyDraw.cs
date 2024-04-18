@@ -30,8 +30,8 @@ namespace GXPEngine
 		/// <param name="width">width in pixels</param>
 		/// <param name="height">height in pixels</param>
 		/// <param name="addCollider">whether the canvas should have a collider</param>
-		public EasyDraw (int width, int height, bool addCollider=true) : base (new Bitmap (width, height),addCollider)
-		{
+		public EasyDraw (int width, int height, bool addCollider=true) : base (new Bitmap((int)Mathf.Max(1, width), (int)Mathf.Max(1, height)), addCollider)
+        {
 			Initialize ();
 		}
 

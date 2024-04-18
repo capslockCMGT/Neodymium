@@ -15,7 +15,7 @@ namespace GXPEngine.Editor
         Editor editor;
 
         GameObject activeSideMenu;
-        SliderPanel selectedGameObjectMenu;
+        SliderPanel HierarchyMenu;
         HierarchyItem editorDisplay;
 
         TexturedButton AddObjectButton;
@@ -54,11 +54,10 @@ namespace GXPEngine.Editor
             game.uiManager.Add(SelectedObjectPropertyPanel);
             game.uiManager.Add(buttonHolder);
 
-            selectedGameObjectMenu = new SliderPanel(300, game.height - 410, game.width - 305, 5);
-            selectedGameObjectMenu.SetSliderBar(20, game.height - 410);
-            selectedGameObjectMenu.OrganiseChildrenVertical();
-            game.uiManager.Add(selectedGameObjectMenu);
-            //game.uiManager.Add(new InputField(100, 20, false, 100, 100, 10));
+            HierarchyMenu = new SliderPanel(300, game.height - 210, game.width - 305, 205);
+            HierarchyMenu.SetSliderBar(20, game.height - 210);
+            HierarchyMenu.OrganiseChildrenVertical();
+            game.uiManager.Add(HierarchyMenu);
 
             SetupAddObjectMenu();
         }
@@ -67,7 +66,6 @@ namespace GXPEngine.Editor
             ObjectPropertyListContainer?.Destroy();
             if (editor.selectedGameobject == null) return;
             if (editor.selectedGameobject.ObjectType == null) return;
-            if (editor.selectedGameobject.EditorDisplayObject == null) return;
             ObjectPropertyListContainer = new Panel(1, 1, invisible:true);
 
             ObjectPropertyListContainer.AddChild(new TextPanel(276, 30, "Transform:", 10, false));
@@ -89,10 +87,18 @@ namespace GXPEngine.Editor
                 ParameterInfo field = editor.selectedGameobject.ConstructorParams[i];
                 var value = editor.selectedGameobject.ConstructorParameters[i];
                 EditorPropertyInput property = new EditorPropertyInput(field.ParameterType, field.Name, value);
-                int index = i;
+                int index = i; //i remembered :D
                 property.onValueChanged += delegate (object val) { editor.selectedGameobject.ConstructorParameters[index] = val; editor.selectedGameobject.BuildObject(); UpdateGameObjectPropertyMenu(); };
                 ObjectPropertyListContainer.AddChild(property);
             }
+
+            if (editor.selectedGameobject.EditorDisplayObject == null)
+            {
+                ObjectPropertyListContainer.OrganiseChildrenVertical();
+                ObjectPropertyListContainer.ResizeToContent();
+                SelectedObjectPropertyPanel.AddChild(ObjectPropertyListContainer);
+                SelectedObjectPropertyPanel.SetSliderBar(15, SelectedObjectPropertyPanel.height, 0, 0); 
+                return; };
 
             ObjectPropertyListContainer.AddChild(new TextPanel(150,30,"Public variables:", 10, false));
 
@@ -161,11 +167,9 @@ namespace GXPEngine.Editor
                 TextButton txtButton = new TextButton(150, 15, typ.Name, 10);
                 AddObjectMenu.AddChild(txtButton);
                 txtButton.OnRelease += delegate() { CreateTypeConstructorMenu(typ); };
-                //Console.WriteLine(typ);
             }
             AddObjectMenu.OrganiseChildrenVertical();
             AddObjectMenu.ResizeToContent();
-            //AddObjectMenu = AddObjectMenu.ResizedToContent();
         }
 
         void destroySelectedObject()
@@ -177,8 +181,9 @@ namespace GXPEngine.Editor
 
         void CreateHierarchy()
         {
-            Panel targetWindow = selectedGameObjectMenu;
+            Panel targetWindow = HierarchyMenu;
             //change 'this' in the line below to whatever the main gameobject is
+            //uh huh
             editorDisplay = new HierarchyItem(editor.mainGameObject, 0, targetWindow.width - 30, 5, 5);
             editorDisplay.ReadChildren();
             targetWindow.AddChild(editorDisplay);
