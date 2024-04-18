@@ -19,6 +19,13 @@ namespace GXPEngine.UI
             if(textureHover != null) Hovering = Texture2D.GetInstance(textureHover);
             if(texturePressed != null) Pressed = Texture2D.GetInstance(texturePressed);
         }
+        public TexturedButton(Texture2D texture, Texture2D hovering, Texture2D pressed, float x = 0, float y = 0) : base(texture.width, texture.height, x, y)
+        {
+            Resting = texture;
+            Hovering = hovering;
+            Pressed = pressed;
+        }
+
         protected override void Rest()
         {
             base.Rest();

@@ -32,10 +32,22 @@ namespace GXPEngine.Editor
             if (_boxbounds == null) CreateBounds();
         }
 
-        void BuildObject()
+        public void BuildObject()
         {
+            object[] fieldValues = new object[fields.Length];
+            bool exists = _EditorDisplayObject != null;
+            if(exists)
+            for(int i = 0; i<fields.Length; i++)
+            {
+                fieldValues[i] = fields[i].GetValue(_EditorDisplayObject);
+            }
             _EditorDisplayObject?.Destroy();
             _EditorDisplayObject = TypeHandler.BuildFromConstructor(ConstructorParameters, ConstructorParams, ObjectType);
+            if(exists)
+            for(int i = 0; i<fields.Length; i++) 
+            {
+                fields[i].SetValue(_EditorDisplayObject, fieldValues[i]);
+            }
             if(_EditorDisplayObject != null) AddChild(_EditorDisplayObject);
         }
         public override void RenderDepthSorted(GLContext glContext, Vector3 slop)

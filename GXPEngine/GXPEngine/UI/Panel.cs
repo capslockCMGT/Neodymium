@@ -63,9 +63,10 @@ namespace GXPEngine.UI
         }
         public virtual void Update()
         {
-            foreach (Panel child in GetChildren())
+            foreach (GameObject child in GetChildren())
             {
-                child.Update();
+                if(child is Panel)
+                ((Panel)child).Update();
             }
         }
         public Panel ResizedToContent(int marginHorizontal = 5, int marginVertical = 5)
@@ -78,9 +79,9 @@ namespace GXPEngine.UI
         {
             Resize((int)_contentWidth + marginHorizontal, (int)_contentHeight + marginVertical);
         }
-        public void Resize(int width, int height)
+        public void Resize(int width, int height, bool visible = true)
         {
-            Panel sub = new Panel(width, height);
+            Panel sub = new Panel(width, height, invisible:!visible);
             initializeFromTexture(sub.texture.Clone());
             sub.LateDestroy();
         }

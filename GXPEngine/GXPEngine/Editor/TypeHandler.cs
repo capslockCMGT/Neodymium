@@ -66,17 +66,16 @@ namespace GXPEngine.Editor
         public static object GetDefaultPropertyValue(Type property)
         {
             //accepted types:string, float, int, uint, bool, Texture2D, Vector3, Quaternion
-            if (property == typeof(float))
-                return 0.0f;
             if (property == typeof(string))
                 return "default text";
+            if (property == typeof(float))
+                return 0.0f;
             if (property == typeof(int))
                return 0;
             if (property == typeof(uint))
-                return 0;
+                return 0u;
             if (property == typeof(bool))
                 return false;
-            //commented values are handled by ConstructorInfo already
             if (property == typeof(Texture2D))
                 return Texture2D.GetInstance("editor/defaultCubeTex.png");
             if (property == typeof(Vector3))
@@ -117,12 +116,13 @@ namespace GXPEngine.Editor
             (!testc.IsSubclassOf(typeof(Game))) &&
             (testc.Namespace != typeof(Editor).Namespace) && 
             (testc.Namespace != typeof(Button).Namespace) && 
-            (testc.Name != typeof(GameStarter).Name)
+            (testc != typeof(GameStarter)) &&
+            testc != typeof(Game)
             ).ToArray();
             //In the editor, thou shalt instantiate:
             //Gameobjects
-            //Which are not UI objects
-            //Or derivative of Game
+            //Which are not UI objects (sry)
+            //Or games
         }
     }
 }

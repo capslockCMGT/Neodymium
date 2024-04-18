@@ -70,40 +70,39 @@ namespace GXPEngine.Editor
             if (editor.selectedGameobject.EditorDisplayObject == null) return;
             ObjectPropertyListContainer = new Panel(1, 1, invisible:true);
 
-            ObjectPropertyListContainer.AddChild(new TextPanel(276, 15, "Transform:", 10, false));
-            TextPanel pos = new TextPanel(110, 15, "Vector3 position:", 8, false);
-            ObjectPropertyListContainer.AddChild(pos);
-            InputField input = new InputField(150, 15, 125, 0, editor.selectedGameobject.position.ToString(), 10);
-            pos.AddChild(input);
-            TextPanel rot = new TextPanel(110, 15, "Quaternion rotation:", 8, false);
-            ObjectPropertyListContainer.AddChild(rot);
-            input = new InputField(150, 15, 125, 0, editor.selectedGameobject.rotation.ToString(), 10);
-            rot.AddChild(input);
-            TextPanel scale = new TextPanel(110, 15, "Vector3 scale:", 8, false);
-            ObjectPropertyListContainer.AddChild(scale);
-            input = new InputField(150, 15, 125, 0, editor.selectedGameobject.scaleXYZ.ToString(), 10);
-            scale.AddChild(input);
+            ObjectPropertyListContainer.AddChild(new TextPanel(276, 30, "Transform:", 10, false));
 
-            ObjectPropertyListContainer.AddChild(new TextPanel(276, 15, "Constructor:", 10, false));
+            EditorPropertyInput pos = new EditorPropertyInput(typeof(Vector3), "Position", editor.selectedGameobject.position);
+            ObjectPropertyListContainer.AddChild(pos);
+            pos.onValueChanged += delegate (object value) { editor.selectedGameobject.position = (Vector3)value; };
+            EditorPropertyInput rot = new EditorPropertyInput(typeof(Quaternion), "Rotation", editor.selectedGameobject.rotation);
+            ObjectPropertyListContainer.AddChild(rot);
+            rot.onValueChanged += delegate (object value) { editor.selectedGameobject.rotation = (Quaternion)value; };
+            EditorPropertyInput scale = new EditorPropertyInput(typeof(Vector3), "Scale", editor.selectedGameobject.scaleXYZ);
+            ObjectPropertyListContainer.AddChild(scale);
+            scale.onValueChanged += delegate (object value) { editor.selectedGameobject.scaleXYZ = (Vector3)value; };
+
+            ObjectPropertyListContainer.AddChild(new TextPanel(276, 30, "Constructor:", 10, false));
+
             for (int i = 0; i < editor.selectedGameobject.ConstructorParameters.Length; i++)
             {
                 ParameterInfo field = editor.selectedGameobject.ConstructorParams[i];
-                TextPanel fieldname = new TextPanel(110, 15, field.ParameterType.Name + " " + field.Name, 8, false);
-                ObjectPropertyListContainer.AddChild(fieldname);
                 var value = editor.selectedGameobject.ConstructorParameters[i];
-                input = new InputField(150, 15, 125, 0, value == null ? "null" : value.ToString(), 10);
-                fieldname.AddChild(input);
+                EditorPropertyInput property = new EditorPropertyInput(field.ParameterType, field.Name, value);
+                int index = i;
+                property.onValueChanged += delegate (object val) { editor.selectedGameobject.ConstructorParameters[index] = val; editor.selectedGameobject.BuildObject(); UpdateGameObjectPropertyMenu(); };
+                ObjectPropertyListContainer.AddChild(property);
             }
 
-            ObjectPropertyListContainer.AddChild(new TextPanel(150,15,"Public variables:", 10, false));
+            ObjectPropertyListContainer.AddChild(new TextPanel(150,30,"Public variables:", 10, false));
+
             for (int i = 0; i<editor.selectedGameobject.fields.Length; i++)
             {
                 FieldInfo field = editor.selectedGameobject.fields[i];
-                TextPanel fieldname = new TextPanel(110,15,field.FieldType.Name +" "+ field.Name,8, false);
-                ObjectPropertyListContainer.AddChild(fieldname);
                 var value = field.GetValue(editor.selectedGameobject.EditorDisplayObject);
-                input = new InputField(150, 15, 125, 0, value == null ? "null" : value.ToString(), 10);
-                fieldname.AddChild(input);
+                EditorPropertyInput property = new EditorPropertyInput(field.FieldType, field.Name, value);
+                property.onValueChanged += delegate (object val) { field.SetValue(editor.selectedGameobject.EditorDisplayObject, val); };
+                ObjectPropertyListContainer.AddChild(property);
             }
             ObjectPropertyListContainer.OrganiseChildrenVertical();
             ObjectPropertyListContainer.ResizeToContent();
