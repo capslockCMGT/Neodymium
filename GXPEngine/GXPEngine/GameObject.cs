@@ -690,7 +690,7 @@ namespace GXPEngine
         /// </summary>
         public Quaternion TransformRotation(Quaternion dir)
 		{
-			dir *= rotation;
+			dir = rotation*dir;
 			if (parent == null){
 				return dir;
 			}

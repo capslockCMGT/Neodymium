@@ -60,8 +60,8 @@ namespace GXPEngine.Editor
             else if (_mainGameObject == null || !_mainGameObject.InHierarchy())
             {
                 _mainGameObject = newObject;
-                _mainGameObject.AddChild(transformer);
                 AddChild(newObject);
+                AddChild(transformer);
             }
             else _mainGameObject.AddChild(newObject);
             selectedGameobject = newObject;
@@ -75,7 +75,7 @@ namespace GXPEngine.Editor
                 Vector3 start = mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0.001f);
                 Vector3 end = mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 1);
                 
-                if(mainGameObject != null)
+                if(mainGameObject != null && !transformer.RaycastOnClick(start, end))
                 {
                     raycastResult slop = raycastThroughChildren(mainGameObject, start, end);
                     selectedGameobject = slop.hitObject;
