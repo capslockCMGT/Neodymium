@@ -58,7 +58,6 @@
     <Compile Include="GXPEngine\DSCFSprite.cs" />
     <Compile Include="GXPEngine\Editor\EditorUIHandler.cs" />
     <Compile Include="GXPEngine\Editor\HierarchyItem.cs" />
-    <Compile Include="GXPEngine\Editor\CustomProperty.cs" />
     <Compile Include="GXPEngine\Editor\Editor.cs" />
     <Compile Include="GXPEngine\Editor\EditorCamera.cs" />
     <Compile Include="GXPEngine\Editor\EditorGameObject.cs" />

@@ -25,10 +25,12 @@ namespace GXPEngine.Core {
 		private static int keyPressedCount = 0;
 		private static bool anyKeyDown = false;
 
-		public static int mouseX = 0;
-		public static int mouseY = 0;
-		
-		private Game _owner;
+        public static int mouseX = 0;
+        public static int mouseY = 0;
+        public static int prevMouseX = 0;
+        public static int prevMouseY = 0;
+
+        private Game _owner;
         private static SoundSystem _soundSystem;
 		
 		private int _targetFrameRate = 60;
@@ -372,8 +374,11 @@ namespace GXPEngine.Core {
 		//------------------------------------------------------------------------------------------------------------------------
 		//														UpdateMouseInput()
 		//------------------------------------------------------------------------------------------------------------------------
-		public static void UpdateMouseInput() {
-			GL.glfwGetMousePos(out mouseX, out mouseY);
+		public static void UpdateMouseInput()
+        {
+            prevMouseX = mouseX;
+            prevMouseY = mouseY;
+            GL.glfwGetMousePos(out mouseX, out mouseY);
 			mouseX = (int)(mouseX / _realToLogicWidthRatio);
 			mouseY = (int)(mouseY / _realToLogicHeightRatio);
 			//int xoff;

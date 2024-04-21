@@ -13,7 +13,7 @@ namespace GXPEngine.Editor
 {
     public class Editor : Game
     {
-        EditorCamera mainCam;
+        EditorCamera _mainCam;
         EditorGameObject _mainGameObject;
 
         TransformGizmo transformer;
@@ -29,26 +29,34 @@ namespace GXPEngine.Editor
             set
             {
                 _selectedGameObject = value;
-                uiHandler.UpdateGameObjectPropertyMenu();
+                _uiHandler.UpdateGameObjectPropertyMenu();
             }
         }
+        public EditorCamera mainCam
+        {
+            get { return _mainCam; }
+        }
 
-        EditorUIHandler uiHandler;
+        EditorUIHandler _uiHandler;
+        public EditorUIHandler uiHandler
+        {
+            get { return _uiHandler; }
+        }
 
         bool TryRaycastNextFrame = false;
 
         public Editor() : base(1200, 600, false, true, true, "GXP Editor")
         { 
             SetupCam();
-            uiHandler = new EditorUIHandler();
+            _uiHandler = new EditorUIHandler();
             transformer = new TransformGizmo();
 
-            uiHandler.SetupMainUI();
+            _uiHandler.SetupMainUI();
         }
 
         public void AddGameObject(ConstructorInfo consInfo)
         {
-            uiHandler.SetActiveSideMenu(null);
+            _uiHandler.SetActiveSideMenu(null);
             if (consInfo == null) return;
 
             Type gameObjectType = consInfo.DeclaringType;
@@ -70,10 +78,10 @@ namespace GXPEngine.Editor
         void Update()
         {
             DrawEditorGizmos();
-            if(TryRaycastNextFrame && uiHandler.millisSinceButtonPressed > 100)
+            if(TryRaycastNextFrame && _uiHandler.millisSinceButtonPressed > 100)
             {
-                Vector3 start = mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0.001f);
-                Vector3 end = mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 1);
+                Vector3 start = _mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0.001f);
+                Vector3 end = _mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 1);
                 
                 if(mainGameObject != null && !transformer.RaycastOnClick(start, end))
                 {
@@ -82,7 +90,7 @@ namespace GXPEngine.Editor
                 }
             }
             TryRaycastNextFrame = Input.GetMouseButtonDown(0);
-            uiHandler.UpdateHierarchy();
+            _uiHandler.UpdateHierarchy();
         }
 
         raycastResult raycastThroughChildren(EditorGameObject toCast, Vector3 rayStart, Vector3 rayEnd)
@@ -137,9 +145,9 @@ namespace GXPEngine.Editor
         void SetupCam()
         {
             RenderMain = false;
-            mainCam = new EditorCamera();
-            mainCam.position = new Vector3(1, 1, 3);
-            AddChild(mainCam);
+            _mainCam = new EditorCamera();
+            _mainCam.position = new Vector3(1, 1, 3);
+            AddChild(_mainCam);
         }
 
         void DrawEditorGizmos()

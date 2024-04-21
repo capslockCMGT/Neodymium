@@ -107,6 +107,18 @@ namespace GXPEngine
 			get { return GLContext.mouseY; }
 		}
 
+		public static Vector2 mousePos
+		{
+			get { return new Vector2(mouseX, mouseY); }
+		}
+		public static Vector2 prevMousePos
+		{
+			get { return new Vector2(GLContext.prevMouseX, GLContext.prevMouseY); }
+		}
+		public static Vector2 mouseVelocity
+		{
+			get { return new Vector2(mouseX - GLContext.prevMouseX, mouseY - GLContext.prevMouseY); }
+		}
         public static string GetClipboardText()
         {
             //thank you stackoverflow: https://github.com/slyd0g/SharpClipboard/blob/master/SharpClipboard/Program.cs

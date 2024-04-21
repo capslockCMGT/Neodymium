@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GXPEngine.UI;
 using GXPEngine.Core;
 using GXPEngine.OpenGL;
 
@@ -15,6 +16,8 @@ namespace GXPEngine.Editor
         static Editor editor;
         Quaternion forward, up, left;
         int selected = 0;
+
+        //Panel temp1, temp2;
         public TransformGizmo()
         {
             editor = ((Editor)game);
@@ -32,6 +35,9 @@ namespace GXPEngine.Editor
             forward = Quaternion.FromRotationAroundAxis(new Vector3(0, 1, 0), Mathf.PI * 1.5f);
             up = Quaternion.FromRotationAroundAxis(new Vector3(0, 0, 1), Mathf.PI * .5f);
             left = Quaternion.FromRotationAroundAxis(new Vector3(0, 1, 0), Mathf.PI * 1f);
+
+            //temp1 = new Panel(15,15);
+           // temp2 = new Panel(15,15);
         }
 
         void Update()
@@ -43,6 +49,44 @@ namespace GXPEngine.Editor
                 rotation = editor.selectedGameobject.parent.globalRotation;
             }
             else visible = false;
+
+            HandleDragMouse();
+        }
+
+        void HandleDragMouse()
+        {
+            if (selected == 0) return;
+            if (!Input.GetMouseButton(0))
+            {
+                editor.uiHandler.UpdateGameObjectPropertyMenu();
+                selected = 0;
+                return;
+            }
+            Vector3 screenposNormal = position;
+            Vector3 dir;
+            Vector3 localDir;
+            switch(selected)
+            {
+                case 1:
+                    dir = rotation.Forward;
+                    localDir = Vector3.forward;
+                    break;
+                case 2:
+                    dir = rotation.Up;
+                    localDir = Vector3.up;
+                    break;
+                default:
+                    dir = rotation.Left;
+                    localDir = Vector3.left;
+                    break;
+            }
+            screenposNormal += dir;
+            screenposNormal = editor.mainCam.GlobalToScreenPoint(screenposNormal) - editor.mainCam.GlobalToScreenPoint(position);
+            Vector2 GizmoNormalOnScreen = new Vector2(screenposNormal.x, screenposNormal.y);
+            //this is so messed up but it makes a little sense
+            GizmoNormalOnScreen /= GizmoNormalOnScreen.MagSq();
+            editor.selectedGameobject.position += GizmoNormalOnScreen * Input.mouseVelocity * localDir;
+            Console.WriteLine(GizmoNormalOnScreen * Input.mouseVelocity);
         }
 
         public bool RaycastOnClick(Vector3 start, Vector3 end)

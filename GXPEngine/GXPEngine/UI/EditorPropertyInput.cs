@@ -60,7 +60,7 @@ namespace GXPEngine.UI
                 propertyValueSetter = new InputField(150, 15, 125, 0, defaul.ToString(), 10);
                 ((InputField)propertyValueSetter).OnStoppedTyping += delegate (string newtext) {
                     float next;
-                    if(float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
+                    if(float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.CurrentCulture, out next))
                     Value = next; 
                 };
 
@@ -130,21 +130,21 @@ namespace GXPEngine.UI
 
                 (inX).OnStoppedTyping += delegate (string newtext) {
                     float next;
-                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
+                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.CurrentCulture, out next))
                         Value = new Vector3(next, ((Vector3)_value).y, ((Vector3)_value).z);
                 };
                 propertyValueSetter.AddChild(inX);
 
                 inY.OnStoppedTyping += delegate (string newtext) {
                     float next;
-                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
+                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.CurrentCulture, out next))
                         Value = new Vector3(((Vector3)_value).x, next, ((Vector3)_value).z);
                 };
                 propertyValueSetter.AddChild(inY);
 
                 (inZ).OnStoppedTyping += delegate (string newtext) {
                     float next;
-                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
+                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.CurrentCulture, out next))
                         Value = new Vector3(((Vector3)_value).x, ((Vector3)_value).y, next);
                 };
                 propertyValueSetter.AddChild(inZ);
@@ -167,28 +167,28 @@ namespace GXPEngine.UI
 
                 (inR).OnStoppedTyping += delegate (string newtext) {
                     float next;
-                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
+                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.CurrentCulture, out next))
                         Value = new Quaternion(next, ((Quaternion)_value).i, ((Quaternion)_value).j, ((Quaternion)_value).k);
                 };
                 propertyValueSetter.AddChild(inR);
 
                 inI.OnStoppedTyping += delegate (string newtext) {
                     float next;
-                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
+                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.CurrentCulture, out next))
                         Value = new Quaternion(((Quaternion)_value).r, next, ((Quaternion)_value).j, ((Quaternion)_value).k);
                 };
                 propertyValueSetter.AddChild(inI);
 
                 (inJ).OnStoppedTyping += delegate (string newtext) {
                     float next;
-                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
+                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.CurrentCulture, out next))
                         Value = new Quaternion(((Quaternion)_value).r, ((Quaternion)_value).i, next, ((Quaternion)_value).k);
                 };
                 propertyValueSetter.AddChild(inJ);
 
                 (inK).OnStoppedTyping += delegate (string newtext) {
                     float next;
-                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
+                    if (float.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.CurrentCulture, out next))
                         Value = new Quaternion(((Quaternion)_value).r, ((Quaternion)_value).i, ((Quaternion)_value).j, next);
                 };
                 propertyValueSetter.AddChild(inK);

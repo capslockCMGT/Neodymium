@@ -25,6 +25,7 @@ namespace GXPEngine.Editor
 
         void Update()
         {
+            game.uiManager.AssignWindow(RenderTarget);
             UpdateRotation();
             UpdatePosition();
         }
