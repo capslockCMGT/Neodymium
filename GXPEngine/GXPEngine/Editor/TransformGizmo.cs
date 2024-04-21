@@ -11,26 +11,49 @@ namespace GXPEngine.Editor
 {
     public class TransformGizmo : GameObject
     {
-        protected ModelRenderer gizmo;
+        //cant be fucked to use proper polymorphism on this thing. transformMode it is
+        protected ModelRenderer activeRenderer;
+        ModelRenderer arrow;
+        ModelRenderer torus;
+        ModelRenderer blockArrow;
         protected Box gizmoCollider;
         static Editor editor;
         Quaternion forward, up, left;
-        int selected = 0;
+        int selectedAxis = 0;
+        public int transformMode
+        {
+            get { return _transformMode; }
+            set { _transformMode = value;
+                if(activeRenderer != null)
+                    RemoveChild(activeRenderer);
+                switch(_transformMode)
+                {
+                    default:
+                        activeRenderer = arrow;
+                        activeRenderer.scaleXYZ = new Vector3(.4f, 0.2f, .2f);
+
+                        gizmoCollider.scaleXYZ = new Vector3(3, .6f, .6f);
+                        gizmoCollider.x = -2.5f;
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                }
+                AddChild(activeRenderer);
+                activeRenderer.AddChild(gizmoCollider);
+            }
+        }
+        int _transformMode = 0;
 
         //Panel temp1, temp2;
         public TransformGizmo()
         {
             editor = ((Editor)game);
-            gizmo = new ModelRenderer("editor/arrow.obj", "editor/whitePixel.png");
-            gizmo.scaleXYZ = new Vector3(.4f, 0.2f, .2f);
-            gizmo.visible = false;
-            AddChild(gizmo);
-
+            arrow = new ModelRenderer("editor/arrow.obj", "editor/whitePixel.png");
             gizmoCollider = new Box("editor/whitePixel.png");
-            gizmoCollider.scaleXYZ = new Vector3(3,.6f,.6f);
-            gizmoCollider.x = -2.5f;
             gizmoCollider.visible = false;
-            gizmo.AddChild(gizmoCollider);
+            transformMode = 0;
 
             forward = Quaternion.FromRotationAroundAxis(new Vector3(0, 1, 0), Mathf.PI * 1.5f);
             up = Quaternion.FromRotationAroundAxis(new Vector3(0, 0, 1), Mathf.PI * .5f);
@@ -50,22 +73,31 @@ namespace GXPEngine.Editor
             }
             else visible = false;
 
-            HandleDragMouse();
+            switch(transformMode)
+            {
+                default:
+                    HandleDragMouseTranslate();
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+            }
         }
 
-        void HandleDragMouse()
+        void HandleDragMouseTranslate()
         {
-            if (selected == 0) return;
+            if (selectedAxis == 0) return;
             if (!Input.GetMouseButton(0))
             {
                 editor.uiHandler.UpdateGameObjectPropertyMenu();
-                selected = 0;
+                selectedAxis = 0;
                 return;
             }
             Vector3 screenposNormal = position;
             Vector3 dir;
             Vector3 localDir;
-            switch(selected)
+            switch(selectedAxis)
             {
                 case 1:
                     dir = rotation.Forward;
@@ -92,25 +124,25 @@ namespace GXPEngine.Editor
         public bool RaycastOnClick(Vector3 start, Vector3 end)
         {
             if(!visible) return false;
-            gizmo.rotation = forward;
+            activeRenderer.rotation = forward;
             if (gizmoCollider.collider.RayCastTest(start, end))
             {
-                selected = 1;
+                selectedAxis = 1;
                 return true;
             }
-            gizmo.rotation = up;
+            activeRenderer.rotation = up;
             if (gizmoCollider.collider.RayCastTest(start, end))
             {
-                selected = 2;
+                selectedAxis = 2;
                 return true;
             }
-            gizmo.rotation = left;
+            activeRenderer.rotation = left;
             if (gizmoCollider.collider.RayCastTest(start, end))
             {
-                selected = 3;
+                selectedAxis = 3;
                 return true;
             }
-            selected = 0;
+            selectedAxis = 0;
             return false;
         }
 
@@ -119,17 +151,17 @@ namespace GXPEngine.Editor
             //this is evil & i cant believe im doing this
             GL.Disable(0xb71);
 
-            gizmo.visible = true;
-            gizmo.rotation = forward;
-            gizmo.color = (selected == 1 ? 0x55AAFFu : 0x0000FFu);
-            gizmo.Render(glContext);
-            gizmo.rotation = up;
-            gizmo.color = (selected == 2 ? 0xAAFF55u : 0x00FF00u);
-            gizmo.Render(glContext);
-            gizmo.rotation = left;
-            gizmo.color = (selected == 3 ? 0xFF55AAu : 0xFF0000u);
-            gizmo.Render(glContext);
-            gizmo.visible = false;
+            activeRenderer.visible = true;
+            activeRenderer.rotation = forward;
+            activeRenderer.color = (selectedAxis == 1 ? 0x55AAFFu : 0x0000FFu);
+            activeRenderer.Render(glContext);
+            activeRenderer.rotation = up;
+            activeRenderer.color = (selectedAxis == 2 ? 0xAAFF55u : 0x00FF00u);
+            activeRenderer.Render(glContext);
+            activeRenderer.rotation = left;
+            activeRenderer.color = (selectedAxis == 3 ? 0xFF55AAu : 0xFF0000u);
+            activeRenderer.Render(glContext);
+            activeRenderer.visible = false;
 
             GL.Enable(0xb71);
         }

@@ -41,15 +41,28 @@ namespace GXPEngine.Editor
 
             AddObjectButton = new TexturedButton("editor/buttons/AddObject.png", "editor/buttons/AddObjectHover.png", "editor/buttons/AddObjectClick.png");
             buttonHolder.AddChild(AddObjectButton);
-            AddObjectButton.OnClick += delegate () { SetActiveSideMenu(AddObjectMenu); };
+            AddObjectButton.OnRelease += delegate () { SetActiveSideMenu(AddObjectMenu); };
 
             DestroyObjectButton = new TexturedButton("editor/buttons/DestroyObject.png", "editor/buttons/DestroyObjectHover.png", "editor/buttons/DestroyObjectClick.png");
             buttonHolder.AddChild(DestroyObjectButton);
-            DestroyObjectButton.OnClick += destroySelectedObject;
+            DestroyObjectButton.OnRelease += delegate () {
+                if (editor.selectedGameobject == editor.mainGameObject) return;
+                editor.selectedGameobject?.Destroy();
+                editor.selectedGameobject = null;
+            };
 
-            buttonHolder.AddChild(new TexturedButton("editor/buttons/TranslateObject.png", "editor/buttons/TranslateObjectHover.png", "editor/buttons/TranslateObjectClick.png"));
-            buttonHolder.AddChild(new TexturedButton("editor/buttons/RotateObject.png", "editor/buttons/RotateObjectHover.png", "editor/buttons/RotateObjectClick.png"));
-            buttonHolder.AddChild(new TexturedButton("editor/buttons/ScaleObject.png", "editor/buttons/ScaleObjectHover.png", "editor/buttons/ScaleObjectClick.png"));
+            TexturedButton translate = new TexturedButton("editor/buttons/TranslateObject.png", "editor/buttons/TranslateObjectHover.png", "editor/buttons/TranslateObjectClick.png");
+            buttonHolder.AddChild(translate);
+            translate.OnRelease += delegate () { editor.TransformGiz.transformMode = 0; };
+
+            TexturedButton rotate = new TexturedButton("editor/buttons/RotateObject.png", "editor/buttons/RotateObjectHover.png", "editor/buttons/RotateObjectClick.png");
+            buttonHolder.AddChild(rotate);
+            rotate.OnRelease += delegate () { editor.TransformGiz.transformMode = 1; };
+
+            TexturedButton scale = new TexturedButton("editor/buttons/ScaleObject.png", "editor/buttons/ScaleObjectHover.png", "editor/buttons/ScaleObjectClick.png");
+            buttonHolder.AddChild(scale);
+            scale.OnRelease += delegate () { editor.TransformGiz.transformMode = 2; };
+
             buttonHolder.OrganiseChildrenHorizontal();
             game.uiManager.Add(SelectedObjectPropertyPanel);
             game.uiManager.Add(buttonHolder);
@@ -170,13 +183,6 @@ namespace GXPEngine.Editor
             }
             AddObjectMenu.OrganiseChildrenVertical();
             AddObjectMenu.ResizeToContent();
-        }
-
-        void destroySelectedObject()
-        {
-            if (editor.selectedGameobject == editor.mainGameObject) return;
-            editor.selectedGameobject?.Destroy();
-            editor.selectedGameobject = null;
         }
 
         void CreateHierarchy()

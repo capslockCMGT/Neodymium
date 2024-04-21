@@ -14,14 +14,23 @@ namespace GXPEngine.Editor
     public class Editor : Game
     {
         EditorCamera _mainCam;
+        public EditorCamera mainCam
+        {
+            get { return _mainCam; }
+        }
+
         EditorGameObject _mainGameObject;
-
-        TransformGizmo transformer;
-
         public EditorGameObject mainGameObject
         {
             get { return _mainGameObject; }
         }
+
+        TransformGizmo _transformGiz;
+        public TransformGizmo TransformGiz
+        {
+            get { return _transformGiz; }
+        }
+
         EditorGameObject _selectedGameObject;
         public EditorGameObject selectedGameobject
         {
@@ -31,10 +40,6 @@ namespace GXPEngine.Editor
                 _selectedGameObject = value;
                 _uiHandler.UpdateGameObjectPropertyMenu();
             }
-        }
-        public EditorCamera mainCam
-        {
-            get { return _mainCam; }
         }
 
         EditorUIHandler _uiHandler;
@@ -49,7 +54,7 @@ namespace GXPEngine.Editor
         { 
             SetupCam();
             _uiHandler = new EditorUIHandler();
-            transformer = new TransformGizmo();
+            _transformGiz = new TransformGizmo();
 
             _uiHandler.SetupMainUI();
         }
@@ -69,7 +74,7 @@ namespace GXPEngine.Editor
             {
                 _mainGameObject = newObject;
                 AddChild(newObject);
-                AddChild(transformer);
+                AddChild(_transformGiz);
             }
             else _mainGameObject.AddChild(newObject);
             selectedGameobject = newObject;
@@ -83,7 +88,7 @@ namespace GXPEngine.Editor
                 Vector3 start = _mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0.001f);
                 Vector3 end = _mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 1);
                 
-                if(mainGameObject != null && !transformer.RaycastOnClick(start, end))
+                if(mainGameObject != null && !_transformGiz.RaycastOnClick(start, end))
                 {
                     raycastResult slop = raycastThroughChildren(mainGameObject, start, end);
                     selectedGameobject = slop.hitObject;
