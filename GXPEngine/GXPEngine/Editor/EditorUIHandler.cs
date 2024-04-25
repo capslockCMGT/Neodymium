@@ -46,7 +46,7 @@ namespace GXPEngine.Editor
             DestroyObjectButton = new TexturedButton("editor/buttons/DestroyObject.png", "editor/buttons/DestroyObjectHover.png", "editor/buttons/DestroyObjectClick.png");
             buttonHolder.AddChild(DestroyObjectButton);
             DestroyObjectButton.OnRelease += delegate () {
-                if (editor.selectedGameobject == editor.mainGameObject) return;
+                if (editor.selectedGameobject == editor.mainGameObject) editor.DestroyCurrentTree();
                 editor.selectedGameobject?.Destroy();
                 editor.selectedGameobject = null;
             };

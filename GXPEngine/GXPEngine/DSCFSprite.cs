@@ -9,6 +9,7 @@ namespace GXPEngine
 {
     /// <summary>
     /// DepthSortedCameraFacingSprite - a sprite that always faces the camera.
+    /// What a mouthful.
     /// </summary>
     public class DSCFSprite : Sprite
     {
@@ -30,7 +31,7 @@ namespace GXPEngine
         public override void RenderDepthSorted(GLContext gLContext, Vector3 cameraSpacePosition)
         {
             float z = ((Camera)Window.ActiveWindow.camera).CameraSpaceZToDepthBufferRange(cameraSpacePosition.z);
-            float zinv = 1/cameraSpacePosition.z;
+            float zinv = 1/(cameraSpacePosition.z + ((Camera)Window.ActiveWindow.camera).projection.near);
             gLContext.PushMatrix(new float[]
             {
                 scaleX*zinv, 0,0,0,
@@ -40,8 +41,6 @@ namespace GXPEngine
             });
             base.RenderSelf(gLContext);
             gLContext.PopMatrix();
-
-            //Console.WriteLine(Mathf.Sin(Time.time * .0001f));
         }
     }
 }

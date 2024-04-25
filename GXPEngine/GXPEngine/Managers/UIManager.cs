@@ -70,5 +70,13 @@ namespace GXPEngine.UI
                 _renderReferences.Remove(gameObject);
             }
         }
+
+        public void RemoveAll()
+        {
+            foreach(GameObject gameObject in _renderReferences)
+                gameObject.Destroy();
+            _renderReferences.Clear();
+            _updateReferences.Clear();
+        }
     }
 }

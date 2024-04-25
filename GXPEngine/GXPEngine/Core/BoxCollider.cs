@@ -141,9 +141,9 @@ namespace GXPEngine.Core
             Vector3 d2 = c[3] - c[0];
             Vector3 d3 = c[4] - c[0];
 
-			Gizmos.DrawLine(c[1], c[0], color:0xff55ff55);
-            Gizmos.DrawLine(c[3], c[0], color: 0xff55ff55);
-            Gizmos.DrawLine(c[4], c[0], color: 0xff55ff55);
+			//Gizmos.DrawLine(c[1], c[0], color:0xff55ff55);
+            //Gizmos.DrawLine(c[3], c[0], color: 0xff55ff55);
+            //Gizmos.DrawLine(c[4], c[0], color: 0xff55ff55);
 
             Vector3 a = p2 - p1;
 			bool change = false;
@@ -163,10 +163,10 @@ namespace GXPEngine.Core
             if (change) minIntersection = intersection;
 			//Console.WriteLine(minIntersection);
 
-			Gizmos.DrawLine(p1, p2);
-            Gizmos.DrawPlus(minIntersection.x, minIntersection.y, minIntersection.z, 0.05f, color: 0xff0044ff);
-            Gizmos.DrawLine(minIntersection.x, minIntersection.y, minIntersection.z, 
-							minIntersection.x + normal.x * 0.1f, minIntersection.y + normal.y * 0.1f, minIntersection.z + normal.z * 0.1f, color: 0xff00ff00);
+			//Gizmos.DrawLine(p1, p2);
+            //Gizmos.DrawPlus(minIntersection.x, minIntersection.y, minIntersection.z, 0.05f, color: 0xff0044ff);
+            //Gizmos.DrawLine(minIntersection.x, minIntersection.y, minIntersection.z, 
+			//				minIntersection.x + normal.x * 0.1f, minIntersection.y + normal.y * 0.1f, minIntersection.z + normal.z * 0.1f, color: 0xff00ff00);
 			if (distance == float.MaxValue)
 				return false;
             return true;
@@ -298,9 +298,9 @@ namespace GXPEngine.Core
                     }
 					if ((minT >= 1) || (maxT <= -1))
 					{
-                        Gizmos.DrawPlus((O).x, (O).y, (O).z, 0.05f, color: 0xffaaff00);
-                        Gizmos.DrawLine(O+p, O+p + cEdges[C], color: 0xffaaff00);
-                        Gizmos.DrawLine(O+p, O+p + dEdges[D], color: 0xffaaff00);
+                        //Gizmos.DrawPlus((O).x, (O).y, (O).z, 0.05f, color: 0xffaaff00);
+                        //Gizmos.DrawLine(O+p, O+p + cEdges[C], color: 0xffaaff00);
+                        //Gizmos.DrawLine(O+p, O+p + dEdges[D], color: 0xffaaff00);
                         return false;
 					}
 
@@ -338,7 +338,7 @@ namespace GXPEngine.Core
                 res.c = -res.c;
 
             res.a0 = (c[6] + c[0]) / 2 - (res.a + res.b + res.c)/2;
-			Gizmos.DrawParallelogon(res);
+			//Gizmos.DrawParallelogon(res);
             return res;
 
 		}
@@ -380,11 +380,11 @@ namespace GXPEngine.Core
 			Vector3 lineProj = p1 + ((proj.a0 - p1) * a) * a;
 			Vector3 b0 = proj.a0 + proj.a;
 			Vector3 c0 = b0 + proj.b;
-            Gizmos.DrawPlus(lineProj.x, lineProj.y, lineProj.z, 0.05f, color: 0xffff00ff);
+            //Gizmos.DrawPlus(lineProj.x, lineProj.y, lineProj.z, 0.05f, color: 0xffff00ff);
 
-            Gizmos.DrawPlus(proj.a0.x, proj.a0.y, proj.a0.z, 0.05f, color: 0xffff00aa);
-            Gizmos.DrawPlus(b0.x, b0.y, b0.z, 0.05f, color: 0xffff0077);
-            Gizmos.DrawPlus(c0.x, c0.y, c0.z, 0.05f, color: 0xffff0033);
+            //Gizmos.DrawPlus(proj.a0.x, proj.a0.y, proj.a0.z, 0.05f, color: 0xffff00aa);
+            //Gizmos.DrawPlus(b0.x, b0.y, b0.z, 0.05f, color: 0xffff0077);
+            //Gizmos.DrawPlus(c0.x, c0.y, c0.z, 0.05f, color: 0xffff0033);
 
             //first normal
 
@@ -634,12 +634,12 @@ namespace GXPEngine.Core
 							cO + p, n, - p * 2, d,
 							false, ref penetrationDepth, ref normal, ref point))
 						{
-							Gizmos.DrawPlus(cO + p, 0.05f, color: 0xff55ffff);
-							Gizmos.DrawLine(cO + p, cO - p, color: 0xff55ffff);
-							Gizmos.DrawLine(cO + p - cEdges[C], cO + p + cEdges[C], color: 0xffaa00ff);
-							Gizmos.DrawLine(cO + p - dEdges[D], cO + p + dEdges[D], color: 0xffaa00ff);
-							Gizmos.DrawLine(cO - p - cEdges[C], cO - p + cEdges[C], color: 0xffaa00ff);
-							Gizmos.DrawLine(cO - p - dEdges[D], cO - p + dEdges[D], color: 0xffaa00ff);
+							//Gizmos.DrawPlus(cO + p, 0.05f, color: 0xff55ffff);
+							//Gizmos.DrawLine(cO + p, cO - p, color: 0xff55ffff);
+							//Gizmos.DrawLine(cO + p - cEdges[C], cO + p + cEdges[C], color: 0xffaa00ff);
+							//Gizmos.DrawLine(cO + p - dEdges[D], cO + p + dEdges[D], color: 0xffaa00ff);
+							//Gizmos.DrawLine(cO - p - cEdges[C], cO - p + cEdges[C], color: 0xffaa00ff);
+							//Gizmos.DrawLine(cO - p - dEdges[D], cO - p + dEdges[D], color: 0xffaa00ff);
 							return null;
 						}
 						if (penetrationDepth != startPenetration)
@@ -657,13 +657,13 @@ namespace GXPEngine.Core
 
 							point = pc + ((ed ^ normal) * (pd - pc)) * ec;
 
-							Gizmos.DrawLine(pc, pc + ec, color: 0xffaa00ff, width: 10);
-                            Gizmos.DrawLine(pd, pd + ed, color: 0xffaa00ff, width: 10);
+							//Gizmos.DrawLine(pc, pc + ec, color: 0xffaa00ff, width: 10);
+                            //Gizmos.DrawLine(pd, pd + ed, color: 0xffaa00ff, width: 10);
                         }
 					}
 				}
-				Gizmos.DrawPlus(point, 0.05f, color: 0xff00aa00);
-                Gizmos.DrawLine(point, point - (normal * penetrationDepth), color: 0xff00aaaa);
+				//Gizmos.DrawPlus(point, 0.05f, color: 0xff00aa00);
+                //Gizmos.DrawLine(point, point - (normal * penetrationDepth), color: 0xff00aaaa);
                 //Console.WriteLine(penetrationDepth);
                 return new Collision(_owner, ((BoxCollider)other)._owner, normal, point, penetrationDepth);
 			} else {

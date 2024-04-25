@@ -59,6 +59,18 @@ namespace GXPEngine.Editor
             _uiHandler.SetupMainUI();
         }
 
+        public void DestroyCurrentTree()
+        {
+            _mainGameObject.Destroy();
+            _mainGameObject = null;
+            selectedGameobject = null;
+            uiManager.RemoveAll();
+            HierarchyItem.references.Clear();
+            _uiHandler.Destroy();
+            _uiHandler = new EditorUIHandler();
+            _uiHandler.SetupMainUI();
+        }
+
         public void AddGameObject(ConstructorInfo consInfo)
         {
             _uiHandler.SetActiveSideMenu(null);
