@@ -38,6 +38,11 @@ namespace GXPEngine.Editor
                     case 1:
                         break;
                     case 2:
+                        activeRenderer = blockArrow;
+                        activeRenderer.scaleXYZ = new Vector3(.2f, 0.2f, .2f);
+
+                        gizmoCollider.scaleXYZ = new Vector3(6, .6f, .6f);
+                        gizmoCollider.x = -5f;
                         break;
                 }
                 AddChild(activeRenderer);
@@ -51,6 +56,7 @@ namespace GXPEngine.Editor
         {
             editor = ((Editor)game);
             arrow = new ModelRenderer("editor/arrow.obj", "editor/whitePixel.png");
+            blockArrow = new ModelRenderer("editor/blockArrow.obj", "editor/whitePixel.png");
             gizmoCollider = new Box("editor/whitePixel.png");
             gizmoCollider.visible = false;
             transformMode = 0;
@@ -72,20 +78,10 @@ namespace GXPEngine.Editor
                 rotation = editor.selectedGameobject.parent.globalRotation;
             }
             else visible = false;
-
-            switch(transformMode)
-            {
-                default:
-                    HandleDragMouseTranslate();
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    break;
-            }
+            HandleDragMouse();
         }
 
-        void HandleDragMouseTranslate()
+        void HandleDragMouse()
         {
             if (selectedAxis == 0) return;
             if (!Input.GetMouseButton(0))
@@ -94,6 +90,21 @@ namespace GXPEngine.Editor
                 selectedAxis = 0;
                 return;
             }
+
+            switch (transformMode)
+            {
+                default:
+                    HandleDragMouseTranslate();
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    HandleDragMouseScale();
+                    break;
+            }
+        }
+        void HandleDragMouseTranslate()
+        {
             Vector3 screenposNormal = position;
             Vector3 dir;
             Vector3 localDir;
@@ -118,38 +129,68 @@ namespace GXPEngine.Editor
             //this is so messed up but it makes a little sense
             GizmoNormalOnScreen /= GizmoNormalOnScreen.MagSq();
             editor.selectedGameobject.position += GizmoNormalOnScreen * Input.mouseVelocity * localDir;
-            Console.WriteLine(GizmoNormalOnScreen * Input.mouseVelocity);
+        }
+        void HandleDragMouseScale()
+        {
+            //i could just copypaste the translate code. fucking remarkable that this worked
+            Vector3 screenposNormal = position;
+            Vector3 dir;
+            Vector3 localDir;
+            switch (selectedAxis)
+            {
+                case 1:
+                    dir = rotation.Forward;
+                    localDir = Vector3.forward;
+                    break;
+                case 2:
+                    dir = rotation.Up;
+                    localDir = Vector3.up;
+                    break;
+                default:
+                    dir = rotation.Left;
+                    localDir = Vector3.left;
+                    break;
+            }
+            screenposNormal += dir;
+            screenposNormal = editor.mainCam.GlobalToScreenPoint(screenposNormal) - editor.mainCam.GlobalToScreenPoint(position);
+            Vector2 GizmoNormalOnScreen = new Vector2(screenposNormal.x, screenposNormal.y);
+            GizmoNormalOnScreen /= GizmoNormalOnScreen.MagSq();
+            editor.selectedGameobject.scaleXYZ += GizmoNormalOnScreen * Input.mouseVelocity * localDir;
         }
 
         public bool RaycastOnClick(Vector3 start, Vector3 end)
         {
             if(!visible) return false;
+            Vector3 n;
+            float dist = float.MaxValue;
+            float lowest = float.MaxValue;
+            bool res = false;
             activeRenderer.rotation = forward;
-            if (gizmoCollider.collider.RayCastTest(start, end))
+            res |= gizmoCollider.collider.RayCast(start, end, out dist, out n);
+            if(dist < lowest)
             {
+                lowest = dist;
                 selectedAxis = 1;
-                return true;
             }
             activeRenderer.rotation = up;
-            if (gizmoCollider.collider.RayCastTest(start, end))
+            res |= gizmoCollider.collider.RayCast(start, end, out dist, out n);
+            if (dist < lowest)
             {
+                lowest = dist;
                 selectedAxis = 2;
-                return true;
             }
             activeRenderer.rotation = left;
-            if (gizmoCollider.collider.RayCastTest(start, end))
-            {
+            res |= gizmoCollider.collider.RayCast(start, end, out dist, out n);
+            if (dist < lowest)
                 selectedAxis = 3;
-                return true;
-            }
-            selectedAxis = 0;
-            return false;
+            if (!res) selectedAxis = 0;
+            return res;
         }
 
         protected override void RenderSelf(GLContext glContext)
         {
             //this is evil & i cant believe im doing this
-            GL.Disable(0xb71);
+            GL.Clear(0x100);
 
             activeRenderer.visible = true;
             activeRenderer.rotation = forward;
@@ -162,8 +203,6 @@ namespace GXPEngine.Editor
             activeRenderer.color = (selectedAxis == 3 ? 0xFF55AAu : 0xFF0000u);
             activeRenderer.Render(glContext);
             activeRenderer.visible = false;
-
-            GL.Enable(0xb71);
         }
     }
 }

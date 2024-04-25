@@ -18,7 +18,7 @@
         public InputField(int width, int height, bool resetOnClick = false, float x = 0, float y = 0, int fontSize = 15, bool invisible = false) : base(width, height, x, y, invisible)
         {
             TextSize(fontSize);
-            TextAlign(CenterMode.Max, CenterMode.Center);
+            TextAlign(CenterMode.Min, CenterMode.Center);
             OnClick += EnableTyping;
             _resetOnClick = resetOnClick;
         }
@@ -73,12 +73,14 @@
             state = State.TYPE;
             if(_resetOnClick)
                 displayedText = string.Empty;
+            TextAlign(CenterMode.Max, CenterMode.Center);
             UpdateDisplay();
         }
         public void DisableTyping()
         {
             state = State.DISPLAY;
             message = displayedText;
+            TextAlign(CenterMode.Min, CenterMode.Center);
             UpdateDisplay();
             OnStoppedTyping?.Invoke(displayedText);
         }
