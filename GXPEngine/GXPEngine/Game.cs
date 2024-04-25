@@ -184,7 +184,7 @@ namespace GXPEngine
 		}
 
 		bool recurse=true;
-
+		protected bool recursingRn { get { return recurse; } }
 		public override void Render(GLContext glContext) {
 			if (RenderMain || !recurse) {
 				base.Render (glContext);

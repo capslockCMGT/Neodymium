@@ -170,6 +170,12 @@ namespace GXPEngine.Editor
             if (selectedGameobject != null && typeof(Box).IsAssignableFrom(selectedGameobject.ObjectType))
                 Gizmos.DrawBox(0, 0, 0, 2, 2, 2, selectedGameobject, 0xFFFF9900, 8);
         }
+        public override void Render(GLContext glContext)
+        {
+            base.Render(glContext);
+            //are ya sinning son?
+            if(!recursingRn)TransformGiz.TryRenderingHarder(glContext);
+        }
 
         public override void Add(GameObject gameObject)
         {
