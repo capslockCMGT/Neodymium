@@ -17,6 +17,7 @@ namespace GXPEngine.Editor
         public object[] ConstructorParameters;
         GameObject _EditorDisplayObject;
         public GameObject EditorDisplayObject {  get { return _EditorDisplayObject; } }
+        public PropertyInfo[] properties;
         public FieldInfo[] fields;
         protected static Vector3[] _boxbounds;
         float radius = .25f;
@@ -27,6 +28,7 @@ namespace GXPEngine.Editor
             Constructor = constructor;
             ConstructorParams = Constructor.GetParameters();
             ConstructorParameters = new object[ConstructorParams.Length];
+            properties = TypeHandler.GetPublicProperties(ObjectType);
             fields = TypeHandler.GetPublicVariables(ObjectType);
             BuildObject();
             if (_boxbounds == null) CreateBounds();
@@ -34,8 +36,14 @@ namespace GXPEngine.Editor
 
         public void BuildObject()
         {
+            object[] propertyValues = new object[properties.Length];
             object[] fieldValues = new object[fields.Length];
             bool exists = _EditorDisplayObject != null;
+            if(exists)
+            for(int i = 0; i<properties.Length; i++)
+            {
+                propertyValues[i] = properties[i].GetValue(_EditorDisplayObject);
+            }
             if(exists)
             for(int i = 0; i<fields.Length; i++)
             {
@@ -44,10 +52,16 @@ namespace GXPEngine.Editor
             _EditorDisplayObject?.Destroy();
             _EditorDisplayObject = TypeHandler.BuildFromConstructor(ConstructorParameters, ConstructorParams, ObjectType);
             if(exists)
+            for(int i = 0; i<properties.Length; i++) 
+            {
+                properties[i].SetValue(_EditorDisplayObject, propertyValues[i]);
+            }
+            if(exists)
             for(int i = 0; i<fields.Length; i++) 
             {
                 fields[i].SetValue(_EditorDisplayObject, fieldValues[i]);
             }
+
             if(_EditorDisplayObject != null) AddChild(_EditorDisplayObject);
         }
         public override void RenderDepthSorted(GLContext glContext, Vector3 slop)

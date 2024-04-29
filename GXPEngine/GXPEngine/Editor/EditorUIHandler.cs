@@ -107,26 +107,43 @@ namespace GXPEngine.Editor
 
             if (editor.selectedGameobject.EditorDisplayObject == null)
             {
+                TextPanel warning = new TextPanel(250, 30, "Constructor invalid! Check values", 12, false);
+                warning.color = 0xFF990000;
+                ObjectPropertyListContainer.AddChild (warning);
                 ObjectPropertyListContainer.OrganiseChildrenVertical();
                 ObjectPropertyListContainer.ResizeToContent();
                 SelectedObjectPropertyPanel.AddChild(ObjectPropertyListContainer);
                 SelectedObjectPropertyPanel.SetSliderBar(15, SelectedObjectPropertyPanel.height, 0, 0); 
                 return; };
 
-            ObjectPropertyListContainer.AddChild(new TextPanel(150,30,"Public variables:", 10, false));
+            ObjectPropertyListContainer.AddChild(new TextPanel(150, 30, "Public fields:", 10, false));
 
-            for (int i = 0; i<editor.selectedGameobject.fields.Length; i++)
+            for (int i = 0; i < editor.selectedGameobject.fields.Length; i++)
             {
-                FieldInfo field = editor.selectedGameobject.fields[i];
-                var value = field.GetValue(editor.selectedGameobject.EditorDisplayObject);
-                EditorPropertyInput property = new EditorPropertyInput(field.FieldType, field.Name, value);
-                property.onValueChanged += delegate (object val) { field.SetValue(editor.selectedGameobject.EditorDisplayObject, val); };
-                ObjectPropertyListContainer.AddChild(property);
+                FieldInfo prop = editor.selectedGameobject.fields[i];
+                Console.WriteLine(prop.Name);
+                var value = prop.GetValue(editor.selectedGameobject.EditorDisplayObject);
+                EditorPropertyInput field = new EditorPropertyInput(prop.FieldType, prop.Name, value);
+                field.onValueChanged += delegate (object val) { prop.SetValue(editor.selectedGameobject.EditorDisplayObject, val); };
+                ObjectPropertyListContainer.AddChild(field);
             }
+
+            ObjectPropertyListContainer.AddChild(new TextPanel(150,30,"Public properties:", 10, false));
+
+            for (int i = 0; i<editor.selectedGameobject.properties.Length; i++)
+            {
+                PropertyInfo prop = editor.selectedGameobject.properties[i];
+                var value = prop.GetValue(editor.selectedGameobject.EditorDisplayObject);
+                EditorPropertyInput field = new EditorPropertyInput(prop.PropertyType, prop.Name, value);
+                field.onValueChanged += delegate (object val) { prop.SetValue(editor.selectedGameobject.EditorDisplayObject, val); };
+                ObjectPropertyListContainer.AddChild(field);
+            }
+
             ObjectPropertyListContainer.OrganiseChildrenVertical();
             ObjectPropertyListContainer.ResizeToContent();
             SelectedObjectPropertyPanel.AddChild(ObjectPropertyListContainer);
             SelectedObjectPropertyPanel.SetSliderBar(15, SelectedObjectPropertyPanel.height, 0, 0);
+            SelectedObjectPropertyPanel.OrganiseChildrenVertical();
         }
 
         public void SetActiveSideMenu(GameObject menuInQuestion)

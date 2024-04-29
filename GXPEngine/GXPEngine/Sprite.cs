@@ -136,12 +136,11 @@ namespace GXPEngine
 		/// Gets or sets the sprite's width in pixels.
 		/// </summary>
 		virtual public int width {
-			get { 
-				if (_texture != null) return (int)Math.Abs(_texture.width * _scaleX);
-				return 0;
+			get {
+				return (int)_bounds.width;
 			}
 			set {
-				if (_texture != null && _texture.width != 0) scaleX = value / ((float)_texture.width);
+				_bounds.width = value;
 			}
 		}
 		
@@ -152,13 +151,14 @@ namespace GXPEngine
 		/// Gets or sets the sprite's height in pixels.
 		/// </summary>
 		virtual public int height {
-			get { 
-				if (_texture != null) return (int)Math.Abs(_texture.height * _scaleY);
-				return 0;
-			}
-			set {
-				if (_texture != null && _texture.height != 0) scaleY = value / ((float)_texture.height);
-			}
+			get
+            {
+                return (int)_bounds.height;
+            }
+			set
+            {
+                _bounds.height = value;
+            }
 		}
 
 		//------------------------------------------------------------------------------------------------------------------------
