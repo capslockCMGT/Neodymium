@@ -17,8 +17,8 @@ namespace GXPEngine.Editor
         public object[] ConstructorParameters;
         GameObject _EditorDisplayObject;
         public GameObject EditorDisplayObject {  get { return _EditorDisplayObject; } }
-        public PropertyInfo[] properties;
         public FieldInfo[] fields;
+        public PropertyInfo[] properties;
         protected static Vector3[] _boxbounds;
         float radius = .25f;
         public EditorGameObject(Type objectType, ConstructorInfo constructor) : base("editor/ProxyLogo.png", addCollider:true)

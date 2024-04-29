@@ -108,6 +108,8 @@ namespace GXPEngine.Editor
             }
             TryRaycastNextFrame = Input.GetMouseButtonDown(0);
             _uiHandler.UpdateHierarchy();
+            if(Input.GetKeyDown(Key.P))
+                GameObjectWriter.WriteEditorGameObjectTree(mainGameObject, "slop.gxp3d");
         }
 
         raycastResult raycastThroughChildren(EditorGameObject toCast, Vector3 rayStart, Vector3 rayEnd)

@@ -31,7 +31,7 @@ namespace GXPEngine.Editor
         public EditorUIHandler()
         {
             editor = (Editor)game;
-            Button.AnyButtonOnClick += AnyButtonPressed;
+            Button.AnyButtonOnClick += delegate () { millisSinceButtonPressed = 0; };
         }
         public void SetupMainUI()
         {
@@ -41,7 +41,7 @@ namespace GXPEngine.Editor
 
             AddObjectButton = new TexturedButton("editor/buttons/AddObject.png", "editor/buttons/AddObjectHover.png", "editor/buttons/AddObjectClick.png");
             buttonHolder.AddChild(AddObjectButton);
-            AddObjectButton.OnRelease += delegate () { SetActiveSideMenu(AddObjectMenu); };
+            AddObjectButton.OnRelease += delegate () { SetActiveSideMenu(AddObjectMenu == activeSideMenu ? null : AddObjectMenu); };
 
             DestroyObjectButton = new TexturedButton("editor/buttons/DestroyObject.png", "editor/buttons/DestroyObjectHover.png", "editor/buttons/DestroyObjectClick.png");
             buttonHolder.AddChild(DestroyObjectButton);
@@ -51,6 +51,7 @@ namespace GXPEngine.Editor
                 editor.selectedGameobject = null;
             };
 
+            //this sucks
             TexturedButton translate = new TexturedButton("editor/buttons/TranslateObject.png", "editor/buttons/TranslateObjectHover.png", "editor/buttons/TranslateObjectClick.png");
             buttonHolder.AddChild(translate);
             translate.OnRelease += delegate () { editor.TransformGiz.transformMode = 0; };
@@ -220,10 +221,6 @@ namespace GXPEngine.Editor
             }
             editorDisplay.UpdateChildren();
             editorDisplay.UpdateDisplay();
-        }
-        void AnyButtonPressed()
-        {
-            millisSinceButtonPressed = 0;
         }
     }
 }

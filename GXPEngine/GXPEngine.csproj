@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GXPEngine\Editor\GameObjectReader.cs" />
+    <Compile Include="GXPEngine\Editor\GameObjectWriter.cs" />
     <Compile Include="GXPEngine\UI\CheckBox.cs" />
     <Compile Include="GXPEngine\UI\EditorPropertyInput.cs" />
     <Compile Include="zGames\GameStartMenu.cs" />

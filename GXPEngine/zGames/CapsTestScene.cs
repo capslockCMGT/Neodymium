@@ -110,6 +110,8 @@ namespace GXPEngine
                 obj.scaleXYZ = new Vector3(10f / width, 10f / width, 1);
                 AddChild(obj);
             }
+
+            AddChild(Editor.GameObjectReader.ReadGameObjectTree("slop.gxp3d"));
         }
 
         // For every game object, Update is called every frame, by the engine:

@@ -21,6 +21,18 @@ namespace GXPEngine.Editor
         {
             return obj.GetProperties().Where(testc => IsAllowedProperty(testc.PropertyType) && testc.CanWrite && testc.CanRead && testc.DeclaringType != typeof(Transformable)).ToArray();
         }
+        public static Type GetTypeFromString(string Name)
+        {
+            return GetInstantiableObjects().FirstOrDefault(x => x.Name == Name);
+        }
+        public static GameObject BuildFromConstructorParams(object[] constructorParams, Type ObjectType)
+        {
+            Type[] types = new Type[constructorParams.Length];
+            for(int i = 0; i<constructorParams.Length; i++)
+                types[i] = constructorParams[i].GetType();
+            ConstructorInfo info = ObjectType.GetConstructor(types);
+            return BuildFromConstructor(constructorParams, info.GetParameters(), ObjectType);
+        }
         public static GameObject BuildFromConstructor(object[] ConstructorParameters, ParameterInfo[] ConstructorParams, Type ObjectType)
         {
             GameObject ret = null;
@@ -109,13 +121,14 @@ namespace GXPEngine.Editor
             if (constructorText.Length > 1) constructorText = constructorText.Substring(0, constructorText.Length - 2);
             return constructorText;
         }
-
+        static Type[] instantiableObjects;
         public static Type[] GetInstantiableObjects()
         {
+            if(instantiableObjects != null) return (Type[])instantiableObjects.Clone();
             var type = typeof(GameObject);
             var assembly = type.Assembly;
             //filtering out the ones i dont really like being able to add (game derivative classes, editor classes, ui classes etc)
-            return assembly.GetTypes().Where(testc => 
+            instantiableObjects = assembly.GetTypes().Where(testc => 
             (testc.IsSubclassOf(type)) && 
             (!testc.IsSubclassOf(typeof(Game))) &&
             (testc.Namespace != typeof(Editor).Namespace) && 
@@ -123,10 +136,12 @@ namespace GXPEngine.Editor
             (testc != typeof(GameStarter)) &&
             testc != typeof(Game)
             ).ToArray();
+
             //In the editor, thou shalt instantiate:
             //Gameobjects
             //Which are not UI objects (sry)
             //Or games
+            return (Type[])instantiableObjects.Clone();
         }
     }
 }
