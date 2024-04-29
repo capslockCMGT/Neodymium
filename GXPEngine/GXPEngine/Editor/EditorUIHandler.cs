@@ -108,7 +108,7 @@ namespace GXPEngine.Editor
             if (editor.selectedGameobject.EditorDisplayObject == null)
             {
                 TextPanel warning = new TextPanel(250, 30, "Constructor invalid! Check values", 12, false);
-                warning.color = 0xFF990000;
+                warning.color = 0xFFDD0000;
                 ObjectPropertyListContainer.AddChild (warning);
                 ObjectPropertyListContainer.OrganiseChildrenVertical();
                 ObjectPropertyListContainer.ResizeToContent();
@@ -121,7 +121,6 @@ namespace GXPEngine.Editor
             for (int i = 0; i < editor.selectedGameobject.fields.Length; i++)
             {
                 FieldInfo prop = editor.selectedGameobject.fields[i];
-                Console.WriteLine(prop.Name);
                 var value = prop.GetValue(editor.selectedGameobject.EditorDisplayObject);
                 EditorPropertyInput field = new EditorPropertyInput(prop.FieldType, prop.Name, value);
                 field.onValueChanged += delegate (object val) { prop.SetValue(editor.selectedGameobject.EditorDisplayObject, val); };

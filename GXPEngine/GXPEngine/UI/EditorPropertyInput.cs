@@ -73,7 +73,6 @@ namespace GXPEngine.UI
                 if (defaultValue != null) defaul = (int)defaultValue;
                 else defaul = (int)TypeHandler.GetDefaultPropertyValue(typeof(int));
                 _value = defaul;
-                Console.WriteLine("yuh!");
 
                 propertyValueSetter = new InputField(150, 15, 125, 0, defaul.ToString(), 10);
                 ((InputField)propertyValueSetter).OnStoppedTyping += delegate (string newtext) {

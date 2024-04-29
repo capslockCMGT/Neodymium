@@ -34,21 +34,36 @@ namespace GXPEngine.Editor
             if (_boxbounds == null) CreateBounds();
         }
 
-        public void BuildObject()
+        public object[] getPropertyValues()
         {
-            object[] propertyValues = new object[properties.Length];
-            object[] fieldValues = new object[fields.Length];
-            bool exists = _EditorDisplayObject != null;
-            if(exists)
+            object[] res = new object[properties.Length];
+            if (_EditorDisplayObject == null) return null;
+
             for(int i = 0; i<properties.Length; i++)
             {
-                propertyValues[i] = properties[i].GetValue(_EditorDisplayObject);
+                res[i] = properties[i].GetValue(_EditorDisplayObject);
             }
-            if(exists)
-            for(int i = 0; i<fields.Length; i++)
+            return res;
+        }
+
+        public object[] getFieldValues()
+        {
+            object[] res = new object[fields.Length]; 
+            if( _EditorDisplayObject == null) return null;
+
+            for (int i = 0; i < fields.Length; i++)
             {
-                fieldValues[i] = fields[i].GetValue(_EditorDisplayObject);
+                res[i] = fields[i].GetValue(_EditorDisplayObject);
             }
+            return res;
+        }
+
+        public void BuildObject()
+        {
+            object[] propertyValues = getPropertyValues();
+            object[] fieldValues = getFieldValues();
+            bool exists = _EditorDisplayObject != null;
+
             _EditorDisplayObject?.Destroy();
             _EditorDisplayObject = TypeHandler.BuildFromConstructor(ConstructorParameters, ConstructorParams, ObjectType);
             if(exists)
@@ -89,6 +104,7 @@ namespace GXPEngine.Editor
         }
         void CreateBounds()
         {
+            //cant just steal these from Box.cs. cant be fucked not to copypaste it either
             _boxbounds = new Vector3[8];
             for (int i = 0; i < 6; i++)
             {

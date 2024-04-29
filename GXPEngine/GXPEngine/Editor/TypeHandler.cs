@@ -19,7 +19,7 @@ namespace GXPEngine.Editor
         }
         public static PropertyInfo[] GetPublicProperties(Type obj)
         {
-            return obj.GetProperties().Where(testc => IsAllowedProperty(testc.PropertyType) && testc.CanWrite && testc.CanRead).ToArray();
+            return obj.GetProperties().Where(testc => IsAllowedProperty(testc.PropertyType) && testc.CanWrite && testc.CanRead && testc.DeclaringType != typeof(Transformable)).ToArray();
         }
         public static GameObject BuildFromConstructor(object[] ConstructorParameters, ParameterInfo[] ConstructorParams, Type ObjectType)
         {
