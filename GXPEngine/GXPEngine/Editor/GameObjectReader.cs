@@ -13,7 +13,7 @@ namespace GXPEngine.Editor
     {
         public static GameObject ReadGameObjectTree(string path)
         {
-            using(var stream = File.Open(path, FileMode.Open))
+            using (var stream = File.Open(path, FileMode.Open))
             {
                 using (BinaryReader reader = new BinaryReader(stream, Encoding.UTF8, false))
                 {
@@ -22,36 +22,49 @@ namespace GXPEngine.Editor
                 }
             }
         }
+        public static EditorGameObject ReadEditorGameObjectTree(string path)
+        {
+            using (var stream = File.Open(path, FileMode.Open))
+            {
+                using (BinaryReader reader = new BinaryReader(stream, Encoding.UTF8, false))
+                {
+                    reader.ReadChar();
+                    return (EditorGameObject)ReadGameObject(reader, true);
+                }
+            }
+        }
 
-        static GameObject ReadGameObject(BinaryReader reader)
+        static GameObject ReadGameObject(BinaryReader reader, bool asEditorGO = false)
         {
             string typeName = reader.ReadString();
             Type goType = TypeHandler.GetTypeFromString(typeName);
             if (goType == null) return null;
 
-            if(reader.ReadChar() != 't') { Console.WriteLine("FUCK! thats not a transform!"); return null; }
+            reader.ReadChar(); // 't' - transform
             Vector3 pos = ReadVector3(reader);
             Quaternion rot = ReadQuaternion(reader);
             Vector3 scale = ReadVector3(reader);
 
-            if(reader.ReadChar() != 'c') { Console.WriteLine("FUCK! thats not a constructor!"); return null; }
+            reader.ReadChar(); // 'c' - constructor info
             char nextRead = reader.ReadChar();
             List<object> constructorParams = new List<object>();
             while(nextRead == 'p')
             {
-                reader.ReadString(); //ditch the names of constructor values - we dont really care
+                reader.ReadString(); //ditch the names of constructor values - we dont really care (why are we saving these anyway? (oh right code reuse))
                 constructorParams.Add(ReadParameter(reader));
                 nextRead = reader.ReadChar();
             }
 
-            GameObject result = TypeHandler.BuildFromConstructorParams(constructorParams.ToArray(), goType);
+            object[] consParams = constructorParams.ToArray();
+            ConstructorInfo consinfo = TypeHandler.GetConstructorFromParams(consParams, goType);
+            GameObject result = TypeHandler.BuildFromConstructor(consParams, consinfo.GetParameters(), goType);
             if(result == null) return null;
 
             result.position = pos;
             result.rotation = rot;
             result.scaleXYZ = scale;
 
-            reader.ReadChar();
+            reader.ReadChar(); // 'f' - fields
             nextRead = reader.ReadChar();
             while (nextRead == 'p')
             {
@@ -60,7 +73,7 @@ namespace GXPEngine.Editor
                 nextRead = reader.ReadChar();
             }
 
-            reader.ReadChar();
+            reader.ReadChar(); // 'p' - properties
             nextRead = reader.ReadChar();
             while (nextRead == 'p')
             {
@@ -69,17 +82,32 @@ namespace GXPEngine.Editor
                 nextRead = reader.ReadChar();
             }
 
-            Console.WriteLine(reader.ReadChar()); // '{' - start of kids
+            EditorGameObject edit = null;
+            if (asEditorGO)
+            {
+                edit = new EditorGameObject(result, consinfo, consParams);
+                edit.ConstructorParameters = consParams;
+                edit.position = pos;
+                result.position = Vector3.zero;
+                edit.rotation = rot;
+                result.rotation = Quaternion.Identity;
+                result.scaleXYZ = edit.scaleXYZ;
+                edit.scaleXYZ = scale;
+            }
+
+            reader.ReadChar(); // '{' - start of kids
             nextRead = reader.ReadChar();
             while(nextRead == 'g')
             {
-                result.AddChild(ReadGameObject(reader));
+                GameObject toAdd = ReadGameObject(reader, asEditorGO);
+                if(asEditorGO) edit.AddChild(toAdd);
+                else result.AddChild(toAdd);
                 nextRead = reader.ReadChar();
             }
+            reader.ReadChar(); // '}' - end of kids
 
-            Console.WriteLine(reader.ReadChar()); // '}' - end of kids
-
-            return result;
+            if (asEditorGO) return edit;
+            else return result;
         }
 
         static object ReadParameter(BinaryReader reader)
@@ -87,7 +115,6 @@ namespace GXPEngine.Editor
             switch(reader.ReadChar())
             {
                 default: //catches ' ' too
-                    Console.WriteLine("MOTHER FUCKER !!!!!");
                     return null;
                 case 's':
                     return reader.ReadString();

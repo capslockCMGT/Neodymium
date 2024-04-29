@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 using System.Reflection;
 using GXPEngine.UI;
 using GXPEngine.Core;
+using System.Windows.Forms;
+using System.IO;
 using GXPEngine.Editor;
 using System.Drawing;
+using System.Threading;
 
 namespace GXPEngine.Editor
 {
@@ -59,9 +62,40 @@ namespace GXPEngine.Editor
             _uiHandler.SetupMainUI();
         }
 
+        public void LoadScene()
+        {
+            string filepath = "";
+            //quite remarkable
+            Thread STAThread = new Thread(
+                delegate ()
+                {
+                    using (OpenFileDialog ofd = new OpenFileDialog())
+                    {
+                        ofd.InitialDirectory = "";
+                        ofd.Filter = "GXP3D Scene files (*.GXP3D)|*.gxp3d";
+                        ofd.FilterIndex = 1;
+                        ofd.Multiselect = false;
+                        ofd.RestoreDirectory = true;
+                        ofd.Title = "Select a scene to load...";
+
+                        if (ofd.ShowDialog() != DialogResult.OK) return;
+                        try { filepath = ofd.FileName.Substring(Directory.GetCurrentDirectory().Length + 1).Replace('\\', '/'); } catch { }
+                    }
+                });
+            STAThread.SetApartmentState(ApartmentState.STA);
+            STAThread.Start();
+            STAThread.Join();
+
+            if (!File.Exists(filepath)) return;
+            DestroyCurrentTree();
+            _mainGameObject = GameObjectReader.ReadEditorGameObjectTree(filepath);
+            AddChild(_mainGameObject );
+            selectedGameobject = _mainGameObject;
+        }
+
         public void DestroyCurrentTree()
         {
-            _mainGameObject.Destroy();
+            _mainGameObject?.Destroy();
             _mainGameObject = null;
             selectedGameobject = null;
             uiManager.RemoveAll();
@@ -110,55 +144,8 @@ namespace GXPEngine.Editor
             _uiHandler.UpdateHierarchy();
             if(Input.GetKeyDown(Key.P))
                 GameObjectWriter.WriteEditorGameObjectTree(mainGameObject, "slop.gxp3d");
-        }
-
-        raycastResult raycastThroughChildren(EditorGameObject toCast, Vector3 rayStart, Vector3 rayEnd)
-        {
-            raycastResult result = new raycastResult();
-            result.hitObject = null;
-            result.distance = float.MaxValue;
-            Vector3 normal;
-            foreach(GameObject go in toCast.GetChildren())
-            {
-                if(go.collider == null) continue;
-             
-
-                if (go is EditorGameObject) result.setIfCloser(raycastThroughChildren((EditorGameObject)go, rayStart, rayEnd));
-                else
-                {
-                    float point = float.MaxValue;
-                    bool hit = false;
-                    if (go.collider is BoxCollider)
-                        hit = ((BoxCollider)go.collider).RayCast(rayStart, rayEnd, out point, out normal);
-                    else hit = go.collider.RayCastTest(rayStart, rayEnd);
-
-                    if (hit && toCast != selectedGameobject)
-                        result.setIfCloser(toCast, point < float.MaxValue ? point : (go.TransformPoint(0, 0, 0) - rayStart).Magnitude());
-                }
-            }
-            float d = float.MaxValue;
-            if(toCast.collider != null && toCast != selectedGameobject)
-                ((BoxCollider)toCast.collider).RayCast(rayStart, rayEnd, out d, out normal);
-            result.setIfCloser(toCast, d);
-            return result;
-        }
-        struct raycastResult
-        {
-            public EditorGameObject hitObject;
-            public float distance;
-
-            public void setIfCloser(EditorGameObject hitObject, float distance)
-            {
-                if(this.distance > distance)
-                {
-                    this.distance = distance;
-                    this.hitObject = hitObject;
-                }
-            }
-            public void setIfCloser(raycastResult result)
-            {
-                setIfCloser(result.hitObject, result.distance);
-            }
+            if (Input.GetKeyDown(Key.L))
+                LoadScene();
         }
 
         void SetupCam()
@@ -196,5 +183,56 @@ namespace GXPEngine.Editor
             if(gameObject.GetType().Namespace == typeof(Editor).Namespace)
             base.Add(gameObject);
         }
+
+
+        raycastResult raycastThroughChildren(EditorGameObject toCast, Vector3 rayStart, Vector3 rayEnd)
+        {
+            raycastResult result = new raycastResult();
+            result.hitObject = null;
+            result.distance = float.MaxValue;
+            Vector3 normal;
+            foreach (GameObject go in toCast.GetChildren())
+            {
+                if (go.collider == null) continue;
+
+
+                if (go is EditorGameObject) result.setIfCloser(raycastThroughChildren((EditorGameObject)go, rayStart, rayEnd));
+                else
+                {
+                    float point = float.MaxValue;
+                    bool hit = false;
+                    if (go.collider is BoxCollider)
+                        hit = ((BoxCollider)go.collider).RayCast(rayStart, rayEnd, out point, out normal);
+                    else hit = go.collider.RayCastTest(rayStart, rayEnd);
+
+                    if (hit && toCast != selectedGameobject)
+                        result.setIfCloser(toCast, point < float.MaxValue ? point : (go.TransformPoint(0, 0, 0) - rayStart).Magnitude());
+                }
+            }
+            float d = float.MaxValue;
+            if (toCast.collider != null && toCast != selectedGameobject)
+                ((BoxCollider)toCast.collider).RayCast(rayStart, rayEnd, out d, out normal);
+            result.setIfCloser(toCast, d);
+            return result;
+        }
+        struct raycastResult
+        {
+            public EditorGameObject hitObject;
+            public float distance;
+
+            public void setIfCloser(EditorGameObject hitObject, float distance)
+            {
+                if (this.distance > distance)
+                {
+                    this.distance = distance;
+                    this.hitObject = hitObject;
+                }
+            }
+            public void setIfCloser(raycastResult result)
+            {
+                setIfCloser(result.hitObject, result.distance);
+            }
+        }
+
     }
 }

@@ -27,11 +27,15 @@ namespace GXPEngine.Editor
         }
         public static GameObject BuildFromConstructorParams(object[] constructorParams, Type ObjectType)
         {
-            Type[] types = new Type[constructorParams.Length];
-            for(int i = 0; i<constructorParams.Length; i++)
-                types[i] = constructorParams[i].GetType();
-            ConstructorInfo info = ObjectType.GetConstructor(types);
+            ConstructorInfo info = GetConstructorFromParams(constructorParams, ObjectType);
             return BuildFromConstructor(constructorParams, info.GetParameters(), ObjectType);
+        }
+        public static ConstructorInfo GetConstructorFromParams(object[] constructorParams, Type ObjectType)
+        {
+            Type[] types = new Type[constructorParams.Length];
+            for (int i = 0; i < constructorParams.Length; i++)
+                types[i] = constructorParams[i].GetType();
+            return ObjectType.GetConstructor(types);
         }
         public static GameObject BuildFromConstructor(object[] ConstructorParameters, ParameterInfo[] ConstructorParams, Type ObjectType)
         {

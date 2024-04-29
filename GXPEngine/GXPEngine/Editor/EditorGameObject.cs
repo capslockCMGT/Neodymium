@@ -33,6 +33,19 @@ namespace GXPEngine.Editor
             BuildObject();
             if (_boxbounds == null) CreateBounds();
         }
+        public EditorGameObject(GameObject builtObject, ConstructorInfo constructor, object[] builtParams) : base("editor/ProxyLogo.png", addCollider:true)
+        {
+            SetOrigin(width * .5f, height * .5f);
+            ObjectType = builtObject.GetType();
+            Constructor = constructor;
+            ConstructorParams = Constructor.GetParameters();
+            ConstructorParameters = builtParams;
+            properties = TypeHandler.GetPublicProperties(ObjectType);
+            fields = TypeHandler.GetPublicVariables(ObjectType);
+            _EditorDisplayObject = builtObject;
+            AddChild(EditorDisplayObject);
+            if (_boxbounds == null) CreateBounds();
+        }
 
         public object[] getPropertyValues()
         {
@@ -68,14 +81,10 @@ namespace GXPEngine.Editor
             _EditorDisplayObject = TypeHandler.BuildFromConstructor(ConstructorParameters, ConstructorParams, ObjectType);
             if(exists)
             for(int i = 0; i<properties.Length; i++) 
-            {
                 properties[i].SetValue(_EditorDisplayObject, propertyValues[i]);
-            }
             if(exists)
             for(int i = 0; i<fields.Length; i++) 
-            {
                 fields[i].SetValue(_EditorDisplayObject, fieldValues[i]);
-            }
 
             if(_EditorDisplayObject != null) AddChild(_EditorDisplayObject);
         }
