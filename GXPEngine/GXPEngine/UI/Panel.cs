@@ -89,7 +89,7 @@ namespace GXPEngine.UI
         {
             ClearTransparent();
             Stroke(255, 255);
-            Fill(64, 64, 64, 255);
+            Fill(64, 64, 64, 155);
             Rect(width / 2, height / 2, width - 1, height - 1);
         }
 

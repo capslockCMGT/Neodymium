@@ -15,16 +15,18 @@ namespace GXPEngine.Editor
         Editor editor;
 
         GameObject activeSideMenu;
+
         SliderPanel HierarchyMenu;
         HierarchyItem editorDisplay;
 
-        TexturedButton AddObjectButton;
-        TexturedButton DestroyObjectButton;
-
         Panel AddObjectMenu;
         Panel ObjectConstructorMenu;
+
         SliderPanel SelectedObjectPropertyPanel;
         Panel ObjectPropertyListContainer;
+
+        Panel SceneMenu;
+        TextPanel sceneName;
 
         public int millisSinceButtonPressed = 0;
 
@@ -39,11 +41,11 @@ namespace GXPEngine.Editor
             Panel buttonHolder = new Panel(1, 1, 310, 5, invisible: true);
             buttonHolder.scale = 3;
 
-            AddObjectButton = new TexturedButton("editor/buttons/AddObject.png", "editor/buttons/AddObjectHover.png", "editor/buttons/AddObjectClick.png");
+            TexturedButton AddObjectButton = new TexturedButton("editor/buttons/AddObject.png", "editor/buttons/AddObjectHover.png", "editor/buttons/AddObjectClick.png");
             buttonHolder.AddChild(AddObjectButton);
             AddObjectButton.OnRelease += delegate () { SetActiveSideMenu(AddObjectMenu == activeSideMenu ? null : AddObjectMenu); };
 
-            DestroyObjectButton = new TexturedButton("editor/buttons/DestroyObject.png", "editor/buttons/DestroyObjectHover.png", "editor/buttons/DestroyObjectClick.png");
+            TexturedButton DestroyObjectButton = new TexturedButton("editor/buttons/DestroyObject.png", "editor/buttons/DestroyObjectHover.png", "editor/buttons/DestroyObjectClick.png");
             buttonHolder.AddChild(DestroyObjectButton);
             DestroyObjectButton.OnRelease += delegate () {
                 if (editor.selectedGameobject == editor.mainGameObject) editor.DestroyCurrentTree();
@@ -68,10 +70,38 @@ namespace GXPEngine.Editor
             game.uiManager.Add(SelectedObjectPropertyPanel);
             game.uiManager.Add(buttonHolder);
 
-            HierarchyMenu = new SliderPanel(300, game.height - 210, game.width - 305, 205);
-            HierarchyMenu.SetSliderBar(20, game.height - 210);
+            HierarchyMenu = new SliderPanel(300, game.height - 105, game.width - 305, 100);
+            HierarchyMenu.SetSliderBar(20, game.height - 105);
             HierarchyMenu.OrganiseChildrenVertical();
             game.uiManager.Add(HierarchyMenu);
+
+            SceneMenu = new Panel(300, 90, game.width - 305, 5);
+            if (string.IsNullOrEmpty(editor.loadedScene))
+                sceneName = new TextPanel(200, 19, "Unsaved scene", 13, false);
+            else sceneName = new TextPanel(200, 19, editor.loadedScene, 13, false);
+            SceneMenu.AddChild(sceneName);
+            TextButton save = new TextButton(200, 15, "Save scene", 13);
+            SceneMenu.AddChild(save);
+            save.OnRelease += delegate () {
+                if (string.IsNullOrEmpty(editor.loadedScene))
+                {
+                    editor.SaveSceneAs();
+                    if(!string.IsNullOrEmpty(editor.loadedScene))
+                    {
+                        sceneName.ClearTransparent();
+                        sceneName.Text(editor.loadedScene);
+                    }
+                }
+                else GameObjectWriter.WriteEditorGameObjectTree(editor.mainGameObject, editor.loadedScene);
+            };
+            TextButton saveAs = new TextButton(200, 15, "Save scene as...", 13);
+            SceneMenu.AddChild(saveAs);
+            saveAs.OnRelease += delegate () { editor.SaveSceneAs(); };
+            TextButton load = new TextButton(200, 15, "Load scene...", 13);
+            SceneMenu.AddChild(load);
+            load.OnRelease += delegate () { editor.LoadScene(); };
+            game.uiManager.Add(SceneMenu);
+            SceneMenu.OrganiseChildrenVertical(centerHorizontal:CenterMode.Center);
 
             SetupAddObjectMenu();
         }

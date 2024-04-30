@@ -41,7 +41,7 @@ namespace GXPEngine
             {
                 throw new Exception("Boxes cannot be created before creating a Game instance.");
             }
-            name = "Sprite from " + texture.filename;
+            name = "Box from " + texture.filename;
             initializeFromTexture(texture);
         }
 
@@ -164,8 +164,7 @@ namespace GXPEngine
                 }
             }
         }
-        //debug shit
-        public void DisplayVecrtices()
+        public void DisplayVertices()
         {
             boxModel.WriteVertsToConsole();
         }

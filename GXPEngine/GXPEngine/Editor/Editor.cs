@@ -51,6 +51,9 @@ namespace GXPEngine.Editor
             get { return _uiHandler; }
         }
 
+        string _loadedScene;
+        public string loadedScene { get { return _loadedScene; } }
+
         bool TryRaycastNextFrame = false;
 
         public Editor() : base(1200, 600, false, true, true, "GXP Editor")
@@ -58,39 +61,67 @@ namespace GXPEngine.Editor
             SetupCam();
             _uiHandler = new EditorUIHandler();
             _transformGiz = new TransformGizmo();
+            AddChild(_transformGiz);
 
             _uiHandler.SetupMainUI();
         }
 
         public void LoadScene()
         {
-            string filepath = "";
+            _loadedScene = "";
             //quite remarkable
             Thread STAThread = new Thread(
-                delegate ()
+            delegate ()
+            {
+                using (OpenFileDialog ofd = new OpenFileDialog())
                 {
-                    using (OpenFileDialog ofd = new OpenFileDialog())
-                    {
-                        ofd.InitialDirectory = "";
-                        ofd.Filter = "GXP3D Scene files (*.GXP3D)|*.gxp3d";
-                        ofd.FilterIndex = 1;
-                        ofd.Multiselect = false;
-                        ofd.RestoreDirectory = true;
-                        ofd.Title = "Select a scene to load...";
+                    ofd.InitialDirectory = "";
+                    ofd.Filter = "GXP3D Scene files (*.GXP3D)|*.gxp3d";
+                    ofd.FilterIndex = 1;
+                    ofd.Multiselect = false;
+                    ofd.RestoreDirectory = true;
+                    ofd.Title = "Select a scene to load...";
 
-                        if (ofd.ShowDialog() != DialogResult.OK) return;
-                        try { filepath = ofd.FileName.Substring(Directory.GetCurrentDirectory().Length + 1).Replace('\\', '/'); } catch { }
-                    }
-                });
+                    if (ofd.ShowDialog() != DialogResult.OK) return;
+                    try { _loadedScene = ofd.FileName.Substring(Directory.GetCurrentDirectory().Length + 1).Replace('\\', '/'); } catch { }
+                }
+            });
             STAThread.SetApartmentState(ApartmentState.STA);
             STAThread.Start();
             STAThread.Join();
 
-            if (!File.Exists(filepath)) return;
+            if (!File.Exists(_loadedScene)) { _loadedScene = null; return; }
             DestroyCurrentTree();
-            _mainGameObject = GameObjectReader.ReadEditorGameObjectTree(filepath);
+            _mainGameObject = GameObjectReader.ReadEditorGameObjectTree(_loadedScene);
             AddChild(_mainGameObject );
             selectedGameobject = _mainGameObject;
+        }
+
+        public void SaveSceneAs()
+        {
+            _loadedScene = "";
+            //quite remarkable
+            Thread STAThread = new Thread(
+            delegate ()
+            {
+                using (SaveFileDialog sfd = new SaveFileDialog())
+                {
+                    sfd.InitialDirectory = "";
+                    sfd.Filter = "GXP3D Scene files (*.GXP3D)|*.gxp3d";
+                    sfd.FilterIndex = 1;
+                    sfd.RestoreDirectory = true;
+                    sfd.Title = "Save scene as...";
+
+                    if (sfd.ShowDialog() != DialogResult.OK) return;
+                    try { _loadedScene = sfd.FileName.Substring(Directory.GetCurrentDirectory().Length + 1).Replace('\\', '/'); } catch { }
+                }
+            });
+            STAThread.SetApartmentState(ApartmentState.STA);
+            STAThread.Start();
+            STAThread.Join();
+            if (!File.Exists(_loadedScene)) { _loadedScene = null; return; }
+
+            GameObjectWriter.WriteEditorGameObjectTree(mainGameObject, _loadedScene);
         }
 
         public void DestroyCurrentTree()
@@ -120,7 +151,6 @@ namespace GXPEngine.Editor
             {
                 _mainGameObject = newObject;
                 AddChild(newObject);
-                AddChild(_transformGiz);
             }
             else _mainGameObject.AddChild(newObject);
             selectedGameobject = newObject;
@@ -142,10 +172,6 @@ namespace GXPEngine.Editor
             }
             TryRaycastNextFrame = Input.GetMouseButtonDown(0);
             _uiHandler.UpdateHierarchy();
-            if(Input.GetKeyDown(Key.P))
-                GameObjectWriter.WriteEditorGameObjectTree(mainGameObject, "slop.gxp3d");
-            if (Input.GetKeyDown(Key.L))
-                LoadScene();
         }
 
         void SetupCam()
