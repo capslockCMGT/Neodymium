@@ -114,7 +114,7 @@ namespace GXPEngine.Editor
         {
             switch(reader.ReadChar())
             {
-                default: //catches ' ' too
+                default: //catches ' ' in particular
                     return null;
                 case 's':
                     return reader.ReadString();

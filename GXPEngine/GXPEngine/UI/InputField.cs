@@ -10,6 +10,9 @@
         public State state;
         public int cursorPos;
         bool _resetOnClick = false;
+
+        static bool _anyTyping = false;
+        public static bool AnyTyping { get { return _anyTyping; } }
         public enum State
         {
             DISPLAY,
@@ -71,6 +74,7 @@
         {
             if (state == State.TYPE) return;
             state = State.TYPE;
+            _anyTyping = true;
             if(_resetOnClick)
                 displayedText = string.Empty;
             TextAlign(CenterMode.Max, CenterMode.Center);
@@ -79,6 +83,7 @@
         public void DisableTyping()
         {
             state = State.DISPLAY;
+            _anyTyping = false;
             message = displayedText;
             TextAlign(CenterMode.Min, CenterMode.Center);
             UpdateDisplay();

@@ -47,6 +47,28 @@ namespace GXPEngine.Editor
             if (_boxbounds == null) CreateBounds();
         }
 
+        public EditorGameObject GetDuplicate()
+        {
+            EditorGameObject res = new EditorGameObject(ObjectType, Constructor);
+            for(int i = 0; i<ConstructorParameters.Length; i++)
+                res.ConstructorParameters[i] = ConstructorParameters[i];
+            res.BuildObject();
+            res.position = position;
+            res.rotation = rotation;
+            res.scaleXYZ = scaleXYZ;
+            if(EditorDisplayObject != null)
+            {
+                foreach (PropertyInfo property in properties)
+                    property.SetValue(res.EditorDisplayObject, property.GetValue(EditorDisplayObject));
+                foreach (FieldInfo field in fields)
+                    field.SetValue(res.EditorDisplayObject, field.GetValue(EditorDisplayObject));
+            }
+            foreach (GameObject go in GetChildren())
+                if (go is EditorGameObject)
+                    res.AddChild(((EditorGameObject)go).GetDuplicate());
+            return res;
+        }
+
         public object[] getPropertyValues()
         {
             object[] res = new object[properties.Length];

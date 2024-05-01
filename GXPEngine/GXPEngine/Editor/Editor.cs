@@ -51,6 +51,8 @@ namespace GXPEngine.Editor
             get { return _uiHandler; }
         }
 
+        EditorGameObject clipboardObject;
+
         string _loadedScene;
         public string loadedScene { get { return _loadedScene; } }
 
@@ -92,9 +94,7 @@ namespace GXPEngine.Editor
 
             if (!File.Exists(_loadedScene)) { _loadedScene = null; return; }
             DestroyCurrentTree();
-            _mainGameObject = GameObjectReader.ReadEditorGameObjectTree(_loadedScene);
-            AddChild(_mainGameObject );
-            selectedGameobject = _mainGameObject;
+            AddGameObject( GameObjectReader.ReadEditorGameObjectTree(_loadedScene) );
         }
 
         public void SaveSceneAs()
@@ -143,6 +143,10 @@ namespace GXPEngine.Editor
 
             Type gameObjectType = consInfo.DeclaringType;
             EditorGameObject newObject = new EditorGameObject(gameObjectType, consInfo);
+            AddGameObject(newObject);
+        }
+        public void AddGameObject(EditorGameObject newObject)
+        {
             if (selectedGameobject != null)
             {
                 selectedGameobject.AddChild(newObject);
@@ -172,6 +176,13 @@ namespace GXPEngine.Editor
             }
             TryRaycastNextFrame = Input.GetMouseButtonDown(0);
             _uiHandler.UpdateHierarchy();
+            if(Input.GetKeyDown(Key.C) && Input.GetKey(Key.LEFT_CTRL) && selectedGameobject != null && !InputField.AnyTyping)
+            {
+                clipboardObject?.Destroy();
+                clipboardObject = selectedGameobject.GetDuplicate();
+            }
+            if (Input.GetKeyDown(Key.V) && Input.GetKey(Key.LEFT_CTRL) && selectedGameobject != null && clipboardObject != null && !InputField.AnyTyping)
+                AddGameObject(clipboardObject.GetDuplicate());
         }
 
         void SetupCam()

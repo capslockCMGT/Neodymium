@@ -37,7 +37,7 @@ namespace GXPEngine.Editor
         }
         public void SetupMainUI()
         {
-            SelectedObjectPropertyPanel = new SliderPanel(300, game.height - 10, 5, 5);
+            SelectedObjectPropertyPanel = new SliderPanel(300, game.height - 10, 5, 5, true);
             Panel buttonHolder = new Panel(1, 1, 310, 5, invisible: true);
             buttonHolder.scale = 3;
 
@@ -70,7 +70,7 @@ namespace GXPEngine.Editor
             game.uiManager.Add(SelectedObjectPropertyPanel);
             game.uiManager.Add(buttonHolder);
 
-            HierarchyMenu = new SliderPanel(300, game.height - 105, game.width - 305, 100);
+            HierarchyMenu = new SliderPanel(300, game.height - 105, game.width - 305, 100, true);
             HierarchyMenu.SetSliderBar(20, game.height - 105);
             HierarchyMenu.OrganiseChildrenVertical();
             game.uiManager.Add(HierarchyMenu);
