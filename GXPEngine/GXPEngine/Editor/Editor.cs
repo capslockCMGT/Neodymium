@@ -94,7 +94,7 @@ namespace GXPEngine.Editor
 
             if (!File.Exists(_loadedScene)) { _loadedScene = null; return; }
             DestroyCurrentTree();
-            AddGameObject( GameObjectReader.ReadEditorGameObjectTree(_loadedScene) );
+            EditorActionRegister.AddObject( GameObjectReader.ReadEditorGameObjectTree(_loadedScene) );
         }
 
         public void SaveSceneAs()
@@ -131,6 +131,7 @@ namespace GXPEngine.Editor
             selectedGameobject = null;
             uiManager.RemoveAll();
             HierarchyItem.references.Clear();
+            EditorActionRegister.Clear();
             _uiHandler.Destroy();
             _uiHandler = new EditorUIHandler();
             _uiHandler.SetupMainUI();
@@ -143,7 +144,7 @@ namespace GXPEngine.Editor
 
             Type gameObjectType = consInfo.DeclaringType;
             EditorGameObject newObject = new EditorGameObject(gameObjectType, consInfo);
-            AddGameObject(newObject);
+            EditorActionRegister.AddObject(newObject);
         }
         public void AddGameObject(EditorGameObject newObject)
         {
@@ -176,13 +177,20 @@ namespace GXPEngine.Editor
             }
             TryRaycastNextFrame = Input.GetMouseButtonDown(0);
             _uiHandler.UpdateHierarchy();
-            if(Input.GetKeyDown(Key.C) && Input.GetKey(Key.LEFT_CTRL) && selectedGameobject != null && !InputField.AnyTyping)
+            if(Input.GetKey(Key.LEFT_CTRL) && !InputField.AnyTyping)
             {
-                clipboardObject?.Destroy();
-                clipboardObject = selectedGameobject.GetDuplicate();
+                if (Input.GetKeyDown(Key.C) && selectedGameobject != null)
+                {
+                    clipboardObject?.Destroy();
+                    clipboardObject = selectedGameobject.GetDuplicateWithChildren();
+                }
+                if (Input.GetKeyDown(Key.V) && selectedGameobject != null && clipboardObject != null)
+                    EditorActionRegister.AddObject(clipboardObject.GetDuplicateWithChildren(), "Duplicated ");
+                if (Input.GetKeyDown(Key.Z))
+                    if (Input.GetKey(Key.LEFT_SHIFT))
+                        EditorActionRegister.Redo();
+                    else EditorActionRegister.Undo();
             }
-            if (Input.GetKeyDown(Key.V) && Input.GetKey(Key.LEFT_CTRL) && selectedGameobject != null && clipboardObject != null && !InputField.AnyTyping)
-                AddGameObject(clipboardObject.GetDuplicate());
         }
 
         void SetupCam()

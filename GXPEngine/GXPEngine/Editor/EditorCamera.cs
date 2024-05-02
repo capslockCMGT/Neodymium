@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GXPEngine;
 using GXPEngine.Core;
+using GXPEngine.UI;
 
 namespace GXPEngine.Editor
 {
@@ -12,8 +13,6 @@ namespace GXPEngine.Editor
     {
         //private Camera actualCam;
         private Vector2 screenRotation = new Vector2(0,0);
-        private Vector2 mousePosition;
-        private Vector2 mouseVelocity;
         public EditorCamera(float FOV = 90, float near = .1f, float far = 100) : base(new ProjectionMatrix(FOV, (FOV * Game.main.height) / Game.main.width, near, far))
         {
 
@@ -27,6 +26,8 @@ namespace GXPEngine.Editor
         {
             game.uiManager.AssignWindow(RenderTarget);
             UpdateRotation();
+            if (!Input.GetMouseButton(1) && !InputField.AnyTyping)
+                return;
             UpdatePosition();
         }
 
@@ -64,9 +65,7 @@ namespace GXPEngine.Editor
         {
             if (Input.GetMouseButton(1))
             {
-                mouseVelocity = new Vector2(Input.mouseX, Input.mouseY) - mousePosition;
-
-                screenRotation += mouseVelocity * Time.deltaTimeS;
+                screenRotation += Input.mouseVelocity * Time.deltaTimeS;
                 if (screenRotation.y > .5f*Mathf.PI) screenRotation.y = Mathf.PI * .499f;
                 if (screenRotation.y < -.5f * Mathf.PI) screenRotation.y = Mathf.PI * -.499f;
 
@@ -75,8 +74,6 @@ namespace GXPEngine.Editor
                 rotation = Quaternion.FromRotationAroundAxis(Vector3.up, screenRotation.x);
                 Rotate( Quaternion.FromRotationAroundAxis(Vector3.left, screenRotation.y));
             }
-
-            mousePosition = new Vector2(Input.mouseX, Input.mouseY);
         }
     }
 }

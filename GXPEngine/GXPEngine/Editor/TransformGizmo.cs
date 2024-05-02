@@ -21,6 +21,9 @@ namespace GXPEngine.Editor
         static Editor editor;
         Quaternion forward, up, left;
         int selectedAxis = 0;
+        Vector3 startPosition;
+        Quaternion startRotation;
+        Vector3 startScale;
         public int transformMode
         {
             get { return _transformMode; }
@@ -96,6 +99,18 @@ namespace GXPEngine.Editor
             if (selectedAxis == 0) return;
             if (!Input.GetMouseButton(0))
             {
+                switch(transformMode)
+                {
+                    default:
+                        EditorActionRegister.SetPositionValue(editor.selectedGameobject.position, editor.selectedGameobject, true, startPosition);
+                        break;
+                    case 1:
+                        EditorActionRegister.SetRotationValue(editor.selectedGameobject.rotation, editor.selectedGameobject, true, startRotation);
+                        break;
+                    case 2:
+                        EditorActionRegister.SetScaleValue(editor.selectedGameobject.scaleXYZ, editor.selectedGameobject, true, startScale);
+                        break;
+                }
                 editor.uiHandler.UpdateGameObjectPropertyMenu();
                 selectedAxis = 0;
                 transformMode = transformMode;
@@ -278,6 +293,13 @@ namespace GXPEngine.Editor
             if (dist < lowest)
                 selectedAxis = 3;
             if (!res) selectedAxis = 0;
+            
+            if(res)
+            {
+                startPosition = editor.selectedGameobject.position;
+                startRotation = editor.selectedGameobject.rotation;
+                startScale = editor.selectedGameobject.scaleXYZ;
+            }
             return res;
         }
 

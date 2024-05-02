@@ -48,9 +48,10 @@ namespace GXPEngine.Editor
             TexturedButton DestroyObjectButton = new TexturedButton("editor/buttons/DestroyObject.png", "editor/buttons/DestroyObjectHover.png", "editor/buttons/DestroyObjectClick.png");
             buttonHolder.AddChild(DestroyObjectButton);
             DestroyObjectButton.OnRelease += delegate () {
-                if (editor.selectedGameobject == editor.mainGameObject) editor.DestroyCurrentTree();
-                editor.selectedGameobject?.Destroy();
-                editor.selectedGameobject = null;
+                //if (editor.selectedGameobject == editor.mainGameObject) editor.DestroyCurrentTree();
+                //editor.selectedGameobject?.Destroy();
+                //editor.selectedGameobject = null;
+                EditorActionRegister.RemoveObject(editor.selectedGameobject);
             };
 
             //this sucks
@@ -116,13 +117,13 @@ namespace GXPEngine.Editor
 
             EditorPropertyInput pos = new EditorPropertyInput(typeof(Vector3), "Position", editor.selectedGameobject.position);
             ObjectPropertyListContainer.AddChild(pos);
-            pos.onValueChanged += delegate (object value) { editor.selectedGameobject.position = (Vector3)value; };
+            pos.onValueChanged += delegate (object value) { EditorActionRegister.SetPositionValue((Vector3)value, editor.selectedGameobject); };
             EditorPropertyInput rot = new EditorPropertyInput(typeof(Quaternion), "Rotation", editor.selectedGameobject.rotation);
             ObjectPropertyListContainer.AddChild(rot);
-            rot.onValueChanged += delegate (object value) { editor.selectedGameobject.rotation = (Quaternion)value; };
+            rot.onValueChanged += delegate (object value) { EditorActionRegister.SetRotationValue((Quaternion)value, editor.selectedGameobject); };
             EditorPropertyInput scale = new EditorPropertyInput(typeof(Vector3), "Scale", editor.selectedGameobject.scaleXYZ);
             ObjectPropertyListContainer.AddChild(scale);
-            scale.onValueChanged += delegate (object value) { editor.selectedGameobject.scaleXYZ = (Vector3)value; };
+            scale.onValueChanged += delegate (object value) { EditorActionRegister.SetScaleValue((Vector3)value, editor.selectedGameobject); };
 
             ObjectPropertyListContainer.AddChild(new TextPanel(276, 30, "Constructor:", 10, false));
 
@@ -132,7 +133,7 @@ namespace GXPEngine.Editor
                 var value = editor.selectedGameobject.ConstructorParameters[i];
                 EditorPropertyInput property = new EditorPropertyInput(field.ParameterType, field.Name, value);
                 int index = i; //i remembered :D
-                property.onValueChanged += delegate (object val) { editor.selectedGameobject.ConstructorParameters[index] = val; editor.selectedGameobject.BuildObject(); UpdateGameObjectPropertyMenu(); };
+                property.onValueChanged += delegate (object val) { EditorActionRegister.SetConstructorValue(val, index); };
                 ObjectPropertyListContainer.AddChild(property);
             }
 
@@ -141,10 +142,7 @@ namespace GXPEngine.Editor
                 TextPanel warning = new TextPanel(250, 30, "Constructor invalid! Check values", 12, false);
                 warning.color = 0xFFDD0000;
                 ObjectPropertyListContainer.AddChild (warning);
-                ObjectPropertyListContainer.OrganiseChildrenVertical();
-                ObjectPropertyListContainer.ResizeToContent();
-                SelectedObjectPropertyPanel.AddChild(ObjectPropertyListContainer);
-                SelectedObjectPropertyPanel.SetSliderBar(15, SelectedObjectPropertyPanel.height, 0, 0); 
+                Finalize();
                 return; };
 
             ObjectPropertyListContainer.AddChild(new TextPanel(150, 30, "Public fields:", 10, false));
@@ -154,7 +152,7 @@ namespace GXPEngine.Editor
                 FieldInfo prop = editor.selectedGameobject.fields[i];
                 var value = prop.GetValue(editor.selectedGameobject.EditorDisplayObject);
                 EditorPropertyInput field = new EditorPropertyInput(prop.FieldType, prop.Name, value);
-                field.onValueChanged += delegate (object val) { prop.SetValue(editor.selectedGameobject.EditorDisplayObject, val); };
+                field.onValueChanged += delegate (object val) { EditorActionRegister.SetFieldValue(val, prop, editor.selectedGameobject); };
                 ObjectPropertyListContainer.AddChild(field);
             }
 
@@ -165,15 +163,20 @@ namespace GXPEngine.Editor
                 PropertyInfo prop = editor.selectedGameobject.properties[i];
                 var value = prop.GetValue(editor.selectedGameobject.EditorDisplayObject);
                 EditorPropertyInput field = new EditorPropertyInput(prop.PropertyType, prop.Name, value);
-                field.onValueChanged += delegate (object val) { prop.SetValue(editor.selectedGameobject.EditorDisplayObject, val); };
+                field.onValueChanged += delegate (object val) { EditorActionRegister.SetPropertyValue(val, prop, editor.selectedGameobject);/*  prop.SetValue(editor.selectedGameobject.EditorDisplayObject, val); */};
                 ObjectPropertyListContainer.AddChild(field);
             }
 
-            ObjectPropertyListContainer.OrganiseChildrenVertical();
-            ObjectPropertyListContainer.ResizeToContent();
-            SelectedObjectPropertyPanel.AddChild(ObjectPropertyListContainer);
-            SelectedObjectPropertyPanel.SetSliderBar(15, SelectedObjectPropertyPanel.height, 0, 0);
+            Finalize();
             SelectedObjectPropertyPanel.OrganiseChildrenVertical();
+
+            void Finalize()
+            {
+                ObjectPropertyListContainer.OrganiseChildrenVertical();
+                ObjectPropertyListContainer.ResizeToContent();
+                SelectedObjectPropertyPanel.AddChild(ObjectPropertyListContainer);
+                SelectedObjectPropertyPanel.SetSliderBar(15, SelectedObjectPropertyPanel.height, 0, 0);
+            }
         }
 
         public void SetActiveSideMenu(GameObject menuInQuestion)

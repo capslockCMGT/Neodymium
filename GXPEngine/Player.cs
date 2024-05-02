@@ -7,7 +7,7 @@ namespace GXPEngine
 {
     public class Player : GameObject
     {
-        BoxCollider collider;
+        BoxCollider pCollider;
         public List<Collider> colliders;
         Camera cam;
         Vector3 size = new Vector3(0.1f, 0.5f, 0.1f);
@@ -15,7 +15,7 @@ namespace GXPEngine
         Vector3 groundNormal = Vector3.up;
         public bool grounded = false;
 
-        float cameraTilt, targetTilt = 0.1f;
+        float cameraTilt;//, targetTilt = 0.1f;
         Vector3 camOffset = new Vector3(0, 0, 0);
         Vector3 targetOffset = new Vector3(0.3f,0.1f,0);
         bool xChanged;
@@ -40,7 +40,7 @@ namespace GXPEngine
         }
         public Player() : base()
         {
-            collider = new BoxCollider(this);
+            pCollider = new BoxCollider(this);
             colliders = new List<Collider>();
             tiltTimer = new Timer();
             tiltTimer.SetLaunch(0.5f);
@@ -64,7 +64,7 @@ namespace GXPEngine
             }
             foreach (Collider coll in colliders)
             {
-                Collision collision = collider.GetCollisionInfo(coll);
+                Collision collision = pCollider.GetCollisionInfo(coll);
                 if (collision != null)
                 {
                     position -= collision.normal * collision.penetrationDepth;
@@ -140,7 +140,7 @@ namespace GXPEngine
         }
         public void DrawBB()
         {
-            if (collider != null)
+            if (pCollider != null)
             {
                 Gizmos.DrawBox(0, 0, 0, size.x, size.y, size.z, this, color: 0xff00ffff);
             }

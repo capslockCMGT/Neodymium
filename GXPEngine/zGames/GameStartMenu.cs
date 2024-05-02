@@ -36,7 +36,7 @@ namespace GXPEngine
         void StartGame(int index)
         {
             DestroyRetainProgram();
-            Console.WriteLine(index);
+            //Console.WriteLine(index);
             games[index].GetConstructor(new Type[0]).Invoke(new object[0]);
             main.Start();
         }
