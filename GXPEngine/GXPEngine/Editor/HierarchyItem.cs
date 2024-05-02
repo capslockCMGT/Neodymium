@@ -179,6 +179,7 @@ namespace GXPEngine.Editor
                 HierarchyItem child = item.children[i];
                 UnregisterChild(child.gameObject, child);
             }
+            item.Remove();
         }
 
         public void Hide()
