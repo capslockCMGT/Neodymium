@@ -70,7 +70,7 @@ namespace GXPEngine.Editor
         {
             if (currentAction == 0)
             {
-                actions[currentAction]?.Undo();
+                //actions[currentAction]?.Undo();
                 if (actions[currentAction] != null) 
                     Console.WriteLine("whoops! nothing left to undo");
                 return;

@@ -103,12 +103,15 @@ namespace GXPEngine.Editor
                 {
                     default:
                         EditorActionRegister.SetPositionValue(editor.selectedGameobject.position, editor.selectedGameobject, true, startPosition);
+                        Console.WriteLine("set position to " + editor.selectedGameobject.position);
                         break;
                     case 1:
                         EditorActionRegister.SetRotationValue(editor.selectedGameobject.rotation, editor.selectedGameobject, true, startRotation);
+                        Console.WriteLine("set rotation to " + editor.selectedGameobject.rotation);
                         break;
                     case 2:
                         EditorActionRegister.SetScaleValue(editor.selectedGameobject.scaleXYZ, editor.selectedGameobject, true, startScale);
+                        Console.WriteLine("set scale to " + editor.selectedGameobject.scaleXYZ);
                         break;
                 }
                 editor.uiHandler.UpdateGameObjectPropertyMenu();
