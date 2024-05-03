@@ -64,33 +64,14 @@ namespace GXPEngine.Editor
             _uiHandler = new EditorUIHandler();
             _transformGiz = new TransformGizmo();
             AddChild(_transformGiz);
+            _mainCam.RenderTarget.onAfterDepthSortedRender += _transformGiz.TryRenderingHarder;
 
             _uiHandler.SetupMainUI();
         }
 
         public void LoadScene()
         {
-            _loadedScene = "";
-            //quite remarkable
-            Thread STAThread = new Thread(
-            delegate ()
-            {
-                using (OpenFileDialog ofd = new OpenFileDialog())
-                {
-                    ofd.InitialDirectory = "";
-                    ofd.Filter = "GXP3D Scene files (*.GXP3D)|*.gxp3d";
-                    ofd.FilterIndex = 1;
-                    ofd.Multiselect = false;
-                    ofd.RestoreDirectory = true;
-                    ofd.Title = "Select a scene to load...";
-
-                    if (ofd.ShowDialog() != DialogResult.OK) return;
-                    try { _loadedScene = ofd.FileName.Substring(Directory.GetCurrentDirectory().Length + 1).Replace('\\', '/'); } catch { }
-                }
-            });
-            STAThread.SetApartmentState(ApartmentState.STA);
-            STAThread.Start();
-            STAThread.Join();
+            _loadedScene = Utils.OpenFile();
 
             if (!File.Exists(_loadedScene)) { _loadedScene = null; return; }
             DestroyCurrentTree();
@@ -99,26 +80,8 @@ namespace GXPEngine.Editor
 
         public void SaveSceneAs()
         {
-            _loadedScene = "";
-            //quite remarkable
-            Thread STAThread = new Thread(
-            delegate ()
-            {
-                using (SaveFileDialog sfd = new SaveFileDialog())
-                {
-                    sfd.InitialDirectory = "";
-                    sfd.Filter = "GXP3D Scene files (*.GXP3D)|*.gxp3d";
-                    sfd.FilterIndex = 1;
-                    sfd.RestoreDirectory = true;
-                    sfd.Title = "Save scene as...";
+            _loadedScene = Utils.SaveFile();
 
-                    if (sfd.ShowDialog() != DialogResult.OK) return;
-                    try { _loadedScene = sfd.FileName.Substring(Directory.GetCurrentDirectory().Length + 1).Replace('\\', '/'); } catch { }
-                }
-            });
-            STAThread.SetApartmentState(ApartmentState.STA);
-            STAThread.Start();
-            STAThread.Join();
             if (!File.Exists(_loadedScene)) { _loadedScene = null; return; }
 
             GameObjectWriter.WriteEditorGameObjectTree(mainGameObject, _loadedScene);
@@ -215,12 +178,6 @@ namespace GXPEngine.Editor
             }
             if (selectedGameobject != null && typeof(Box).IsAssignableFrom(selectedGameobject.ObjectType))
                 Gizmos.DrawBox(0, 0, 0, 2, 2, 2, selectedGameobject, 0xFFFF9900, 8);
-        }
-        public override void Render(GLContext glContext)
-        {
-            base.Render(glContext);
-            //are ya sinning son?
-            if(!recursingRn)TransformGiz.TryRenderingHarder(glContext);
         }
 
         public override void Add(GameObject gameObject)

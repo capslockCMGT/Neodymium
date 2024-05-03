@@ -23,6 +23,8 @@ namespace GXPEngine.Editor
         float radius = .25f;
         public EditorGameObject(Type objectType, ConstructorInfo constructor) : base("editor/ProxyLogo.png", addCollider:true)
         {
+            width = 1;
+            height = 1;
             SetOrigin(width * .5f,height * .5f);
             ObjectType = objectType;
             Constructor = constructor;
@@ -35,6 +37,8 @@ namespace GXPEngine.Editor
         }
         public EditorGameObject(GameObject builtObject, ConstructorInfo constructor, object[] builtParams) : base("editor/ProxyLogo.png", addCollider:true)
         {
+            width = 1;
+            height = 1;
             SetOrigin(width * .5f, height * .5f);
             ObjectType = builtObject.GetType();
             Constructor = constructor;
@@ -122,9 +126,9 @@ namespace GXPEngine.Editor
             else _texture = Texture2D.GetInstance("editor/ProxyLogo.png");
             
             Vector3 baseScale = scaleXYZ;
-            scaleXYZ = radius*baseScale*(128.0f/game.width);
+            //scaleXYZ = radius*baseScale*(128.0f/game.width);
             base.RenderDepthSorted(glContext, slop);
-            scaleXYZ = baseScale;
+            //scaleXYZ = baseScale;
         }
         protected override Collider createCollider()
         {

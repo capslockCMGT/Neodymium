@@ -73,7 +73,7 @@ namespace GXPEngine.Editor
             {
                 Panel panel= (Panel)parent;
                 if (panel.height != height + 10)
-                    panel.Resize(panel.width, height + 10);
+                    panel.Resize((int)panel.width, height + 10);
             }
         }
         public int GetContentHeight()
@@ -100,7 +100,7 @@ namespace GXPEngine.Editor
             }
             if (height != res)
             {
-                Resize(width, res);
+                Resize((int)width, res);
             }
             return res;
         }
@@ -122,7 +122,7 @@ namespace GXPEngine.Editor
             foreach (GameObject child in gameObject.GetChildren())
             {
                 if (!(child is EditorGameObject)) continue;
-                HierarchyItem childItem = new HierarchyItem((EditorGameObject)child,iteration+1, width-10, 10, 25);
+                HierarchyItem childItem = new HierarchyItem((EditorGameObject)child,iteration+1, (int)width-10, 10, 25);
                 childItem.ReadChildren();
                 children.Add(childItem);
                 childItem.parent = this.parent;
@@ -159,7 +159,7 @@ namespace GXPEngine.Editor
         {
             if (parentItem == null)
                 parentItem = references[gameObject.parent];
-            HierarchyItem childItem = new HierarchyItem(gameObject, parentItem.iteration + 1, parentItem.width-10, 10, 25);
+            HierarchyItem childItem = new HierarchyItem(gameObject, parentItem.iteration + 1, (int)parentItem.width -10, 10, 25);
             parentItem.children.Add(childItem);
             childItem.parent = parentItem.parent;
             childItem.parentItem = parentItem;

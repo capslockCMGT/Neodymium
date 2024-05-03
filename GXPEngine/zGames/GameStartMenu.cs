@@ -30,7 +30,7 @@ namespace GXPEngine
             } 
             p.OrganiseChildrenVertical();
             p.ResizeToContent();
-            panel.SetSliderBar(20, panel.height);
+            panel.SetSliderBar(20, (int)panel.height);
         }
 
         void StartGame(int index)

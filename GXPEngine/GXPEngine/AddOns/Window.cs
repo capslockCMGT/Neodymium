@@ -90,6 +90,8 @@ namespace GXPEngine {
 		bool _clear;
 
 		public Transformable window;
+		public delegate void RenderCall(GLContext gLContext);
+		public RenderCall onAfterDepthSortedRender = null;
 
 		public static Window ActiveWindow
 		{
@@ -186,6 +188,7 @@ namespace GXPEngine {
 			if (current is Game)
             {
 				RenderDepthSortedObjects(glContext);
+				onAfterDepthSortedRender?.Invoke(glContext);
 				RenderUI(glContext);
             }
             _ActiveWindow = null;

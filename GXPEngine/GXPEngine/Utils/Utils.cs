@@ -3,12 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Drawing; // For Font
 using System.Drawing.Text; // For PrivateFontCollection
+using System.Threading;
+using System.Windows.Forms;
+using System.IO;
 
 namespace GXPEngine
 {
-	/// <summary>
-	/// The Utils class contains a number of useful functions.
-	/// </summary>
+    /// <summary>
+    /// The Utils class contains a number of useful functions.
+    /// </summary>
 	public static class Utils
 	{
 		static private Random random = new Random();
@@ -129,6 +132,54 @@ namespace GXPEngine
 			return true;
 		}
 
+		public static string OpenFile(string windowName = "Select a scene to load...", string fileTypes = "GXP3D Scene files (*.GXP3D)|*.gxp3d")
+		{
+			string res = "";
+            Thread STAThread = new Thread(
+            delegate ()
+            {
+                using (OpenFileDialog ofd = new OpenFileDialog())
+                {
+                    ofd.InitialDirectory = "";
+                    ofd.Filter = fileTypes;
+                    ofd.FilterIndex = 1;
+                    ofd.Multiselect = false;
+                    ofd.RestoreDirectory = true;
+                    ofd.Title = windowName;
+
+                    if (ofd.ShowDialog() != DialogResult.OK) return;
+                    try { res = ofd.FileName.Substring(Directory.GetCurrentDirectory().Length + 1).Replace('\\', '/'); } catch { }
+                }
+            });
+            STAThread.SetApartmentState(ApartmentState.STA);
+            STAThread.Start();
+            STAThread.Join();
+			return res;
+        }
+
+		public static string SaveFile(string windowName = "Save scene as...", string fileTypes = "GXP3D Scene files (*.GXP3D)|*.gxp3d")
+		{
+			string res = "";
+            Thread STAThread = new Thread(
+            delegate ()
+            {
+                using (SaveFileDialog sfd = new SaveFileDialog())
+                {
+                    sfd.InitialDirectory = "";
+                    sfd.Filter = fileTypes;
+                    sfd.FilterIndex = 1;
+                    sfd.RestoreDirectory = true;
+                    sfd.Title = windowName;
+
+                    if (sfd.ShowDialog() != DialogResult.OK) return;
+                    try { res = sfd.FileName.Substring(Directory.GetCurrentDirectory().Length + 1).Replace('\\', '/'); } catch { }
+                }
+            });
+            STAThread.SetApartmentState(ApartmentState.STA);
+            STAThread.Start();
+            STAThread.Join();
+			return res;
+        }
 	}
 }
 

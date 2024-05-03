@@ -111,7 +111,7 @@ namespace GXPEngine
                     (byte)Mathf.Lerp(fac, startColor.G, endColor.G),
                     (byte)Mathf.Lerp(fac, startColor.B, endColor.B));
 
-                scale = Mathf.Lerp(fac, startSize, endSize);
+                size = Mathf.Lerp(fac, startSize, endSize);
                 if (alphaCurve == null)
                     alpha = Mathf.Lerp(fac, startAlpha, endAlpha);
                 else
@@ -254,7 +254,7 @@ namespace GXPEngine
                 p.alpha = alphaCurve(0);
             else
                 p.alpha = startAlpha;
-            p.scale = startSize;
+            p.size = startSize;
         }
         public void Update()
         {
@@ -264,7 +264,7 @@ namespace GXPEngine
             }
             if (enabled)
             {
-                spawnCooldown += Time.deltaTime / 1000f;
+                spawnCooldown += Time.deltaTimeS;
                 int particlesGenerated = (int)(spawnCooldown / spawnPeriod);
                 spawnCooldown %= spawnPeriod;
                 for (int i = 0; i < particlesGenerated; i++)

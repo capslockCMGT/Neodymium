@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using GXPEngine.Core;
 using GXPEngine.Editor;
 
@@ -44,8 +40,11 @@ namespace GXPEngine.UI
                 else defaul = (string)TypeHandler.GetDefaultPropertyValue(typeof(string));
                 _value = defaul;
 
-                propertyValueSetter = new InputField(150, 15, 125, 0, defaul, 10);
+                propertyValueSetter = new InputField(135, 15, 125, 0, defaul, 10);
                 ((InputField)propertyValueSetter).OnStoppedTyping += delegate (string newtext) { Value = newtext; };
+                TexturedButton openFile = new TexturedButton("editor/buttons/openFileButton.png", "editor/buttons/openFileButtonHighlighted.png", "editor/buttons/openFileButtonClicked.png", 135);
+                propertyValueSetter.AddChild(openFile);
+                openFile.OnRelease += delegate () { string open = Utils.OpenFile("Open any file...", "Any file (*.*)|*.*"); if (string.IsNullOrEmpty(open)) return; else Value = open; };
 
                 AddChild(propertyValueSetter);
                 initializeFromTexture(transparent276x15);
@@ -210,27 +209,7 @@ namespace GXPEngine.UI
                 propertyValueSetter.AddChild(texrenderer);
                 ((Button)propertyValueSetter).OnRelease += delegate
                 {
-                    string filepath = "";
-                    //quite remarkable
-                    Thread STAThread = new Thread(
-                        delegate ()
-                        {
-                            using (OpenFileDialog ofd = new OpenFileDialog())
-                            {
-                                ofd.InitialDirectory = "";
-                                ofd.Filter = "Image Files (*.PNG;*.JPG)|*.PNG;*.JPG";
-                                ofd.FilterIndex = 1;
-                                ofd.Multiselect = false;
-                                ofd.RestoreDirectory = true;
-                                ofd.Title = "Select an image texture...";
-
-                                if (ofd.ShowDialog() != DialogResult.OK) return;
-                                try { filepath = ofd.FileName.Substring(Directory.GetCurrentDirectory().Length + 1).Replace('\\', '/'); } catch { }
-                            }
-                        });
-                    STAThread.SetApartmentState(ApartmentState.STA);
-                    STAThread.Start();
-                    STAThread.Join();
+                    string filepath = Utils.OpenFile("Select an image texture...", "Image Files (*.PNG;*.JPG)|*.PNG;*.JPG");
 
                     try { Value = Texture2D.GetInstance(filepath); } catch { }
                 };

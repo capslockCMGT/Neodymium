@@ -135,9 +135,9 @@ namespace GXPEngine
 		/// <summary>
 		/// Gets or sets the sprite's width in pixels.
 		/// </summary>
-		virtual public int width {
+		virtual public float width {
 			get {
-				return (int)_bounds.width;
+				return _bounds.width;
 			}
 			set {
 				_bounds.width = value;
@@ -150,10 +150,10 @@ namespace GXPEngine
 		/// <summary>
 		/// Gets or sets the sprite's height in pixels.
 		/// </summary>
-		virtual public int height {
+		virtual public float height {
 			get
             {
-                return (int)_bounds.height;
+                return _bounds.height;
             }
 			set
             {

@@ -307,6 +307,27 @@ namespace GXPEngine.Editor
         {
             if (!visible) return;
             if (editor.selectedGameobject == null) return;
+
+
+            //this comment is a testament to the fact that this document contains the worst code i have ever written.
+            //if you have reached this far, i apologize.
+            GameObject camera = Window.ActiveWindow.camera;
+
+            if (camera is Camera)
+                glContext.PushMatrix(((Camera)camera).projection.matrix);
+            int pushes = 1;
+            GameObject current = camera;
+            Transformable cameraInverse;
+            while (true)
+            {
+                cameraInverse = current.Inverse();
+                glContext.PushMatrix(cameraInverse.matrix);
+                pushes++;
+                if (current.parent == null)
+                    break;
+                current = current.parent;
+            }
+
             glContext.PushMatrix(matrix);
             //this is evil & i cant believe im doing this
             GL.Clear(0x100);
@@ -323,7 +344,17 @@ namespace GXPEngine.Editor
             activeRenderer.Render(glContext);
             activeRenderer.visible = false;
 
+
+            //god should kill me
             glContext.PopMatrix();
+
+            for (int i = 1; i < pushes; i++)
+            {
+                glContext.PopMatrix();
+            }
+
+            if (camera is Camera)
+                glContext.PopMatrix();
         }
     }
 }

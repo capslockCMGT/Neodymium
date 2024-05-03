@@ -175,7 +175,7 @@ namespace GXPEngine.Editor
                 ObjectPropertyListContainer.OrganiseChildrenVertical();
                 ObjectPropertyListContainer.ResizeToContent();
                 SelectedObjectPropertyPanel.AddChild(ObjectPropertyListContainer);
-                SelectedObjectPropertyPanel.SetSliderBar(15, SelectedObjectPropertyPanel.height, 0, 0);
+                SelectedObjectPropertyPanel.SetSliderBar(15, (int)SelectedObjectPropertyPanel.height, 0, 0);
             }
         }
 
@@ -240,7 +240,7 @@ namespace GXPEngine.Editor
             Panel targetWindow = HierarchyMenu;
             //change 'this' in the line below to whatever the main gameobject is
             //uh huh
-            editorDisplay = new HierarchyItem(editor.mainGameObject, 0, targetWindow.width - 30, 5, 5);
+            editorDisplay = new HierarchyItem(editor.mainGameObject, 0, (int)targetWindow.width - 30, 5, 5);
             editorDisplay.ReadChildren();
             targetWindow.AddChild(editorDisplay);
         }

@@ -13,13 +13,13 @@ namespace GXPEngine
     /// </summary>
     public class DSCFSprite : Sprite
     {
+        public float size = 1;
         public DSCFSprite(Texture2D texture, bool addCollider) : base(texture, addCollider)
         {
         }
 
         public DSCFSprite(string filename, bool keepInCache = true, bool addCollider = false) : base(filename, keepInCache, addCollider)
         {
-
         }
 
         protected override void RenderSelf(GLContext glContext)
@@ -34,8 +34,8 @@ namespace GXPEngine
             float zinv = 1/(cameraSpacePosition.z + ((Camera)Window.ActiveWindow.camera).projection.near);
             gLContext.PushMatrix(new float[]
             {
-                scaleX*zinv, 0,0,0,
-                0, -scaleY*zinv*game.heightRatio, 0,0,
+                zinv*size, 0,0,0,
+                0, -zinv*game.heightRatio*size, 0,0,
                 0,0,1,0,
                 -cameraSpacePosition.x, -cameraSpacePosition.y, z, 1
             });
