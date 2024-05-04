@@ -111,6 +111,7 @@ namespace GXPEngine
                 groundNormal = Vector3.up;
                 velocity.y -= 10 * Time.deltaTimeS;
             }
+            DrawBB();
         }
         public void ControlsUpdate()
         {

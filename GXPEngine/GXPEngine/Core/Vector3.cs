@@ -14,7 +14,8 @@ namespace GXPEngine.Core
 			this.y = y;
 			this.z = z;
 		}
-        public static Vector3 zero = new Vector3(0,0,0);
+        public static Vector3 zero = new Vector3(0, 0, 0);
+        public static Vector3 one = new Vector3(1, 1, 1);
         public static Vector3 up = new Vector3(0, 1, 0);
         public static Vector3 left = new Vector3(1, 0, 0);
         public static Vector3 forward = new Vector3(0, 0, 1);
@@ -41,14 +42,20 @@ namespace GXPEngine.Core
         {
             return new Vector3(v.x * s, v.y * s, v.z * s);
         }
-        /*public static bool operator ==(Vector3 v1, Vector3 v2)
-        {
-            return (v1.x - v2.x < 0.00001f && v1.y - v2.y < 0.00001f && v1.z - v2.z < 0.00001f);
-        }
-        public static bool operator !=(Vector3 v1, Vector3 v2)
-        {
-            return !(v1.x - v2.x < 0.00001f && v1.y - v2.y < 0.00001f && v1.z - v2.z < 0.00001f);
-        }*/
+        //public static bool operator ==(Vector3 v1, Vector3 v2)
+        //{
+        //    Vector3 delta = v1 - v2;
+        //    return (delta.x < 0.00001f && delta.x > -0.00001f && 
+        //            delta.y < 0.00001f && delta.y > -0.00001f &&
+        //            delta.z < 0.00001f && delta.z > -0.00001f);
+        //}
+        //public static bool operator !=(Vector3 v1, Vector3 v2)
+        //{
+        //    Vector3 delta = v1 - v2;
+        //    return !(delta.x < 0.00001f && delta.x > -0.00001f &&
+        //            delta.y < 0.00001f && delta.y > -0.00001f &&
+        //            delta.z < 0.00001f && delta.z > -0.00001f);
+        //}
         //alternative dot product
         public static float operator *(Vector3 v1, Vector3 v2)
         {

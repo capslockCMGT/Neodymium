@@ -14,6 +14,9 @@ namespace GXPEngine
         bool showCursor;
         Player player;
         Camera cam;
+
+        ModelRenderer walls;
+        Box box;
         public IvansTestScene() : base(800, 600, false, true, false, "actual cool test scene")
         {
             cam = new Camera(new ProjectionMatrix(90, 90 * .75f, .1f, 10), true);
@@ -21,18 +24,25 @@ namespace GXPEngine
             AddChild(cam);
             cam.SetXY(0, 1, 0);
 
+            player = new Player();
+
             SetupScene();
 
-            player = new Player();
             AddChild(player);
             player.AssignCamera(cam);
             Gizmos.GetCameraSpace(cam);
-            player.colliders.Add(new Box("cubeTex.png").collider);
+            box = new Box("cubeTex.png");
+            player.colliders.Add(box.collider);
+            ((BoxCollider)box.collider).size = new Vector3(0.5f, 0.5f, 0.5f);
+            AddChild(box);
+            box.DisplayExtents();
         }
         void Update()
         {
             if (Input.GetKeyDown(Key.TAB)) showCursor = !showCursor;
             game.ShowMouse(showCursor);
+            ((BoxCollider)walls.collider).DrawExtents();
+            ((BoxCollider)box.collider).DrawExtents();
         }
         public void SetupScene()
         {
@@ -47,9 +57,13 @@ namespace GXPEngine
             ModelRenderer floor = new ModelRenderer(sceneFolder + "floor.obj", sceneFolder + "floor_texture.png");
             AddChild(floor);
             floor.y = -2;
-            ModelRenderer walls = new ModelRenderer(sceneFolder + "walls.obj", sceneFolder + "walls_texture.png");
+            walls = new ModelRenderer(sceneFolder + "walls.obj", sceneFolder + "walls_texture.png");
             AddChild(walls);
             walls.y = -2;
+            BoxCollider temp = walls.CreateBoxCollider();
+            temp.size = new Vector3(0.3f, 0.3f, 0.3f);
+            temp.offset = new Vector3(0.5f, 0.5f, 0.5f);
+            player.colliders.Add(walls.collider);
             ModelRenderer lights = new ModelRenderer(sceneFolder + "lights.obj", "editor/whitePixel.png");
             AddChild(lights);
             lights.y = -2;
