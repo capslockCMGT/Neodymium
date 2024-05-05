@@ -52,9 +52,10 @@ namespace GXPEngine.Editor
             {
                 ret = (GameObject)Activator.CreateInstance(ObjectType, ConstructorParameters);
             }
-            catch (Exception e)
+            catch 
             {
-                Console.WriteLine($"Could not display or create gameobject - invalid constructor: {e}");
+                //i dont wanna hear it!
+                //Console.WriteLine($"Could not display or create gameobject - invalid constructor: {e}");
             }
             return ret;
         }

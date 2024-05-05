@@ -151,7 +151,7 @@ namespace GXPEngine
         public Func<float,float> alphaCurve = null;
         public ParticleSystem(string path, float x, float y, float z, EmitterType emitter = EmitterType.circle, Mode mode = Mode.position, GameObject worldSpace = null, GameObject cam = null) : base (false)
         {
-            if (!File.Exists(path)) { enabled = false; return; }
+            if (!File.Exists(path)) enabled = false; 
             forces = new List<Force>();
             particles = new List<Particle>();
             this.texturePath = path;
