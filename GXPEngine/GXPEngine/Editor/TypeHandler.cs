@@ -10,7 +10,6 @@ using GXPEngine.UI;
 
 namespace GXPEngine.Editor
 {
-
     static class TypeHandler
     {
         public static FieldInfo[] GetPublicVariables(Type obj)

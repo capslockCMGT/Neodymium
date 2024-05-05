@@ -48,7 +48,7 @@ namespace GXPEngine.Editor
             TexturedButton DestroyObjectButton = new TexturedButton("editor/buttons/DestroyObject.png", "editor/buttons/DestroyObjectHover.png", "editor/buttons/DestroyObjectClick.png");
             buttonHolder.AddChild(DestroyObjectButton);
             DestroyObjectButton.OnRelease += delegate () {
-                //if (editor.selectedGameobject == editor.mainGameObject) editor.DestroyCurrentTree();
+                if (editor.selectedGameobject == editor.mainGameObject) { editor.DestroyCurrentTree(null); return; }
                 //editor.selectedGameobject?.Destroy();
                 //editor.selectedGameobject = null;
                 EditorActionRegister.RemoveObject(editor.selectedGameobject);
@@ -105,6 +105,23 @@ namespace GXPEngine.Editor
             SceneMenu.OrganiseChildrenVertical(centerHorizontal:CenterMode.Center);
 
             SetupAddObjectMenu();
+        }
+        public void DestroySceneConfirmationDialog(Button.NoArgs dewit)
+        {
+            Panel background = new Panel(1, 1);
+            TextPanel txt = new TextPanel(300, 12, "Are you sure you want to delete the current scene?",10,false);
+            TextPanel txt2 = new TextPanel(200, 12, "This cannot be undone.",10,false);
+            TextButton bt = new TextButton(200, 15, "Continue",13);
+            TextButton bt2 = new TextButton(200, 15, "Nevermind",13);
+            background.AddChild(txt);
+            background.AddChild(txt2);
+            background.AddChild(bt);
+            background.AddChild(bt2);
+            bt2.OnRelease += delegate () { SetActiveSideMenu(null); background.LateDestroy(); };
+            bt.OnRelease += dewit;
+            background.OrganiseChildrenVertical();
+            background.ResizeToContent();
+            SetActiveSideMenu(background);
         }
         public void UpdateGameObjectPropertyMenu()
         {

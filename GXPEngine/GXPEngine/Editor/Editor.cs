@@ -1,16 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
 using GXPEngine.UI;
 using GXPEngine.Core;
-using System.Windows.Forms;
 using System.IO;
-using GXPEngine.Editor;
-using System.Drawing;
-using System.Threading;
 
 namespace GXPEngine.Editor
 {
@@ -71,11 +63,18 @@ namespace GXPEngine.Editor
 
         public void LoadScene()
         {
-            _loadedScene = Utils.OpenFile();
+            string newscene = Utils.OpenFile();
 
-            if (!File.Exists(_loadedScene)) { _loadedScene = null; return; }
-            DestroyCurrentTree();
-            EditorActionRegister.AddObject( GameObjectReader.ReadEditorGameObjectTree(_loadedScene) );
+            if (!File.Exists(newscene)) 
+            { 
+                newscene = null; 
+                return; 
+            }
+            DestroyCurrentTree(delegate()
+            {
+                _loadedScene = newscene;
+                EditorActionRegister.AddObject(GameObjectReader.ReadEditorGameObjectTree(_loadedScene));
+            });
         }
 
         public void SaveSceneAs()
@@ -87,17 +86,22 @@ namespace GXPEngine.Editor
             GameObjectWriter.WriteEditorGameObjectTree(mainGameObject, _loadedScene);
         }
 
-        public void DestroyCurrentTree()
+        public void DestroyCurrentTree(UI.Button.NoArgs onComplete)
         {
-            _mainGameObject?.Destroy();
-            _mainGameObject = null;
-            selectedGameobject = null;
-            uiManager.RemoveAll();
-            HierarchyItem.references.Clear();
-            EditorActionRegister.Clear();
-            _uiHandler.Destroy();
-            _uiHandler = new EditorUIHandler();
-            _uiHandler.SetupMainUI();
+            _uiHandler.DestroySceneConfirmationDialog(DoItForSure);
+            void DoItForSure()
+            {
+                _mainGameObject?.Destroy();
+                _mainGameObject = null;
+                selectedGameobject = null;
+                uiManager.RemoveAll();
+                HierarchyItem.references.Clear();
+                EditorActionRegister.Clear();
+                _uiHandler.Destroy();
+                _uiHandler = new EditorUIHandler();
+                _uiHandler.SetupMainUI();
+                onComplete?.Invoke();
+            }
         }
 
         public void AddGameObject(ConstructorInfo consInfo)
