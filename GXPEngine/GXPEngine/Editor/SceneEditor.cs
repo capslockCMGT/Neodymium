@@ -81,7 +81,8 @@ namespace GXPEngine.Editor.Exclusives
         {
             _loadedScene = Utils.SaveFile();
 
-            if (!File.Exists(_loadedScene)) { _loadedScene = null; return; }
+            //am i stupid? dont check if a file exists when saving it dumbass
+            //if (!File.Exists(_loadedScene)) { _loadedScene = null; return; }
 
             GameObjectWriter.WriteEditorGameObjectTree(mainGameObject, _loadedScene);
         }
