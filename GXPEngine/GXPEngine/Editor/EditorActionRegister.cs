@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using GXPEngine.Core;
 
-namespace GXPEngine.Editor
+namespace GXPEngine.Editor.Exclusives
 {
     public static class EditorActionRegister
     {
         static EditorAction[] actions = new EditorAction[128];
         static int currentAction = 0;
-        static Editor editor { get { return ((Editor)Game.main); } }
+        static SceneEditor editor { get { return ((SceneEditor)Game.main); } }
         public static void Clear()
         {
             currentAction = 0;

@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using GXPEngine.Core;
 using GXPEngine.Editor;
+using GXPEngine.UI;
 
-namespace GXPEngine.UI
+namespace GXPEngine.Editor.Exclusives
 {
     public class EditorPropertyInput : Panel
     {

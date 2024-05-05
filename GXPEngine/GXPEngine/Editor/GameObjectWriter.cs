@@ -11,7 +11,7 @@ namespace GXPEngine.Editor
 {
     public static class GameObjectWriter
     {
-        public static void WriteEditorGameObjectTree(EditorGameObject tree, string fileLocation)
+        public static void WriteEditorGameObjectTree(Exclusives.EditorGameObject tree, string fileLocation)
         {
             using(var stream = File.Open(fileLocation, FileMode.Create))
             {
@@ -21,7 +21,7 @@ namespace GXPEngine.Editor
                 }
             }
         }
-        static void WriteEditorGameObject(EditorGameObject obj, BinaryWriter writer) 
+        static void WriteEditorGameObject(Exclusives.EditorGameObject obj, BinaryWriter writer) 
         {
             writer.Write('g'); //the gameobject
             writer.Write(obj.ObjectType.Name); //the type
@@ -40,7 +40,7 @@ namespace GXPEngine.Editor
             writer.Write('\n');
             writer.Write('{');//the kids go here
             foreach(GameObject kid in obj.GetChildren())
-                if (kid is EditorGameObject) WriteEditorGameObject((EditorGameObject)kid, writer);
+                if (kid is Exclusives.EditorGameObject) WriteEditorGameObject((Exclusives.EditorGameObject)kid, writer);
             writer.Write('}');//end of kids
             writer.Write('\n');//end of this gameobject
         }

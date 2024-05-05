@@ -7,7 +7,7 @@ using GXPEngine;
 using GXPEngine.Core;
 using GXPEngine.UI;
 
-namespace GXPEngine.Editor
+namespace GXPEngine.Editor.Exclusives
 {
     public class EditorCamera : Camera
     {

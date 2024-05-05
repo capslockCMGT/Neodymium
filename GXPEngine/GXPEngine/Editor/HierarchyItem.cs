@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GXPEngine.Editor
+namespace GXPEngine.Editor.Exclusives
 {
     public class HierarchyItem : Panel
     {
@@ -58,7 +58,7 @@ namespace GXPEngine.Editor
         }
         void SetSelectedObject()
         {
-            ((Editor)game).selectedGameobject = gameObject;
+            ((SceneEditor)game).selectedGameobject = gameObject;
         }
         void ToggleChildren()
         {
@@ -78,7 +78,7 @@ namespace GXPEngine.Editor
         }
         public int GetContentHeight()
         {
-            if (gameObject == ((Editor)game).selectedGameobject)
+            if (gameObject == ((SceneEditor)game).selectedGameobject)
                 objectProxy.color = 0xffff9900;
             else objectProxy.color = 0xffffffff - (uint)(0x00000011 * iteration);
             int res = 20;

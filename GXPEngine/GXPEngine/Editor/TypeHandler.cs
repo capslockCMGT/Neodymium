@@ -134,7 +134,8 @@ namespace GXPEngine.Editor
             instantiableObjects = assembly.GetTypes().Where(testc => 
             (testc.IsSubclassOf(type)) && 
             (!testc.IsSubclassOf(typeof(Game))) &&
-            (testc.Namespace != typeof(Editor).Namespace) && 
+            (testc.Namespace != typeof(TypeHandler).Namespace) &&
+            (testc.Namespace != typeof(Exclusives.SceneEditor).Namespace) &&
             (testc.Namespace != typeof(Button).Namespace) && 
             (testc != typeof(GameStarter)) &&
             testc != typeof(Game)

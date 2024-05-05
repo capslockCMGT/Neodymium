@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GXPEngine.Core;
 
-namespace GXPEngine.Editor
+namespace GXPEngine.Editor.Exclusives
 {
     public class EditorGameObject : DSCFSprite
     {
@@ -121,7 +121,7 @@ namespace GXPEngine.Editor
         }
         public override void RenderDepthSorted(GLContext glContext, Vector3 slop)
         {
-            if (this == ((Editor)game).selectedGameobject)
+            if (this == ((SceneEditor)game).selectedGameobject)
                 _texture = Texture2D.GetInstance("editor/SelectedMarker.png");
             else _texture = Texture2D.GetInstance("editor/ProxyLogo.png");
             

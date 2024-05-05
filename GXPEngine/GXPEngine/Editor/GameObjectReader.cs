@@ -22,14 +22,14 @@ namespace GXPEngine.Editor
                 }
             }
         }
-        public static EditorGameObject ReadEditorGameObjectTree(string path)
+        public static Exclusives.EditorGameObject ReadEditorGameObjectTree(string path)
         {
             using (var stream = File.Open(path, FileMode.Open))
             {
                 using (BinaryReader reader = new BinaryReader(stream, Encoding.UTF8, false))
                 {
                     reader.ReadChar();
-                    return (EditorGameObject)ReadGameObject(reader, true);
+                    return (Exclusives.EditorGameObject)ReadGameObject(reader, true);
                 }
             }
         }
@@ -82,10 +82,10 @@ namespace GXPEngine.Editor
                 nextRead = reader.ReadChar();
             }
 
-            EditorGameObject edit = null;
+            Exclusives.EditorGameObject edit = null;
             if (asEditorGO)
             {
-                edit = new EditorGameObject(result, consinfo, consParams);
+                edit = new Exclusives.EditorGameObject(result, consinfo, consParams);
                 edit.ConstructorParameters = consParams;
                 edit.position = pos;
                 result.position = Vector3.zero;

@@ -8,11 +8,11 @@ using GXPEngine.UI;
 using GXPEngine.Core;
 using GXPEngine;
 
-namespace GXPEngine.Editor
+namespace GXPEngine.Editor.Exclusives
 {
     public class EditorUIHandler : GameObject
     {
-        Editor editor;
+        SceneEditor editor;
 
         GameObject activeSideMenu;
 
@@ -32,7 +32,7 @@ namespace GXPEngine.Editor
 
         public EditorUIHandler()
         {
-            editor = (Editor)game;
+            editor = (SceneEditor)game;
             Button.AnyButtonOnClick += delegate () { millisSinceButtonPressed = 0; };
         }
         public void SetupMainUI()

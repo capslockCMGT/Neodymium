@@ -4,9 +4,9 @@ using GXPEngine.UI;
 using GXPEngine.Core;
 using System.IO;
 
-namespace GXPEngine.Editor
+namespace GXPEngine.Editor.Exclusives
 {
-    public class Editor : Game
+    public class SceneEditor : Game
     {
         EditorCamera _mainCam;
         public EditorCamera mainCam
@@ -50,7 +50,7 @@ namespace GXPEngine.Editor
 
         bool TryRaycastNextFrame = false;
 
-        public Editor() : base(1200, 600, false, true, true, "GXP Editor")
+        public SceneEditor() : base(1200, 600, false, true, true, "GXP Editor")
         { 
             SetupCam();
             _uiHandler = new EditorUIHandler();
@@ -186,7 +186,7 @@ namespace GXPEngine.Editor
 
         public override void Add(GameObject gameObject)
         {
-            if(gameObject.GetType().Namespace == typeof(Editor).Namespace)
+            if(gameObject.GetType().Namespace == typeof(SceneEditor).Namespace)
             base.Add(gameObject);
         }
 

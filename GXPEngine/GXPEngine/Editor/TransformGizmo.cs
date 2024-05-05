@@ -8,7 +8,7 @@ using GXPEngine.Core;
 using GXPEngine.OpenGL;
 using System.Security.AccessControl;
 
-namespace GXPEngine.Editor
+namespace GXPEngine.Editor.Exclusives
 {
     public class TransformGizmo : GameObject
     {
@@ -18,7 +18,7 @@ namespace GXPEngine.Editor
         ModelRenderer torus;
         ModelRenderer blockArrow;
         protected Box gizmoCollider;
-        static Editor editor;
+        static SceneEditor editor;
         Quaternion forward, up, left;
         int selectedAxis = 0;
         Vector3 startPosition;
@@ -66,7 +66,7 @@ namespace GXPEngine.Editor
         //Panel temp1, temp2;
         public TransformGizmo()
         {
-            editor = ((Editor)game);
+            editor = ((SceneEditor)game);
             arrow = new ModelRenderer("editor/arrow.obj", "editor/whitePixel.png");
             torus = new ModelRenderer("editor/torus.obj", "editor/whitePixel.png");
             blockArrow = new ModelRenderer("editor/blockArrow.obj", "editor/whitePixel.png");
