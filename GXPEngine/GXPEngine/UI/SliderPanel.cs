@@ -98,5 +98,24 @@ namespace GXPEngine.UI
         {
             content.Resize(width, height);
         }
+
+        /// <summary>
+        /// Sets position of the slider. 0 for the uppest, 1 for the lowest positions
+        /// </summary>
+        /// <param name="fac"></param>
+        public void SetSliderPosition(float fac = 0)
+        {
+            if (barButton != null && bar != null)
+            {
+                float deltaY = -barButton.y;
+                barButton.y = (bar.height - barButton.height) * fac;
+                deltaY += barButton.y;
+
+                foreach (GameObject child in area.GetChildren())
+                {
+                    child.y -= deltaY / area.height * area.ContentHeight;
+                }
+            }
+        }
     }
 }

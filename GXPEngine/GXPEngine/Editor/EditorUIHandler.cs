@@ -38,6 +38,7 @@ namespace GXPEngine.Editor.Exclusives
         public void SetupMainUI()
         {
             SelectedObjectPropertyPanel = new SliderPanel(300, game.height - 10, 5, 5, true);
+            SelectedObjectPropertyPanel.SetSliderBar(15, (int)SelectedObjectPropertyPanel.height, 0, 0);
             Panel buttonHolder = new Panel(1, 1, 310, 5, invisible: true);
             buttonHolder.scale = 3;
 
@@ -193,7 +194,7 @@ namespace GXPEngine.Editor.Exclusives
                 ObjectPropertyListContainer.OrganiseChildrenVertical();
                 ObjectPropertyListContainer.ResizeToContent();
                 SelectedObjectPropertyPanel.AddChild(ObjectPropertyListContainer);
-                SelectedObjectPropertyPanel.SetSliderBar(15, (int)SelectedObjectPropertyPanel.height, 0, 0);
+                SelectedObjectPropertyPanel.SetSliderPosition();
             }
         }
 
