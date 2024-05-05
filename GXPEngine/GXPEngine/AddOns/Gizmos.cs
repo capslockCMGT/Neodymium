@@ -221,8 +221,12 @@ namespace GXPEngine {
 			DrawLine(xCenter - width, yCenter + height, zCenter - depth, xCenter - width, yCenter + height, zCenter + depth, space, color, lineWidth);
 			DrawLine(xCenter + width, yCenter + height, zCenter - depth, xCenter + width, yCenter + height, zCenter + depth, space, color, lineWidth);
         }
+        public static void DrawBox(Vector3 pos, Vector3 size, GameObject space = null, uint color = 0, byte lineWidth = 0)
+        {
+			DrawBox(pos.x, pos.y, pos.z, size.x, size.y, size.z, space, color, lineWidth);
+        }
 
-		public static void DrawParallelogon(Parallelogon p, GameObject space = null, uint color = 0, byte lineWidth = 0)
+        public static void DrawParallelogon(Parallelogon p, GameObject space = null, uint color = 0, byte lineWidth = 0)
 		{
 			Vector3 b0 = p.a0 + p.a;
 			Vector3 c0 = p.a0 + p.a + p.b;

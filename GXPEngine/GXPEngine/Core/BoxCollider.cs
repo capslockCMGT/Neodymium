@@ -23,23 +23,67 @@ namespace GXPEngine.Core
     public class BoxCollider : Collider
 	{
 		private GameObject _owner;
-		
-		//------------------------------------------------------------------------------------------------------------------------
-		//														BoxCollider()
-		//------------------------------------------------------------------------------------------------------------------------		
-		public BoxCollider(GameObject owner) {
+		private Vector3 _size = Vector3.zero;
+        private Vector3 _offset = Vector3.zero;
+        public Vector3 size
+		{
+			get { return _size; }
+			set { _size = value; }
+        }
+        public Vector3 offset
+        {
+            get { return _offset; }
+            set { _offset = value; }
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														BoxCollider()
+        //------------------------------------------------------------------------------------------------------------------------		
+        public BoxCollider(GameObject owner) {
 			_owner = owner;
 		}
 
-
 		//------------------------------------------------------------------------------------------------------------------------
-		//														HitTest()
+		//														GetExtents()
 		//------------------------------------------------------------------------------------------------------------------------		
-		public override bool HitTest (Collider other) {
+		public Vector3[] GetExtents()
+		{
+			if (size.x == 0 && size.y == 0 && size.z == 0)
+				return _owner.GetExtents();
+			Vector3[] result = new Vector3[]
+			{
+				new Vector3(-_size.x,-_size.y,-_size.z),
+				new Vector3(-_size.x,-_size.y, _size.z),
+				new Vector3(-_size.x, _size.y, _size.z),
+				new Vector3(-_size.x, _size.y,-_size.z),
+				new Vector3( _size.x,-_size.y,-_size.z),
+				new Vector3( _size.x,-_size.y, _size.z),
+				new Vector3( _size.x, _size.y, _size.z),
+				new Vector3( _size.x, _size.y,-_size.z),
+			};
+            for (int i = 0; i < 8; i++)
+            {
+				result[i] += offset;
+                result[i] = _owner.TransformPoint(result[i]);
+            }
+			return result;
+        }
+        //------------------------------------------------------------------------------------------------------------------------
+        //														DrawExtents()
+        //------------------------------------------------------------------------------------------------------------------------		
+        public void DrawExtents()
+        {
+			Gizmos.DrawBox(offset, 2*size, _owner);
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														HitTest()
+        //------------------------------------------------------------------------------------------------------------------------		
+        public override bool HitTest (Collider other) {
 			if (other is BoxCollider) {
-				Vector3[] c = _owner.GetExtents();
+				Vector3[] c = GetExtents();
 				if (c == null) return false;
-				Vector3[] d = ((BoxCollider)other)._owner.GetExtents();
+				Vector3[] d = ((BoxCollider)other).GetExtents();
 				if (d == null) return false;
                 if (!areaOverlap(c, d)) return false; 
 				if (!areaOverlap(d, c)) return false;
@@ -54,7 +98,7 @@ namespace GXPEngine.Core
 		//														HitTestPoint()
 		//------------------------------------------------------------------------------------------------------------------------		
 		public override bool HitTestPoint (float x, float y, float z) {
-			Vector3[] c = _owner.GetExtents();
+			Vector3[] c = GetExtents();
 			if (c == null) return false;
 			Vector3 p = new Vector3(x, y, z);
 			return pointOverlapsArea(p, c);
@@ -64,7 +108,7 @@ namespace GXPEngine.Core
         //------------------------------------------------------------------------------------------------------------------------		
         public override bool RayCastTest(Vector3 p1, Vector3 p2)
         {
-            Vector3[] c = _owner.GetExtents();
+            Vector3[] c = GetExtents();
             if (c == null) return false;
             return lineOverlapsArea(p1, p2, c);
         }
@@ -133,7 +177,7 @@ namespace GXPEngine.Core
             distance = float.MaxValue;
             normal = Vector3.zero;
 
-            Vector3[] c = _owner.GetExtents();
+            Vector3[] c = GetExtents();
             if (c == null) return false;
             if (!RayCastTest(p1, p2))
                 return false;
@@ -409,9 +453,9 @@ namespace GXPEngine.Core
         public override float TimeOfImpact (Collider other, float vx, float vy, float vz, out Vector3 normal) {
 			normal = new Vector3 ();
 			if (other is BoxCollider) {
-				Vector3[] c = _owner.GetExtents();
+				Vector3[] c = GetExtents();
 				if (c == null) return float.MaxValue;
-				Vector3[] d = ((BoxCollider)other)._owner.GetExtents();
+				Vector3[] d = ((BoxCollider)other).GetExtents();
 				if (d == null) return float.MaxValue;
 
 				float maxTOI = float.MinValue;
@@ -544,9 +588,9 @@ namespace GXPEngine.Core
 			Vector3 point=new Vector3();
 			if (other is BoxCollider) {
 				//Console.WriteLine ("\n\n===== Computing collision data:\n");
-				Vector3[] c = _owner.GetExtents();
+				Vector3[] c = GetExtents();
 				if (c == null) return null;
-				Vector3[] d = ((BoxCollider)other)._owner.GetExtents();
+				Vector3[] d = ((BoxCollider)other).GetExtents();
 				if (d == null) return null;
 
                 Vector3[] cEdges = new Vector3[]

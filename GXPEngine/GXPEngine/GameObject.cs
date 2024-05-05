@@ -44,19 +44,29 @@ namespace GXPEngine
 		/// </summary>
 		protected virtual Collider createCollider () {
 			return null;
-		}
+        }
 
-		//------------------------------------------------------------------------------------------------------------------------
-		//														Index
-		//------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Gets the index of this object in the parent's hierarchy list.
-		/// Returns -1 if no parent is defined.
-		/// </summary>
-		/// <value>
-		/// The index.
-		/// </value>
-		public int Index {
+        /// <summary>
+        /// Create and return a box collider to use for this game object. Null is allowed.
+        /// </summary>
+        public BoxCollider CreateBoxCollider()
+        {
+            BoxCollider coll = new BoxCollider(this);
+			_collider = coll;
+			return coll;
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														Index
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets the index of this object in the parent's hierarchy list.
+        /// Returns -1 if no parent is defined.
+        /// </summary>
+        /// <value>
+        /// The index.
+        /// </value>
+        public int Index {
 			get { 
 				if (parent == null) return -1;
 				return parent._children.IndexOf(this);
