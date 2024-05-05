@@ -49,8 +49,9 @@ namespace GXPEngine.Editor.Exclusives
 
                 AddChild(propertyValueSetter);
                 initializeFromTexture(transparent276x15);
+                return;
             }
-            if(property == typeof(float))
+            if (property == typeof(float))
             {
                 float defaul;
                 if (defaultValue != null) defaul = (float)defaultValue;
@@ -66,6 +67,7 @@ namespace GXPEngine.Editor.Exclusives
 
                 AddChild(propertyValueSetter);
                 initializeFromTexture(transparent276x15);
+                return;
             }
             if (property == typeof(int))
             {
@@ -83,6 +85,7 @@ namespace GXPEngine.Editor.Exclusives
 
                 AddChild(propertyValueSetter);
                 initializeFromTexture(transparent276x15);
+                return;
             }
             if (property == typeof(uint))
             {
@@ -100,6 +103,7 @@ namespace GXPEngine.Editor.Exclusives
 
                 AddChild(propertyValueSetter);
                 initializeFromTexture(transparent276x15);
+                return;
             }
             if (property == typeof(bool))
             {
@@ -114,6 +118,7 @@ namespace GXPEngine.Editor.Exclusives
 
                 AddChild(propertyValueSetter);
                 initializeFromTexture(transparent276x15);
+                return;
             }
             if (property == typeof(Vector3))
             {
@@ -150,6 +155,7 @@ namespace GXPEngine.Editor.Exclusives
 
                 AddChild(propertyValueSetter);
                 initializeFromTexture(transparent276x15);
+                return;
             }
             if (property == typeof(Quaternion))
             {
@@ -194,8 +200,9 @@ namespace GXPEngine.Editor.Exclusives
 
                 AddChild(propertyValueSetter);
                 initializeFromTexture(transparent276x15);
+                return;
             }
-            if(property == typeof(Texture2D))
+            if (property == typeof(Texture2D))
             {
                 Texture2D defaul;
                 if (defaultValue != null) defaul = (Texture2D)defaultValue;
@@ -217,6 +224,17 @@ namespace GXPEngine.Editor.Exclusives
 
                 AddChild(propertyValueSetter);
                 initializeFromTexture(transparent276x150);
+                return;
+            }
+            if(!TypeHandler.IsAllowedProperty(property))
+            {
+                propertyValueSetter = new TextPanel(150,15,defaultValue == null ? "null" : defaultValue.ToString(), 10);
+                propertyValueSetter.x = 125;
+                AddChild(propertyValueSetter);
+                initializeFromTexture(transparent276x15);
+                propertyValueSetter.alpha = .5f;
+                this.propertyName.alpha = .5f;
+                return;
             }
         }
         void setupTextures()

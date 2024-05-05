@@ -186,7 +186,7 @@ namespace GXPEngine.Editor.Exclusives
 
         public override void Add(GameObject gameObject)
         {
-            if(gameObject.GetType().Namespace == typeof(SceneEditor).Namespace)
+            if(gameObject.GetType().Namespace == typeof(SceneEditor).Namespace || gameObject is ParticleSystem || gameObject is ParticleSystem.Particle)
             base.Add(gameObject);
         }
 

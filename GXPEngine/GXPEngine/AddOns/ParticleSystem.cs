@@ -1,7 +1,8 @@
-﻿using GXPEngine.Core;
+using GXPEngine.Core;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 
 namespace GXPEngine
 {
@@ -47,7 +48,7 @@ namespace GXPEngine
                 return magnitude / r / r / r * (pos - affectorPos);
             }
         }
-        private class Particle : DSCFSprite
+        public class Particle : DSCFSprite
         {
             public Func<float, float> alphaCurve;
             public ParticleSystem ps;
@@ -148,8 +149,9 @@ namespace GXPEngine
         public Mode mode;
 
         public Func<float,float> alphaCurve = null;
-        public ParticleSystem(string path, float x, float y, float z, EmitterType emitter, Mode mode = Mode.position, GameObject worldSpace = null, GameObject cam = null) : base (false)
+        public ParticleSystem(string path, float x, float y, float z, EmitterType emitter = EmitterType.circle, Mode mode = Mode.position, GameObject worldSpace = null, GameObject cam = null) : base (false)
         {
+            if (!File.Exists(path)) { enabled = false; return; }
             forces = new List<Force>();
             particles = new List<Particle>();
             this.texturePath = path;

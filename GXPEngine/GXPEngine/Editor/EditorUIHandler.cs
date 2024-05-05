@@ -83,7 +83,8 @@ namespace GXPEngine.Editor.Exclusives
             SceneMenu.AddChild(sceneName);
             TextButton save = new TextButton(200, 15, "Save scene", 13);
             SceneMenu.AddChild(save);
-            save.OnRelease += delegate () {
+            save.OnRelease += delegate () 
+            {
                 if (string.IsNullOrEmpty(editor.loadedScene))
                 {
                     editor.SaveSceneAs();
