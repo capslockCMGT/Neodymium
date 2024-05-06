@@ -46,6 +46,7 @@
     <Compile Include="GXPEngine\Editor\EditorActionRegister.cs" />
     <Compile Include="GXPEngine\Editor\GameObjectReader.cs" />
     <Compile Include="GXPEngine\Editor\GameObjectWriter.cs" />
+    <Compile Include="SimpleSkybox.cs" />
     <Compile Include="GXPEngine\UI\CheckBox.cs" />
     <Compile Include="GXPEngine\Editor\EditorPropertyInput.cs" />
     <Compile Include="zGames\GameStartMenu.cs" />

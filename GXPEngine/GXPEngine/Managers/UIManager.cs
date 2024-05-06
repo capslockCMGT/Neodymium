@@ -12,6 +12,8 @@ namespace GXPEngine.UI
     public class UIManager
     {
         private Window main;
+        public Window mainWindow
+        { get { return main; } }
         private delegate void UpdateDelegate();
 
         private UpdateDelegate _updateDelegates;

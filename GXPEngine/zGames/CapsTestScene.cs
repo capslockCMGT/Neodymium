@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GXPEngine.Core;
+using GXPEngine.GXPEngine;
 using GXPEngine.UI;
 
 namespace GXPEngine
@@ -112,6 +113,8 @@ namespace GXPEngine
             }
 
             AddChild(Editor.GameObjectReader.ReadGameObjectTree("slop.gxp3d"));
+
+            AddChild(new SimpleSkybox(10,10));
         }
 
         // For every game object, Update is called every frame, by the engine:

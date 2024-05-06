@@ -90,8 +90,9 @@ namespace GXPEngine {
 		bool _clear;
 
 		public Transformable window;
-		public delegate void RenderCall(GLContext gLContext);
+		public delegate void RenderCall(GLContext glContext);
 		public RenderCall onAfterDepthSortedRender = null;
+		public RenderCall onBeforeRenderAnything = null;
 
 		public static Window ActiveWindow
 		{
@@ -143,12 +144,16 @@ namespace GXPEngine {
         {
             _ActiveWindow = this;
 
+			if (_clear && camera.InHierarchy()) GL.Clear(GL.COLOR_BUFFER_BIT);
+
             if (_dirty) {
 				window.x = _windowX + _width / 2;
 				window.y = _windowY + _height / 2;
 				_dirty = false;
             }
+            onBeforeRenderAnything?.Invoke(glContext);
             glContext.PushMatrix (window.matrix);
+
 
             if (camera is Camera)
                 glContext.PushMatrix(((Camera)camera).projection.matrix);
@@ -171,7 +176,6 @@ namespace GXPEngine {
 				var oldRange = main.RenderRange;
 				SetRenderRange();
 				main.SetViewport (_windowX, _windowY, _width, _height, false);
-				if (_clear) GL.Clear(GL.COLOR_BUFFER_BIT);
 				current.Render (glContext);
 				main.SetViewport ((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height);
             }
