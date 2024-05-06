@@ -70,14 +70,9 @@ namespace GXPEngine.GXPEngine
                     float yy = Mathf.Lerp(y / (float)_texture.height, -rangeY, rangeY);
                     Vector3 tot = fo + xx*le + yy*up;
                     tot.Normalize();
-                    int col = range11toc(tot.x) | (range11toc(tot.y) << 8) | (range11toc(tot.z) << 16);
+                    int col = range11toc(tot.x) | (range11toc(tot.y) << 8) | (range11toc(tot.z) << 16) | (0xFF << 24);
                     //float b = tot.normalized().z;
-                    unchecked
-                    {
-                        //this sucks
-                        single.Color = Color.FromArgb((int)0xFF000000 | col);
-                        //Console.WriteLine(Convert.ToString((int)(255 * tot.x) | (int)(0xFF00 * tot.y) | (int)(0xFF0000 * tot.z) | (int)0xFF000000,16));
-                    }
+                    single.Color = Color.FromArgb(col);
                     //Console.WriteLine(single.Color);
                     _graphics.DrawLine(single, x, y, x+1, y);
                 }
