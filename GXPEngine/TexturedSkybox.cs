@@ -1,87 +1,50 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GXPEngine.Core;
 using GXPEngine.OpenGL;
 
 namespace GXPEngine.GXPEngine
 {
-    public class TexturedSkybox : Canvas
+    public class TexturedSkybox : GameObject
     {
         Pen single = new Pen(Color.White,1);
         Camera cam;
         Bitmap tex;
-        public TexturedSkybox(int width, int height) : base(width, height, false)
+        EditableBufferRenderer renderer;
+        Vector2 resolution;
+        public TexturedSkybox(Bitmap tex, int resX, int resY) : base()
         {
-            this.width = 2;
-            this.height = 2;
-            //SetOrigin(1, 1);
-            //if (!(game.uiManager.mainWindow.camera is Camera))
-            //{
-            //    Destroy();
-            //    return;
-            //}
+            this.tex = tex;
             cam = game.uiManager.mainWindow.camera as Camera;
             game.uiManager.mainWindow.onBeforeRenderAnything += RenderSkybox;
-            tex = new Bitmap("gaySky.png");
+            resolution = new Vector2(resX, resY);
+            renderer = new EditableBufferRenderer(new Texture2D(tex));
+            GenerateGrid();
         }
 
         protected override void RenderSelf(GLContext glContext)
         {
-            base.RenderSelf(glContext);
+            GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.GL_REPEAT);
+            renderer.DrawBuffers(glContext);
         }
 
         void RenderSkybox(GLContext glContext)
         {
-            _graphics.Clear(Color.White);
             glContext.PushMatrix(new float[]
             {
                 1,0,0,0,
                 0,1,0,0,
                 0,0,1,0,
-                -1,-1,.5f,1
+                0,0,.5f,1
             });
-            Vector3 topLeftCorner = cam.ScreenPointToLocal(0, 0);
-            Vector3 bottomRightCorner = cam.ScreenPointToLocal(game.width, game.height);
-            float rangeX = bottomRightCorner.x - topLeftCorner.x;
-            float rangeY = bottomRightCorner.y - topLeftCorner.y;
-            rangeX = 1;
-            rangeY = 1;
-            rangeX *= .5f;
-            rangeY *= .5f;
-            Quaternion q = cam.globalRotation;
-            Vector3 fo = q.Forward;
-            Vector3 up = q.Up;
-            Vector3 le = q.Left;
-            int range11toc(float c)
-            {
-                c += 1;
-                c *= 127;
-                int res = (int)c;
-                res &= 0xFF;
-                return res;
-            }
-            for (int x = 0; x<_texture.width;  x++)
-            {
-                for(int y = 0; y<_texture.height; y++)
-                {
-                    float xx = Mathf.Lerp(x / (float)_texture.width, -rangeX, rangeX);
-                    float yy = Mathf.Lerp(y / (float)_texture.height, -rangeY, rangeY);
-                    Vector3 tot = fo - xx*le - yy*up;
-                    tot.Normalize();
-                    Vector2 uv = new Vector2 (Mathf.Atan2(tot.z, tot.x)/Mathf.PI,tot.y);
-                    int col = (range11toc(tot.y) << 8) | (range11toc(tot.x) << 16) | (0xFF << 24);
-                    //float b = tot.normalized().z;
-                    single.Color = tex.GetPixel((int)Mathf.Clamp((uv.x+1)/2*tex.Width, 0, tex.Width-1), (int)Mathf.Clamp((uv.y + 1) / 2 * tex.Height, 0, tex.Height - 1));
-                    //Console.WriteLine(single.Color);
-                    graphics.DrawLine(single, x, y, x+1, y);
-                }
-            }
-            Console.WriteLine(q);
-            base.RenderSelf(glContext);
+            UpdateGrid();
+            RenderSelf(glContext);
             glContext.PopMatrix();
             GL.Clear(0x100);
         }
@@ -89,6 +52,104 @@ namespace GXPEngine.GXPEngine
         {
             base.OnDestroy();
             game.uiManager.mainWindow.onBeforeRenderAnything -= RenderSkybox;
+        }
+
+        private void GenerateGrid()
+        {
+            float rangeX = game.heightRatio;
+            float rangeY = 1;
+            rangeX *= .5f;
+            rangeY *= .5f;
+
+            Quaternion q = cam.globalRotation;
+            Vector3 fo = q.Forward;
+            Vector3 up = q.Up;
+            Vector3 le = q.Left;
+
+            renderer.ClearBuffers();
+            for (int x = 0; x < resolution.x; x++)
+            {
+                for (int y = 0; y < resolution.y; y++)
+                {
+                    renderer.AddVert((x) / resolution.x * 2 - 1, (y) / resolution.y * 2 - 1, 0f);
+                    renderer.AddVert((x+1) / resolution.x * 2 - 1, (y) / resolution.y * 2 - 1, 0f);
+                    renderer.AddVert((x+1) / resolution.x * 2 - 1, (y+1) / resolution.y * 2 - 1, 0);
+                    renderer.AddVert((x) / resolution.x * 2 - 1, (y+1) / resolution.y * 2 - 1, 0);
+
+                    Vector2 uv = GetUV(x, y);
+                    renderer.AddUv(uv.x, uv.y);
+                    uv = GetUV(x+1, y);
+                    renderer.AddUv(uv.x, uv.y);
+                    uv = GetUV(x+1, y+1);
+                    renderer.AddUv(uv.x, uv.y);
+                    uv = GetUV(x, y+1);
+                    renderer.AddUv(uv.x, uv.y);
+                }
+            }
+            renderer.CreateBuffers();
+            Vector2 GetUV(int x, int y)
+            {
+                float xx = Mathf.Lerp(x / (float)tex.Width, -rangeX, rangeX);
+                float yy = Mathf.Lerp(y / (float)tex.Height, -rangeY, rangeY);
+                Vector3 tot = fo - xx * le - yy * up;
+                tot.Normalize();
+                return new Vector2(Mathf.Atan2(tot.z, tot.x) / Mathf.PI, tot.y);
+            }
+        }
+        private void UpdateGrid()
+        {
+            float rangeX = game.heightRatio;
+            float rangeY = 1;
+            rangeX *= .5f;
+            rangeY *= .5f;
+
+            Quaternion q = cam.globalRotation;
+            Vector3 fo = q.Forward;
+            Vector3 up = q.Up;
+            Vector3 le = q.Left;
+
+            for (int x = 0; x < resolution.x; x++)
+            {
+                for (int y = 0; y < resolution.y; y++)
+                {
+                    bool seamed = false;
+                    Vector2 uvUL = GetUV(x, y);
+                    Vector2 uvUR = GetUV(x + 1, y);
+                    Vector2 uvDL = GetUV(x, y + 1);
+                    Vector2 uvDR = GetUV(x + 1, y + 1);
+
+                    if (uvUL.x > uvUR.x)
+                    {
+                        uvUR+= new Vector2(1, 0);
+                        if (uvUL.x - uvDL.x > 0.5)
+                            uvDL += new Vector2(1, 0);
+                        if (uvUL.x - uvDR.x > 0.5)
+                            uvDR += new Vector2(1, 0);
+                    }
+
+                    if (uvDL.x > uvDR.x)
+                    {
+                        uvDR += new Vector2(1, 0);
+                        if (uvDL.x - uvUL.x > 0.5)
+                            uvUL += new Vector2(1, 0);
+                        if (uvDL.x - uvUR.x > 0.5)
+                            uvUR += new Vector2(1, 0);
+                    }
+
+                    renderer.SetUV((int)((x * resolution.y + y) * 4), uvUL);
+                    renderer.SetUV((int)((x * resolution.y + y) * 4 + 1), uvUR);
+                    renderer.SetUV((int)((x * resolution.y + y) * 4 + 2), uvDR);
+                    renderer.SetUV((int)((x * resolution.y + y) * 4 + 3), uvDL);
+                }
+            }
+            Vector2 GetUV(int x, int y)
+            {
+                float xx = Mathf.Lerp((x) / resolution.x, -rangeX, rangeX);
+                float yy = Mathf.Lerp((y) / resolution.y, -rangeY, rangeY);
+                Vector3 tot = fo - xx * le - yy * up;
+                tot.Normalize();
+                return new Vector2(Mathf.Atan2(tot.z, tot.x) / Mathf.PI / 2 + 0.5f, tot.y / 2 + 0.5f);
+            }
         }
     }
 }
