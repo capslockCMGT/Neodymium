@@ -26,7 +26,7 @@ namespace GXPEngine.Core
 		//														Texture2D()
 		//------------------------------------------------------------------------------------------------------------------------
 		public Texture2D (int width, int height) {
-			if (width == 0) if (height == 0) return;
+			if (width == 0 || height == 0) return;
 			SetBitmap (new Bitmap(width, height));
 		}
 		public Texture2D (string filename) {

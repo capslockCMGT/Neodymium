@@ -20,6 +20,7 @@ namespace GXPEngine
         protected int numberOfVertices; // The number of rendered quads is numberOfVertices/6
 
         public Texture2D texture;
+        public bool pixelated = Game.main.PixelArt;
 
         List<float> vertList = new List<float>();
         List<float> uvList = new List<float>();
@@ -72,6 +73,8 @@ namespace GXPEngine
         {
             texture.Bind();
 
+            GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, pixelated ? GL.NEAREST : GL.LINEAR);
+            GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, pixelated ? GL.NEAREST : GL.LINEAR);
             //glContext.SetColor(0xff, 0xff, 0xff, 0x99);
             GL.EnableClientState(GL.TEXTURE_COORD_ARRAY);
             GL.EnableClientState(GL.VERTEX_ARRAY);

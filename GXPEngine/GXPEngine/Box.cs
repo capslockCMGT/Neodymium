@@ -15,6 +15,8 @@ namespace GXPEngine
 
         private uint _color = 0xFFFFFF;
 
+        public bool pixelated = Game.main.PixelArt;
+
         /// <summary>
 		/// Initializes a new instance of the <see cref="GXPEngine.Box"/> class.
 		/// Specify a System.Drawing.Bitmap to use. Bitmaps will not be cached.
@@ -155,6 +157,7 @@ namespace GXPEngine
                 if (OnScreen())
                 {
                     boxModel.texture = _texture;
+                    boxModel.pixelated = pixelated;
                     glContext.SetColor((byte)((_color >> 16) & 0xFF),
                                        (byte)((_color >> 8) & 0xFF),
                                        (byte)(_color & 0xFF),
