@@ -215,6 +215,18 @@ namespace GXPEngine.Core
 			}
 		}
 
+		public bool pixelFilter
+		{
+			set
+			{
+                GL.BindTexture(GL.TEXTURE_2D, _glTexture[0]);
+                GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, value ? GL.NEAREST : GL.LINEAR);
+                GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, value ? GL.NEAREST : GL.LINEAR);
+                GL.BindTexture(GL.TEXTURE_2D, 0);
+                lastBound = null;
+            }
+		}
+
 		public static string GetDiagnostics() {
 			string output = "";
 			output += "Number of textures in cache: " + LoadCache.Keys.Count+'\n';

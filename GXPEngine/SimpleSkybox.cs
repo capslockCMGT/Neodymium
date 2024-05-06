@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GXPEngine.Core;
 using GXPEngine.OpenGL;
 
@@ -11,8 +6,10 @@ namespace GXPEngine.GXPEngine
 {
     public class SimpleSkybox : Canvas
     {
-        Pen single = new Pen(Color.White,1);
+        Pen single = new Pen(Color.White, 1);
         Camera cam;
+        public Vector3 SkyColor = new Vector3(.5f,1,2);
+        public bool ToneMap = true;
         public SimpleSkybox(int width, int height) : base(width, height, false)
         {
             this.width = 2;
@@ -29,11 +26,12 @@ namespace GXPEngine.GXPEngine
 
         protected override void RenderSelf(GLContext glContext)
         {
-            base.RenderSelf(glContext);
+            //base.RenderSelf(glContext);
         }
 
         void RenderSkybox(GLContext glContext)
         {
+            _texture.pixelFilter = false;
             _graphics.Clear(Color.White);
             glContext.PushMatrix(new float[]
             {
@@ -42,12 +40,8 @@ namespace GXPEngine.GXPEngine
                 0,0,1,0,
                 -1,-1,.5f,1
             });
-            Vector3 topLeftCorner = cam.ScreenPointToLocal(0, 0);
-            Vector3 bottomRightCorner = cam.ScreenPointToLocal(game.width, game.height);
-            float rangeX = bottomRightCorner.x - topLeftCorner.x;
-            float rangeY = bottomRightCorner.y - topLeftCorner.y;
-            rangeX = 1;
-            rangeY = 1;
+            float rangeX = game.heightRatio;
+            float rangeY = 1;
             rangeX *= .5f;
             rangeY *= .5f;
             Quaternion q = cam.globalRotation;
@@ -62,24 +56,53 @@ namespace GXPEngine.GXPEngine
                 res &= 0xFF;
                 return res;
             }
-            for (int x = 0; x<_texture.width;  x++)
+            int range01toc(float c)
             {
-                for(int y = 0; y<_texture.height; y++)
+                c *= 255;
+                int res = (int)c;
+                if (res > 255) return 255;
+                if (res < 0) return 0;
+                return res;
+            }
+
+            Vector3 ACESfilm(Vector3 x) //a good tonemap can change a man's life
+            {
+                const float a = 2.51f;
+                const float b = .03f;
+                const float c = 2.43f;
+                const float d = .59f;
+                const float e = .14f;
+                float ace(float i)
+                {
+                    return ((i * (a * i + b)) / (i * (c * i + d) + e));
+                }
+                return new Vector3(ace(x.x), ace(x.y), ace(x.z));
+            } //taken from https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
+            for (int x = 0; x < _texture.width; x++)
+            {
+                for (int y = 0; y < _texture.height; y++)
                 {
                     float xx = Mathf.Lerp(x / (float)_texture.width, -rangeX, rangeX);
                     float yy = Mathf.Lerp(y / (float)_texture.height, -rangeY, rangeY);
-                    Vector3 tot = fo - (xx*le) - (yy*up);
+                    Vector3 tot = fo - (xx * le) - (yy * up);
 
                     tot.Normalize();
-                    float b = Mathf.Pow(3, 1+tot.y);
-                    int col = range11toc(b) | (range11toc(b*.9f) << 8) | (range11toc(b*.7f) << 16) | (0xFF << 24);
-                    
+
+                    Vector3 rgb = Vector3.zero;
+                    float b = Mathf.Pow(3, tot.y) * .5f;
+                    rgb.x = b * SkyColor.x;
+                    rgb.y = b * SkyColor.y;
+                    rgb.z = b * SkyColor.z;
+
+                    if(ToneMap) rgb = ACESfilm(rgb);
+
+                    int col = range01toc(rgb.z) | (range01toc(rgb.y) << 8) | (range01toc(rgb.x) << 16) | (0xFF << 24);
+
                     single.Color = Color.FromArgb(col);
-                    
-                    graphics.DrawLine(single, x, y, x+1, y);
+
+                    graphics.DrawLine(single, x, y, x + 1, y);
                 }
             }
-            Console.WriteLine(q);
             base.RenderSelf(glContext);
             glContext.PopMatrix();
             GL.Clear(0x100);

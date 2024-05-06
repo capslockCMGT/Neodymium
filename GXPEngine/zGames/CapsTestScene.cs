@@ -30,7 +30,7 @@ namespace GXPEngine
         int framesRotatedCube = 0;
         Quaternion cubeRotate = Quaternion.FromEulers(new Vector3(.01f, 0, 0));
         Quaternion cubeRotation = Quaternion.Identity;
-        public CapsTestScene() : base(800, 600, false, true, false, "dog water test scene")
+        public CapsTestScene() : base(800, 200, false, true, false, "dog water test scene")
         {
             rotate.Normalize();
 
