@@ -8,8 +8,9 @@ namespace GXPEngine.GXPEngine
     {
         Pen single = new Pen(Color.White, 1);
         Camera cam;
-        public Vector3 SkyColor = new Vector3(.5f,1,2);
+        public Vector3 SkyColor = new Vector3(.25f,.5f,1);
         public bool ToneMap = true;
+        public float GradientIntensity = 3;
         public SimpleSkybox(int width, int height) : base(width, height, false)
         {
             this.width = 2;
@@ -89,7 +90,7 @@ namespace GXPEngine.GXPEngine
                     tot.Normalize();
 
                     Vector3 rgb = Vector3.zero;
-                    float b = Mathf.Pow(3, tot.y) * .5f;
+                    float b = Mathf.Pow(GradientIntensity, tot.y);
                     rgb.x = b * SkyColor.x;
                     rgb.y = b * SkyColor.y;
                     rgb.z = b * SkyColor.z;
