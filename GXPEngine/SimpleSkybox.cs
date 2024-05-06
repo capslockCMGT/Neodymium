@@ -18,11 +18,11 @@ namespace GXPEngine.GXPEngine
             this.width = 2;
             this.height = 2;
             //SetOrigin(1, 1);
-            if (!(game.uiManager.mainWindow.camera is Camera))
-            {
-                Destroy();
-                return;
-            }
+            //if (!(game.uiManager.mainWindow.camera is Camera))
+            //{
+            //    Destroy();
+            //    return;
+            //}
             cam = game.uiManager.mainWindow.camera as Camera;
             game.uiManager.mainWindow.onBeforeRenderAnything += RenderSkybox;
         }
@@ -68,15 +68,16 @@ namespace GXPEngine.GXPEngine
                 {
                     float xx = Mathf.Lerp(x / (float)_texture.width, -rangeX, rangeX);
                     float yy = Mathf.Lerp(y / (float)_texture.height, -rangeY, rangeY);
-                    Vector3 tot = fo + xx*le + yy*up;
+                    Vector3 tot = fo - xx*le - yy*up;
                     tot.Normalize();
-                    int col = range11toc(tot.x) | (range11toc(tot.y) << 8) | (range11toc(tot.z) << 16) | (0xFF << 24);
+                    int col = (range11toc(tot.y) << 8) | (range11toc(tot.x) << 16) | (0xFF << 24);
                     //float b = tot.normalized().z;
                     single.Color = Color.FromArgb(col);
                     //Console.WriteLine(single.Color);
-                    _graphics.DrawLine(single, x, y, x+1, y);
+                    graphics.DrawLine(single, x, y, x+1, y);
                 }
             }
+            Console.WriteLine(q);
             base.RenderSelf(glContext);
             glContext.PopMatrix();
             GL.Clear(0x100);
