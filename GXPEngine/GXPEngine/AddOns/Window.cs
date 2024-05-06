@@ -122,11 +122,10 @@ namespace GXPEngine {
 			}
 			depthSortedObjects.Add(new GameObjAndPos(toRegister, new Vector3()));
         }
-
-        /// <summary>
-        /// Creates a render window in the rectangle given by x,y,width,height.
-        /// The camera determines the focal point, rotation and scale of this window.
-        /// </summary>
+		/// <summary>
+		/// Creates a render window in the rectangle given by x,y,width,height.
+		/// The camera determines the focal point, rotation and scale of this window.
+		/// </summary>
         public Window(int x, int y, int width, int height, GameObject camera, bool clearBackground=true) {
 			_windowX = x;
 			_windowY = y;

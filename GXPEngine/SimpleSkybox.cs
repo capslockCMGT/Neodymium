@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -68,12 +68,14 @@ namespace GXPEngine.GXPEngine
                 {
                     float xx = Mathf.Lerp(x / (float)_texture.width, -rangeX, rangeX);
                     float yy = Mathf.Lerp(y / (float)_texture.height, -rangeY, rangeY);
-                    Vector3 tot = fo - xx*le - yy*up;
+                    Vector3 tot = fo - (xx*le) - (yy*up);
+
                     tot.Normalize();
-                    int col = (range11toc(tot.y) << 8) | (range11toc(tot.x) << 16) | (0xFF << 24);
-                    //float b = tot.normalized().z;
+                    float b = Mathf.Pow(3, 1+tot.y);
+                    int col = range11toc(b) | (range11toc(b*.9f) << 8) | (range11toc(b*.7f) << 16) | (0xFF << 24);
+                    
                     single.Color = Color.FromArgb(col);
-                    //Console.WriteLine(single.Color);
+                    
                     graphics.DrawLine(single, x, y, x+1, y);
                 }
             }
