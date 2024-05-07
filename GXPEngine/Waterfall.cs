@@ -26,5 +26,29 @@ namespace GXPEngine
                 _uvs[i] = uvs[i]*tiles+Time.timeS*period;
             }
         }
+
+        //tell me you have too much cpu without telling me you have too much cpu
+        protected override void RenderSelf(GLContext glContext)
+        {
+            Window.ActiveWindow.onRenderTransparent += RenderTransparent;
+        }
+
+        void RenderTransparent(GLContext glContext)
+        {
+            GameObject current = this;
+            List<GameObject> parentstack = new List<GameObject>();
+            while (true)
+            {
+                parentstack.Add(current);
+                if (current.parent == null)
+                    break;
+                current = current.parent;
+            }
+            for(int i = parentstack.Count; i-- > 0;) 
+                glContext.PushMatrix(parentstack[i].matrix);
+            base.RenderSelf(glContext);
+            for (int i = parentstack.Count; i-- > 0;)
+                glContext.PopMatrix();
+        }
     }
 }

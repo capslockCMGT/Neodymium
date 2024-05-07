@@ -93,6 +93,7 @@ namespace GXPEngine {
 		public delegate void RenderCall(GLContext glContext);
 		public RenderCall onAfterDepthSortedRender = null;
 		public RenderCall onBeforeRenderAnything = null;
+		public RenderCall onRenderTransparent = null;
 
 		public static Window ActiveWindow
 		{
@@ -176,6 +177,8 @@ namespace GXPEngine {
 				SetRenderRange();
 				main.SetViewport (_windowX, _windowY, _width, _height, false);
 				current.Render (glContext);
+				onRenderTransparent?.Invoke(glContext);
+				onRenderTransparent = null;
 				main.SetViewport ((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height);
             }
 			
