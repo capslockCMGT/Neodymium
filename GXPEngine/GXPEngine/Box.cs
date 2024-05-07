@@ -167,6 +167,20 @@ namespace GXPEngine
                 }
             }
         }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														color
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets or sets the color filter for this sprite.
+        /// This can be any value between 0x000000 and 0xFFFFFF.
+        /// </summary>
+        public uint color
+        {
+            get { return _color; }
+            set { _color = value & 0xFFFFFF; }
+        }
+
         public void DisplayVertices()
         {
             boxModel.WriteVertsToConsole();

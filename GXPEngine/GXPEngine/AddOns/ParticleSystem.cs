@@ -1,4 +1,5 @@
 using GXPEngine.Core;
+using GXPEngine.Editor.Exclusives;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -48,17 +49,18 @@ namespace GXPEngine
                 return magnitude / r / r / r * (pos - affectorPos);
             }
         }
-        public class Particle : DSCFSprite
+        private class Particle : DSCFSprite
         {
             public Func<float, float> alphaCurve;
             public ParticleSystem ps;
             public Mode mode = Mode.position;
             public Particle(Texture2D texture) : base(texture, false)
             {
+                SceneEditor.AddToUpdate(this);
             }
             public Particle(string filename, bool keepInCache = true, bool addCollider = false) : base(filename, keepInCache, addCollider)
             {
-                
+                SceneEditor.AddToUpdate(this);
             }
             public float lifetime;
             public float totaltime;
@@ -151,6 +153,7 @@ namespace GXPEngine
         public Func<float,float> alphaCurve = null;
         public ParticleSystem(string path, float x, float y, float z, EmitterType emitter = EmitterType.circle, Mode mode = Mode.position, GameObject worldSpace = null, GameObject cam = null) : base (false)
         {
+            SceneEditor.AddToUpdate(this);
             if (!File.Exists(path)) enabled = false; 
             forces = new List<Force>();
             particles = new List<Particle>();

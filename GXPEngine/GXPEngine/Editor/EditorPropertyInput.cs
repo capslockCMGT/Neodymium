@@ -94,10 +94,10 @@ namespace GXPEngine.Editor.Exclusives
                 else defaul = (uint)TypeHandler.GetDefaultPropertyValue(typeof(uint));
                 _value = defaul;
 
-                propertyValueSetter = new InputField(150, 15, 125, 0, defaul.ToString(), 10);
+                propertyValueSetter = new InputField(150, 15, 125, 0, Convert.ToString(defaul, 16).ToUpper(), 10);
                 ((InputField)propertyValueSetter).OnStoppedTyping += delegate (string newtext) {
                     uint next;
-                    if(uint.TryParse(newtext, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out next))
+                    if(uint.TryParse(newtext, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out next))
                     Value = next;
                 };
 
