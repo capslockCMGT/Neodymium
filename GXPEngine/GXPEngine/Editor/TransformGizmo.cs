@@ -368,13 +368,13 @@ namespace GXPEngine.Editor.Exclusives
 
             activeRenderer.visible = true;
             activeRenderer.rotation = forward;
-            activeRenderer.color = (selectedAxis == 1 ? 0x55AAFFu : 0x0000FFu);
+            activeRenderer.color = (selectedAxis == 1 ? 0x55AAFFu : hoveredAxis == 1 ? 0x3388EEu : 0x0000DDu);
             activeRenderer.Render(glContext);
             activeRenderer.rotation = up;
-            activeRenderer.color = (selectedAxis == 2 ? 0xAAFF55u : 0x00FF00u);
+            activeRenderer.color = (selectedAxis == 2 ? 0xAAFF55u : hoveredAxis == 2 ? 0x88DD33u : 0x00BB00u);
             activeRenderer.Render(glContext);
             activeRenderer.rotation = left;
-            activeRenderer.color = (selectedAxis == 3 ? 0xFF55AAu : 0xFF0000u);
+            activeRenderer.color = (selectedAxis == 3 ? 0xFF55AAu : hoveredAxis == 3 ? 0xEE3388u : 0xDD0000u);
             activeRenderer.Render(glContext);
             activeRenderer.visible = false;
 
