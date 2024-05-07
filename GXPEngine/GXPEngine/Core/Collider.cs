@@ -90,7 +90,12 @@ namespace GXPEngine.Core
 		public virtual Collision GetCollisionInfo (Collider other)
 		{
 			return null;
-		}			
+		}
+		
+		public virtual float GetArea()
+		{
+			return 0;
+		}
 	}
 }
 

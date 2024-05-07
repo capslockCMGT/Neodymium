@@ -768,6 +768,11 @@ namespace GXPEngine.Core
 			//Console.WriteLine (" (check:) best normal: "+normal);
 			return true;
 		}
+
+        public override float GetArea()
+        {
+			return _owner.scaleX * _owner.scaleY * _owner.scaleZ * 8;
+        }
     }
 }
 

@@ -47,6 +47,10 @@
     <Compile Include="GXPEngine\Editor\EditorActionRegister.cs" />
     <Compile Include="GXPEngine\Editor\GameObjectReader.cs" />
     <Compile Include="GXPEngine\Editor\GameObjectWriter.cs" />
+    <Compile Include="GXPEngine\Physics\Constraint.cs" />
+    <Compile Include="GXPEngine\Physics\Force.cs" />
+    <Compile Include="GXPEngine\Physics\PhysicsObject.cs" />
+    <Compile Include="GXPEngine\Physics\Spring.cs" />
     <Compile Include="TexturedSkybox.cs" />
     <Compile Include="SimpleSkybox.cs" />
     <Compile Include="GXPEngine\UI\CheckBox.cs" />
@@ -116,6 +120,7 @@
     <Compile Include="GXPEngine\FMOD\FMODSoundSystem.cs" />
     <Compile Include="GXPEngine\SoLoud\Soloud.cs" />
     <Compile Include="GXPEngine\SoLoud\SoloudSoundSystem.cs" />
+    <Compile Include="zGames\PhysicsTest.cs" />
     <Compile Include="zGames\IvansTestScene.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="zGames\CapsTestScene.cs" />
