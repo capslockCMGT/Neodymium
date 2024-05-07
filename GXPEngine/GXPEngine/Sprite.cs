@@ -1,5 +1,6 @@
 using System;
 using GXPEngine.Core;
+using GXPEngine.OpenGL;
 
 namespace GXPEngine
 {
@@ -19,6 +20,8 @@ namespace GXPEngine
 		protected bool _mirrorY = false;
 
 		public BlendMode blendMode = null;
+
+		public bool pixelated = Game.main.PixelArt;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="GXPEngine.Sprite"/> class.
@@ -210,7 +213,9 @@ namespace GXPEngine
 				if (OnScreen()) {
 					if (blendMode != null) blendMode.enable ();
 					_texture.Bind();
-					glContext.SetColor((byte)((_color >> 16) & 0xFF), 
+                    GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, pixelated ? GL.NEAREST : GL.LINEAR);
+                    GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, pixelated ? GL.NEAREST : GL.LINEAR);
+                    glContext.SetColor((byte)((_color >> 16) & 0xFF), 
 					                   (byte)((_color >> 8) & 0xFF), 
 					                   (byte)(_color & 0xFF), 
 					                   (byte)(_alpha * 0xFF));

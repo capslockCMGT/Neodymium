@@ -26,7 +26,7 @@ namespace GXPEngine.Editor.Exclusives
         {
             game.uiManager.AssignWindow(RenderTarget);
             UpdateRotation();
-            if (!Input.GetMouseButton(1) && !InputField.AnyTyping)
+            if (!Input.GetMouseButton(1) || InputField.AnyTyping)
                 return;
             UpdatePosition();
         }

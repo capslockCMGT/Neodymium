@@ -21,6 +21,7 @@ namespace GXPEngine.Editor.Exclusives
         static SceneEditor editor;
         Quaternion forward, up, left;
         int selectedAxis = 0;
+        int hoveredAxis = 0;
         Vector3 startPosition;
         Quaternion startRotation;
         Vector3 startScale;
@@ -303,6 +304,36 @@ namespace GXPEngine.Editor.Exclusives
                 startRotation = editor.selectedGameobject.rotation;
                 startScale = editor.selectedGameobject.scaleXYZ;
             }
+            return res;
+        }
+
+        public bool TryRaycast(Vector3 start, Vector3 end)
+        {
+            if (!visible) return false;
+            Vector3 n;
+            float dist = float.MaxValue;
+            float lowest = float.MaxValue;
+            bool res = false;
+            activeRenderer.rotation = forward;
+            res |= gizmoCollider.collider.RayCast(start, end, out dist, out n);
+            if (dist < lowest)
+            {
+                lowest = dist;
+                hoveredAxis = 1;
+            }
+            activeRenderer.rotation = up;
+            res |= gizmoCollider.collider.RayCast(start, end, out dist, out n);
+            if (dist < lowest)
+            {
+                lowest = dist;
+                hoveredAxis = 2;
+            }
+            activeRenderer.rotation = left;
+            res |= gizmoCollider.collider.RayCast(start, end, out dist, out n);
+            if (dist < lowest)
+                hoveredAxis = 3;
+            if (!res) hoveredAxis = 0;
+
             return res;
         }
 

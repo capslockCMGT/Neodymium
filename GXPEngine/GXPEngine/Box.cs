@@ -15,6 +15,8 @@ namespace GXPEngine
 
         private uint _color = 0xFFFFFF;
 
+        public bool pixelated = Game.main.PixelArt;
+
         /// <summary>
 		/// Initializes a new instance of the <see cref="GXPEngine.Box"/> class.
 		/// Specify a System.Drawing.Bitmap to use. Bitmaps will not be cached.
@@ -155,6 +157,7 @@ namespace GXPEngine
                 if (OnScreen())
                 {
                     boxModel.texture = _texture;
+                    boxModel.pixelated = pixelated;
                     glContext.SetColor((byte)((_color >> 16) & 0xFF),
                                        (byte)((_color >> 8) & 0xFF),
                                        (byte)(_color & 0xFF),
@@ -164,6 +167,20 @@ namespace GXPEngine
                 }
             }
         }
+
+        //------------------------------------------------------------------------------------------------------------------------
+        //														color
+        //------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets or sets the color filter for this sprite.
+        /// This can be any value between 0x000000 and 0xFFFFFF.
+        /// </summary>
+        public uint color
+        {
+            get { return _color; }
+            set { _color = value & 0xFFFFFF; }
+        }
+
         public void DisplayVertices()
         {
             boxModel.WriteVertsToConsole();

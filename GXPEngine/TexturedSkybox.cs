@@ -30,8 +30,6 @@ namespace GXPEngine.GXPEngine
 
         protected override void RenderSelf(GLContext glContext)
         {
-            GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.GL_REPEAT);
-            renderer.DrawBuffers(glContext);
         }
 
         void RenderSkybox(GLContext glContext)
@@ -44,7 +42,8 @@ namespace GXPEngine.GXPEngine
                 0,0,.5f,1
             });
             UpdateGrid();
-            RenderSelf(glContext);
+            //GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.GL_REPEAT);
+            renderer.DrawBuffers(glContext);
             glContext.PopMatrix();
             GL.Clear(0x100);
         }
@@ -95,6 +94,7 @@ namespace GXPEngine.GXPEngine
                 tot.Normalize();
                 return new Vector2(Mathf.Atan2(tot.z, tot.x) / Mathf.PI, tot.y);
             }
+            renderer.texture.wrap = true;
         }
         private void UpdateGrid()
         {

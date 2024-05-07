@@ -55,6 +55,7 @@
     <Compile Include="SimpleSkybox.cs" />
     <Compile Include="GXPEngine\UI\CheckBox.cs" />
     <Compile Include="GXPEngine\Editor\EditorPropertyInput.cs" />
+    <Compile Include="Waterfall.cs" />
     <Compile Include="zGames\GameStartMenu.cs" />
     <Compile Include="GXPEngine\AddOns\BufferRenderer.cs" />
     <Compile Include="GXPEngine\AddOns\Gizmos.cs" />

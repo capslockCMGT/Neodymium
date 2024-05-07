@@ -112,7 +112,7 @@ namespace GXPEngine
                 AddChild(obj);
             }
 
-            AddChild(Editor.GameObjectReader.ReadGameObjectTree("slop.gxp3d"));
+            AddChild(Editor.GameObjectReader.ReadGameObjectTree("Waterfall test.gxp3d"));
 
             AddChild(new TexturedSkybox(new Bitmap("gaySky.png"),20,20));
             //AddChild(new SimpleSkybox( 10, 10));

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Reflection;
-using GXPEngine.UI;
-using GXPEngine.Core;
 using System.IO;
+using System.Reflection;
+using GXPEngine.Core;
+using GXPEngine.UI;
 
 namespace GXPEngine.Editor.Exclusives
 {
@@ -36,6 +36,8 @@ namespace GXPEngine.Editor.Exclusives
                 _uiHandler.UpdateGameObjectPropertyMenu();
             }
         }
+        //i cant even be fucked anymore
+        public EditorGameObject hoveredObject;
 
         EditorUIHandler _uiHandler;
         public EditorUIHandler uiHandler
@@ -51,7 +53,7 @@ namespace GXPEngine.Editor.Exclusives
         bool TryRaycastNextFrame = false;
 
         public SceneEditor() : base(1200, 600, false, true, true, "GXP Editor")
-        { 
+        {
             SetupCam();
             _uiHandler = new EditorUIHandler();
             _transformGiz = new TransformGizmo();
@@ -65,12 +67,12 @@ namespace GXPEngine.Editor.Exclusives
         {
             string newscene = Utils.OpenFile();
 
-            if (!File.Exists(newscene)) 
-            { 
-                newscene = null; 
-                return; 
+            if (!File.Exists(newscene))
+            {
+                newscene = null;
+                return;
             }
-            DestroyCurrentTree(delegate()
+            DestroyCurrentTree(delegate ()
             {
                 _loadedScene = newscene;
                 EditorActionRegister.AddObject(GameObjectReader.ReadEditorGameObjectTree(_loadedScene));
@@ -132,20 +134,9 @@ namespace GXPEngine.Editor.Exclusives
         void Update()
         {
             DrawEditorGizmos();
-            if(TryRaycastNextFrame && _uiHandler.millisSinceButtonPressed > 100)
-            {
-                Vector3 start = _mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0.001f);
-                Vector3 end = _mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 1);
-                
-                if(mainGameObject != null && !_transformGiz.RaycastOnClick(start, end))
-                {
-                    raycastResult slop = raycastThroughChildren(mainGameObject, start, end);
-                    selectedGameobject = slop.hitObject;
-                }
-            }
-            TryRaycastNextFrame = Input.GetMouseButtonDown(0);
+            Raycast();
             _uiHandler.UpdateHierarchy();
-            if(Input.GetKey(Key.LEFT_CTRL) && !InputField.AnyTyping)
+            if (Input.GetKey(Key.LEFT_CTRL) && !InputField.AnyTyping)
             {
                 if (Input.GetKeyDown(Key.C) && selectedGameobject != null)
                 {
@@ -159,6 +150,27 @@ namespace GXPEngine.Editor.Exclusives
                         EditorActionRegister.Redo();
                     else EditorActionRegister.Undo();
             }
+        }
+
+        void Raycast()
+        {
+            bool clicked = TryRaycastNextFrame && _uiHandler.millisSinceButtonPressed > 100;
+            TryRaycastNextFrame = Input.GetMouseButtonDown(0);
+
+            if (mainGameObject == null) return;
+
+            Vector3 start = _mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 0.001f);
+            Vector3 end = _mainCam.ScreenPointToGlobal(Input.mouseX, Input.mouseY, 1);
+
+            bool gizInTheWay;
+            if (clicked) gizInTheWay = _transformGiz.RaycastOnClick(start, end);
+            else gizInTheWay = _transformGiz.TryRaycast(start, end);
+
+            if (gizInTheWay) return;
+
+            raycastResult slop = raycastThroughChildren(mainGameObject, start, end);
+            if(clicked) selectedGameobject = slop.hitObject;
+            else hoveredObject = slop.hitObject;
         }
 
         void SetupCam()
@@ -183,14 +195,24 @@ namespace GXPEngine.Editor.Exclusives
             }
             if (selectedGameobject != null && typeof(Box).IsAssignableFrom(selectedGameobject.ObjectType))
                 Gizmos.DrawBox(0, 0, 0, 2, 2, 2, selectedGameobject, 0xFFFF9900, 8);
+            if (hoveredObject != null && typeof(Box).IsAssignableFrom(hoveredObject.ObjectType))
+                Gizmos.DrawBox(0, 0, 0, 2, 2, 2, hoveredObject, 0xFFFFFFAA, 8);
         }
-
+        bool yuck = false;
         public override void Add(GameObject gameObject)
         {
-            if(gameObject.GetType().Namespace == typeof(SceneEditor).Namespace || gameObject is ParticleSystem || gameObject is ParticleSystem.Particle)
-            base.Add(gameObject);
+            if (gameObject.GetType().Namespace == typeof(SceneEditor).Namespace || yuck)
+                base.Add(gameObject);
+            yuck = false;
         }
-
+        public static void AddToUpdate(GameObject gameObject)
+        {
+            if (main is SceneEditor)
+            {
+                (main as SceneEditor).yuck = true;
+                main.Add(gameObject);
+            }
+        }
 
         raycastResult raycastThroughChildren(EditorGameObject toCast, Vector3 rayStart, Vector3 rayEnd)
         {

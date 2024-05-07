@@ -14,6 +14,7 @@ namespace GXPEngine
         Texture2D _texture;
 
         public uint color = 0xFFFFFF;
+        public bool pixelated = Game.main.PixelArt;
         public ModelRenderer(string modelFilename, string textureFilename)
         {
             if (Game.main == null)
@@ -32,6 +33,7 @@ namespace GXPEngine
                 if (OnScreen())
                 {
                     _model.texture = _texture;
+                    _model.pixelated = pixelated;
                     glContext.SetColor((byte)((color >> 16) & 0xFF),
                                        (byte)((color >> 8) & 0xFF),
                                        (byte)(color & 0xFF),

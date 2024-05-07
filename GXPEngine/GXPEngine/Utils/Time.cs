@@ -19,7 +19,7 @@ namespace GXPEngine
 		public static int now {
 			get { return System.Environment.TickCount; }
 		}
-		
+
 		/// <summary>
 		/// Returns this time in milliseconds since the program started		
 		/// </summary>
@@ -28,17 +28,21 @@ namespace GXPEngine
 		/// </value>
 		public static int time {
 			get { return (int)(OpenGL.GL.glfwGetTime()*1000); }
+        }
+        public static float timeS
+		{
+			get { return (float)OpenGL.GL.glfwGetTime(); }
 		}
-		
-		/// <summary>
-		/// Returns the time in milliseconds that has passed since the previous frame
-		/// </summary>
-		/// <value>
-		/// The delta time.
-		/// </value>
-		private static int previousFrameTime;
+
+        private static int previousFrameTime;
 		private static float previousFrameTimeS;
-		public static int deltaTime {
+        /// <summary>
+        /// Returns the time in milliseconds that has passed since the previous frame
+        /// </summary>
+        /// <value>
+        /// The delta time.
+        /// </value>
+        public static int deltaTime {
 			get { 
 				return previousFrameTime; 
 			}
