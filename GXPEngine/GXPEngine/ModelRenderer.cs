@@ -24,6 +24,15 @@ namespace GXPEngine
             _model = BufferRenderer.GetModel(modelFilename);
             _texture = Texture2D.GetInstance(textureFilename);
         }
+        public ModelRenderer(BufferRenderer model, string textureFilename)
+        {
+            if (Game.main == null)
+            {
+                throw new Exception("Models cannot be created before creating a Game instance.");
+            }
+            _model = model;
+            _texture = Texture2D.GetInstance(textureFilename);
+        }
 
         override protected void RenderSelf(GLContext glContext)
         {
