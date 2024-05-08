@@ -51,6 +51,7 @@
     <Compile Include="GXPEngine\Physics\Force.cs" />
     <Compile Include="GXPEngine\Physics\PhysicsObject.cs" />
     <Compile Include="GXPEngine\Physics\Spring.cs" />
+    <Compile Include="LavaHitbox.cs" />
     <Compile Include="MainMenu.cs" />
     <Compile Include="RotateAroundLevelCamera.cs" />
     <Compile Include="TexturedSkybox.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="GXPEngine\UI\CheckBox.cs" />
     <Compile Include="GXPEngine\Editor\EditorPropertyInput.cs" />
     <Compile Include="Waterfall.cs" />
+    <Compile Include="WaterHitbox.cs" />
     <Compile Include="zGames\GameStartMenu.cs" />
     <Compile Include="GXPEngine\AddOns\BufferRenderer.cs" />
     <Compile Include="GXPEngine\AddOns\Gizmos.cs" />

@@ -242,16 +242,20 @@ namespace GXPEngine.Editor.Exclusives
         public void SetupAddObjectMenu()
         {
             Type[] gameObjectTypes = TypeHandler.GetInstantiableObjects();
-            AddObjectMenu = new Panel(1, 1);
-            AddObjectMenu.AddChild(new TextPanel(150, 15, "Add object of type:", 10, false));
+            AddObjectMenu = new SliderPanel(170, 400);
+            Panel container = new Panel(1,1,invisible:true);
+            container.AddChild(new TextPanel(150, 15, "Add object of type:", 10, false));
             foreach (Type typ in gameObjectTypes)
             {
                 TextButton txtButton = new TextButton(150, 15, typ.Name, 10);
-                AddObjectMenu.AddChild(txtButton);
+                container.AddChild(txtButton);
                 txtButton.OnRelease += delegate() { CreateTypeConstructorMenu(typ); };
             }
+            container.OrganiseChildrenVertical();
+            container.ResizeToContent();
+            AddObjectMenu.AddChild(container);
             AddObjectMenu.OrganiseChildrenVertical();
-            AddObjectMenu.ResizeToContent();
+            (AddObjectMenu as SliderPanel).SetSliderBar(10,400);
         }
 
         void CreateHierarchy()
