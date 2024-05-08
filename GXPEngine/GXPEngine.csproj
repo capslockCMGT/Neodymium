@@ -121,6 +121,7 @@
     <Compile Include="GXPEngine\FMOD\FMODSoundSystem.cs" />
     <Compile Include="GXPEngine\SoLoud\Soloud.cs" />
     <Compile Include="GXPEngine\SoLoud\SoloudSoundSystem.cs" />
+    <Compile Include="zGames\Neodymium.cs" />
     <Compile Include="zGames\PhysicsTest.cs" />
     <Compile Include="zGames\IvansTestScene.cs" />
     <Compile Include="Player.cs" />
