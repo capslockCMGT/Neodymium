@@ -34,11 +34,11 @@ namespace GXPEngine.Physics
     {
         private static List<PhysicsObject> collection = new List<PhysicsObject>();
         public static float gravity = -1;
-        public static int substeps = 1;
+        public static int substeps = 10;
         public static Material defaultMaterial = new Material
         (
-            friction: 0.3f,
-            density: 0.0002f,
+            friction: 0.1f,
+            density: 0.02f,
             restitution: 0.9f
         );
 
@@ -61,11 +61,11 @@ namespace GXPEngine.Physics
         {
             this.pos = pos;
             prevPos = pos;
-            y = pos.y;
-            x = pos.x;
+            position = pos;
             this.simulated = simulated;
             material = defaultMaterial;
-            AddForce("gravity", new Force(new Vector3(0, gravity * mass, 0)));
+            if (simulated )
+                AddForce("gravity", new Force(new Vector3(0, gravity * mass, 0)));
 
             collection.Add(this);
         }
@@ -139,16 +139,17 @@ namespace GXPEngine.Physics
                                 }
                                 else
                                     ApplyMomentum(angularDeltaP);
-                                if (deltaP * collision.normal > 0)
+                                if (normalDeltaP * collision.normal > 0)
                                 {
                                     ApplyMomentum(normalDeltaP);
-                                    DisplacePoint(r, collision.penetrationDepth * collision.normal * 0.1f);
+                                    DisplacePoint(r, collision.penetrationDepth * collision.normal * 0.5f);
+                                    Console.WriteLine(collision.normal);
                                 }
                             }
                         }
                     }
 
-                    PhysicsStep(freemoveTime, ref freemoveTime);
+                    //PhysicsStep(freemoveTime, ref freemoveTime);
 
                     //if (PhysicsEngine.showGizmos)
                     //{
@@ -170,36 +171,6 @@ namespace GXPEngine.Physics
             {
                 ApplyMomentum(f.force * time);
             }
-
-            //Euler integration is basically an iterative application of Riemann sum
-            //So what you see below is a way better way to do it (trapezoidal rule, whatewer...),
-            //by assuming velocity changes linearly between timestamps (instead of remaining constant)
-
-
-            /* (Trapezoidal rule)
-             * 
-             * ^ V
-             * |\
-             * | \
-             * | | \__        __
-             * | | | | \     / |
-             * | | | | |\    | | 
-             * | | | S | \__/| |
-             * | | | | | | | | | 
-             * ---------------------> T
-             *
-             * (Euler Integration)
-             * 
-             * ^ V
-             * |__
-             * | |__
-             * | | |____     ___
-             * | | | | |__   | |
-             * | | | | | |   | | 
-             * | | | S | |___| |
-             * | | | | | | | | | 
-             * ---------------------> T
-             */
             Vector3 deltaV = velocity - startVel;
             velocity += deltaV / 2;
             pos += velocity * time;
@@ -265,7 +236,8 @@ namespace GXPEngine.Physics
         {
             foreach(PhysicsObject po in collection)
             {
-                po.PhysicsUpdate();
+                for (int i=0; i<substeps; i++)
+                    po.PhysicsUpdate();
             }
         }
     }
