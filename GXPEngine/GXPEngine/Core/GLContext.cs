@@ -135,7 +135,7 @@ namespace GXPEngine.Core {
 				GL.LoadIdentity();
 
 #if STRETCH_ON_RESIZE
-				_realToLogicWidthRatio = (double)newWidth / WindowSize.instance.width;
+                _realToLogicWidthRatio = (double)newWidth / WindowSize.instance.width;
 				_realToLogicHeightRatio = (double)newHeight / WindowSize.instance.height;
 #endif
 				// Here's where the conversion from logical width/height to real width/height happens: 
@@ -149,7 +149,8 @@ namespace GXPEngine.Core {
 				}
 #endif
 
-				if (Game.main!=null) {
+
+                if (Game.main!=null) {
 					Game.main.RenderRange=new Rectangle(0,0,WindowSize.instance.width,WindowSize.instance.height);
 				}
 			});

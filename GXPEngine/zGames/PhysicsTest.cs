@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using GXPEngine.Core;
+using GXPEngine.OpenGL;
 using GXPEngine.Physics;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace GXPEngine
 {
@@ -20,7 +14,7 @@ namespace GXPEngine
         PhysicsObject hook;
         PhysicsObject floor;
         Spring rope;
-        
+
         public PhysicsTest() : base(800, 600, false, true, false, "UnreelEngine")
         {
             cam = new Camera(new ProjectionMatrix(90, 90 * .75f, .1f, 100), true);
@@ -29,6 +23,8 @@ namespace GXPEngine
             cam.SetXY(0, 1, 0);
 
             SetupScene();
+
+
         }
         void Update()
         {
