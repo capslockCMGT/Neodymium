@@ -94,7 +94,7 @@ namespace GXPEngine.Core
 		
 		public virtual float GetArea()
 		{
-			return 0;
+			return 1;
 		}
 	}
 }

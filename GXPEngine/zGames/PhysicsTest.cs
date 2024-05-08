@@ -74,16 +74,17 @@ namespace GXPEngine
             FirstPersonViewUpdate();
             Gizmos.DrawPlus(new Vector3(0,2,0), 0.1f);
             Gizmos.DrawLine(new Vector3(0, 2, 0), hook.position, width:10, color: 0xff777777);
+            (floor.collider as BoxCollider).DrawExtents();
 
         }
         public void SetupScene()
         {
-            obj1 = new PhysicsObject("cubeTex.png",Vector3.zero);
+            obj1 = new PhysicsMesh("test models/monki.obj", "test models/bake.png", Vector3.zero);
             obj1.scale = 0.5f;
             obj1.velocity = Vector3.one;
             AddChild(obj1);
 
-            floor = new PhysicsObject("cubeTex.png", Vector3.zero);
+            floor = new PhysicsBox("cubeTex.png", Vector3.zero);
             floor.scaleY = 1f;
             floor.scaleX = 10f;
             floor.scaleZ = 10f;
@@ -91,7 +92,7 @@ namespace GXPEngine
             floor.simulated = false;
             AddChild(floor);
 
-            hook = new PhysicsObject("cubeTex.png", new Vector3(0f, 2, 2f));
+            hook = new PhysicsBox("cubeTex.png", new Vector3(0f, 2, 2f));
             hook.scale = 0.1f;
             hook.simulated = false;
             AddChild(hook);

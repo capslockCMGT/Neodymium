@@ -1,17 +1,7 @@
 ﻿using GXPEngine.Core;
-using GXPEngine.OpenGL;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
+
 
 namespace GXPEngine.Physics
 {
@@ -30,10 +20,10 @@ namespace GXPEngine.Physics
         }
     }
 
-    public class PhysicsObject : Box
+    public class PhysicsObject : GameObject
     {
-        private static List<PhysicsObject> collection = new List<PhysicsObject>();
-        public static float gravity = -1;
+        protected static List<PhysicsObject> collection = new List<PhysicsObject>();
+        public static float gravity = -10;
         public static int substeps = 10;
         public static Material defaultMaterial = new Material
         (
@@ -45,8 +35,8 @@ namespace GXPEngine.Physics
 
 
         public float mass {
-            get { return material.density * collider.GetArea(); }
-            set { material.density = value/ collider.GetArea(); }
+            get { return material.density * GetVolume(); }
+            set { material.density = value/ GetVolume(); }
         }
         public bool simulated;
         public Vector3 prevPos, pos, velocity;
@@ -57,8 +47,9 @@ namespace GXPEngine.Physics
         public Material material;
         public GameObject renderAs;
 
-        public PhysicsObject(string filename, Vector3 pos, bool simulated = true) : base(filename)
+        public PhysicsObject(Vector3 pos, bool simulated = true, bool addCollider = true) : base(addCollider)
         {
+            renderAs = new Box("cubeTex.png");
             this.pos = pos;
             prevPos = pos;
             position = pos;
@@ -66,12 +57,11 @@ namespace GXPEngine.Physics
             material = defaultMaterial;
             if (simulated )
                 AddForce("gravity", new Force(new Vector3(0, gravity * mass, 0)));
-
             collection.Add(this);
+
         }
         public virtual void PhysicsUpdate()
         {
-            //Console.WriteLine("Full Energy: " + GetFE() + "\t" + "Kinetic Energy: " + GetKE() + "\t" + "Potential Energy: " + GetPE());
             if (simulated)
             {
                 float freemoveTime = Time.deltaTimeS / substeps;
@@ -82,6 +72,9 @@ namespace GXPEngine.Physics
                     iterations++;
                     PhysicsStep(freemoveTime, ref freemoveTime);
                     bool collided = false;
+                    
+                    //if there is no collider, object becomes a ghost (no collision check
+                    if (collider == null) return;
 
                     //resolving collision
                     foreach (PhysicsObject other in collection)
@@ -143,7 +136,6 @@ namespace GXPEngine.Physics
                                 {
                                     ApplyMomentum(normalDeltaP);
                                     DisplacePoint(r, collision.penetrationDepth * collision.normal * 0.5f);
-                                    Console.WriteLine(collision.normal);
                                 }
                             }
                         }
@@ -214,6 +206,12 @@ namespace GXPEngine.Physics
             mass = value;
             AddForce("gravity", new Force(new Vector3(0, gravity * mass, 0)));
         }
+        public float GetVolume()
+        {
+            if (collider != null)
+                return collider.GetArea();
+            return 1;
+        }
         public void ApplyMomentum(Vector3 momentum)
         {
             velocity += momentum / mass;
@@ -232,6 +230,10 @@ namespace GXPEngine.Physics
         {
             
         }
+        protected override void RenderSelf(GLContext gLContext)
+        {
+            renderAs.Render(gLContext);
+        }
         public static void UndateAll()
         {
             foreach(PhysicsObject po in collection)
@@ -240,5 +242,6 @@ namespace GXPEngine.Physics
                     po.PhysicsUpdate();
             }
         }
+
     }
 }
