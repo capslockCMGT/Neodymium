@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GXPEngine.UI
 {
-    public class SliderPanel : Panel
+    public class SliderPanel : Button
     {
         Vector2 mouseClickPos = new Vector2(0,0);
         Vector2 initialButtonPos = new Vector2(0,0);

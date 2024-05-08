@@ -22,6 +22,8 @@ namespace GXPEngine
         public void SetupMain()
         {
             mainButtons = new Panel(1, 1, invisible: true);
+            mainButtons.width = width;
+            mainButtons.y = 500;
             AddChild(mainButtons);
 
             TextButton StartGame = new TextButton(300, 75, "Start Game", 50);
@@ -31,6 +33,7 @@ namespace GXPEngine
                 (Game.main as Neodymium).Camera.CamEnabled = true;
             };
             mainButtons.AddChild(StartGame);
+            mainButtons.OrganiseChildrenVertical(centerHorizontal: CenterMode.Center);
         }
 
     }
