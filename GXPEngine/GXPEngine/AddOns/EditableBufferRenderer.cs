@@ -40,6 +40,11 @@ namespace GXPEngine
             CreateBuffers();
         }
 
+        public int GetVertCount()
+        {
+            return verts.Length/3;
+        }
+
         public Vector3 GetVertex(int index)
         {
             return new Vector3(verts[3 * index], verts[3 * index + 1], verts[3 * index + 2]);

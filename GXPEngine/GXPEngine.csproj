@@ -51,6 +51,7 @@
     <Compile Include="GXPEngine\Physics\Force.cs" />
     <Compile Include="GXPEngine\Physics\PhysicsObject.cs" />
     <Compile Include="GXPEngine\Physics\Spring.cs" />
+    <Compile Include="MainMenu.cs" />
     <Compile Include="RotateAroundLevelCamera.cs" />
     <Compile Include="TexturedSkybox.cs" />
     <Compile Include="SimpleSkybox.cs" />
