@@ -3,6 +3,7 @@ using GXPEngine.Core;
 using GXPEngine.Managers;
 using System.Collections.Generic;
 using GXPEngine.UI;
+using GXPEngine.AddOns;
 
 namespace GXPEngine
 {
@@ -109,6 +110,8 @@ namespace GXPEngine
 
 				_renderRange = new Rectangle (0, 0, pWidth, pHeight);
 				_heightRatio = width/(float)height;
+
+				Lighting.SetLight(0, Vector3.zero, new Vector3(1, 1, 1), Vector3.zero);
 
 				//register ourselves for updates
 				Add (this);

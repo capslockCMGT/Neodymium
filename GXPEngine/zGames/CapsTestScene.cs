@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GXPEngine.AddOns;
 using GXPEngine.Core;
 using GXPEngine.GXPEngine;
 using GXPEngine.UI;
@@ -116,6 +117,7 @@ namespace GXPEngine
 
             AddChild(new TexturedSkybox(new Bitmap("gaySky.png"),20,20));
             //AddChild(new SimpleSkybox( 10, 10));
+            Lighting.SetLight(0, new Vector3(800, 800, 500), new Vector3(.06f, .12f, .2f), new Vector3(1, 1, 1));
         }
 
         // For every game object, Update is called every frame, by the engine:

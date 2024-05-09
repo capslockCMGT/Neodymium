@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GXPEngine\AddOns\EditableBufferRenderer.cs" />
+    <Compile Include="GXPEngine\AddOns\Lighting.cs" />
     <Compile Include="GXPEngine\Editor\EditorActionRegister.cs" />
     <Compile Include="GXPEngine\Editor\GameObjectReader.cs" />
     <Compile Include="GXPEngine\Editor\GameObjectWriter.cs" />

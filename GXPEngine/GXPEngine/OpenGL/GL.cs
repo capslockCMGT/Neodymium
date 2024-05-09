@@ -71,15 +71,17 @@ namespace GXPEngine.OpenGL {
 		public const int LIGHT_MODEL_LOCAL_VIEWER	= 0x0b51;
 		public const int LIGHT_MODEL_TWO_SIDE		= 0x0b52;
 		public const int AMBIENT					= 0x1200;
+		public const int DIFFUSE					= 0x1201;
+		public const int SPECULAR					= 0x1202;
 		public const int POSITION					= 0x1203;
-		public const int GL_LIGHT0					= 0x4000;
-		public const int GL_LIGHT1					= 0x4001;
-		public const int GL_LIGHT2					= 0x4002;
-		public const int GL_LIGHT3					= 0x4003;
-        public const int GL_LIGHT4					= 0x4004;
-        public const int GL_LIGHT5					= 0x4005;
-        public const int GL_LIGHT6					= 0x4006;
-        public const int GL_LIGHT7					= 0x4007;
+		public const int LIGHT0						= 0x4000;
+		public const int LIGHT1						= 0x4001;
+		public const int LIGHT2						= 0x4002;
+		public const int LIGHT3						= 0x4003;
+        public const int LIGHT4						= 0x4004;
+        public const int LIGHT5						= 0x4005;
+        public const int LIGHT6						= 0x4006;
+        public const int LIGHT7						= 0x4007;
 
         [DllImport("opengl32.dll", EntryPoint="glEnable")]
 		public static extern void Enable(int cap);

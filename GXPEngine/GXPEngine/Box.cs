@@ -116,18 +116,22 @@ namespace GXPEngine
                 res = normal - x - y;
                 boxModel.AddVert(res.x, res.y, res.z);
                 boxModel.AddUv(third * (1 + sel), half * (1 + dir01));
+                boxModel.AddNormal(normal.x, normal.y, normal.z);
                 if (sel == 1) _bounds[(dir == 1 ? 1 : 0) * 4 + 0] = res;
                 res = normal + x - y;
                 boxModel.AddVert(res.x, res.y, res.z);
                 boxModel.AddUv(third * sel, half * (1 + dir01));
+                boxModel.AddNormal(normal.x, normal.y, normal.z);
                 if (sel == 1) _bounds[(dir == 1 ? 1 : 0) * 4 + 1] = res;
                 res = normal + x + y;
                 boxModel.AddVert(res.x, res.y, res.z);
                 boxModel.AddUv(third * sel, half * dir01);
+                boxModel.AddNormal(normal.x, normal.y, normal.z);
                 if (sel == 1) _bounds[(dir == 1 ? 1 : 0) * 4 + 2] = res;
                 res = normal - x + y;
                 boxModel.AddVert(res.x, res.y, res.z);
                 boxModel.AddUv(third * (1 + sel), half * dir01);
+                boxModel.AddNormal(normal.x, normal.y, normal.z);
                 if (sel == 1) _bounds[(dir == 1 ? 1 : 0) * 4 + 3] = res;
             }
             boxModel.CreateBuffers();

@@ -1,4 +1,5 @@
 using System;
+using GXPEngine.AddOns;
 using GXPEngine.Core;
 using GXPEngine.OpenGL;
 
@@ -211,6 +212,8 @@ namespace GXPEngine
 			if (game != null) {
 				
 				if (OnScreen()) {
+					bool lit = Lighting.enabled;
+					Lighting.Disable();
 					if (blendMode != null) blendMode.enable ();
 					_texture.Bind();
                     GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, pixelated ? GL.NEAREST : GL.LINEAR);
@@ -223,6 +226,7 @@ namespace GXPEngine
 					glContext.SetColor(255, 255, 255, 255);
 					_texture.Unbind();
 					if (blendMode != null) BlendMode.NORMAL.enable();
+					if(lit) Lighting.Enable();
 				}
 			}
 		}

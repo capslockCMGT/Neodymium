@@ -4,6 +4,7 @@ using GXPEngine.UI;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Remoting.Contexts;
+using GXPEngine.AddOns;
 
 namespace GXPEngine {
 	/// <summary>
@@ -178,8 +179,16 @@ namespace GXPEngine {
 				var oldRange = main.RenderRange;
 				SetRenderRange();
 				main.SetViewport (_windowX, _windowY, _width, _height, false);
-				current.Render (glContext);
-				onRenderTransparent?.Invoke(glContext);
+
+
+				//Lighting.SetLight(0, new Vector3(70, 60, 50), new Vector3(.3f, .6f, 1), new Vector3(2, 1.4f, 1f));
+                Lighting.Enable();
+
+                current.Render (glContext);
+
+				Lighting.Disable();
+
+                onRenderTransparent?.Invoke(glContext);
 				onRenderTransparent = null;
 				main.SetViewport ((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height);
             }
