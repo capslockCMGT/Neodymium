@@ -14,21 +14,16 @@ namespace GXPEngine.Physics
         public float length;
         public float prevLength;
         /// <summary>
-        /// how hard it is to squeeze the spring
+        /// spring is basically like a surface but from opposite direction
         /// </summary>
-        public float stiffness = 1000f;
-        /// <summary>
-        /// defines how fast oscillation fade out. Look into damped oscillations for more info. Setting this value to 0 will make it an ideal string.
-        /// </summary>
-        public float damping = 0.2f;
-        public Rope (PhysicsObject g1, PhysicsObject g2, float stiffness = 10f, float length = 0, float damping = 0f) 
+        public float bounciness = 1000f;
+        public Rope (PhysicsObject g1, PhysicsObject g2, float bounciness = 0.5f, float length = 0) 
         {
             first = g1;
             second = g2;
             prevLength = (g1.TransformPoint(0, 0, 0) - g2.TransformPoint(0, 0, 0)).Magnitude();
             this.length = (length == 0) ? prevLength : length;
-            this.stiffness = stiffness;
-            this.damping = damping;
+            this.bounciness= bounciness;
         }
         public override void Display()
         {
@@ -36,16 +31,41 @@ namespace GXPEngine.Physics
         }
         public override void Apply(float time)
         {
-            float currentLength = (first.TransformPoint(0, 0, 0) - second.TransformPoint(0, 0, 0)).Magnitude();
-            float dampingFac = 0;
-            if (time > 0)
-                dampingFac = (currentLength - prevLength) * damping / time;
-            Vector3 dir = (first.TransformPoint(0, 0, 0) - second.TransformPoint(0, 0, 0)) / currentLength;
-            Vector3 momentum = (stiffness * (currentLength - length) + dampingFac) * time * dir;
-            if (first.simulated)
-                first.ApplyMomentum(-momentum);
-            if (second.simulated)
-                second.ApplyMomentum(momentum);
+            Vector3 dir = (first.TransformPoint(0, 0, 0) - second.TransformPoint(0, 0, 0));
+            float currentLength = dir.Magnitude();
+            dir/=currentLength;
+            float penetration = currentLength - length;
+            if (penetration < 0f)
+                return;
+
+            Vector3 relativeVelocity = first.velocity - second.velocity;
+            //no need to constrain, if the motion is directed to relaxation
+
+            // if both are simulated, we have to preserve mass center
+            if (first.simulated && second.simulated)
+            {
+                if (relativeVelocity * dir < 0)
+                    return;
+                Vector3 deltaP = (1 + bounciness) * (relativeVelocity * (first.mass * second.mass) / (first.mass + second.mass) * dir * dir);
+                first.ApplyMomentum(-deltaP);
+                second.ApplyMomentum(deltaP);
+            }
+            else if (first.simulated)
+            {
+                first.pos -= dir * penetration;
+                if (relativeVelocity * dir < 0)
+                    return;
+                Vector3 deltaP = -(1 + bounciness) * first.mass * first.velocity;
+                first.ApplyMomentum(deltaP.ProjectN(dir));
+            }
+            else if (second.simulated)
+            {
+                second.pos += dir * penetration;
+                if (relativeVelocity * dir < 0)
+                    return;
+                Vector3 deltaP = -(1 + bounciness) * second.mass * second.velocity;
+                second.ApplyMomentum(deltaP.ProjectN(dir));
+            }
             prevLength = currentLength;
         }
     }

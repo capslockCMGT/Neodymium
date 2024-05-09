@@ -13,7 +13,9 @@ namespace GXPEngine
         PhysicsObject obj1;
         PhysicsObject hook;
         PhysicsObject floor;
-        Spring rope;
+        Rope rope;
+
+        Crane crane;
 
         public PhysicsTest() : base(800, 600, false, true, false, "UnreelEngine")
         {
@@ -30,55 +32,24 @@ namespace GXPEngine
         {
             if (Input.GetKeyDown(Key.TAB)) showCursor = !showCursor;
             game.ShowMouse(showCursor);
-            if (Input.GetKey(Key.E))
-            {
-                hook.position += new Vector3(hook.position.z * Time.deltaTimeS,0, -hook.position.x * Time.deltaTimeS);
-            }
-            if (Input.GetKey(Key.Q))
-            {
-                hook.position -= new Vector3(hook.position.z * Time.deltaTimeS, 0, -hook.position.x * Time.deltaTimeS);
-            }
-
-            if (Input.GetKey(Key.Z))
-            {
-                hook.position += new Vector3(hook.position.x * Time.deltaTimeS / 2, 0, hook.position.z * Time.deltaTimeS / 2);
-
-            }
-            if (Input.GetKey(Key.X))
-            {
-                hook.position -= new Vector3(hook.position.x * Time.deltaTimeS / 2, 0, hook.position.z * Time.deltaTimeS / 2);
-
-            }
-
-            if (Input.GetKey(Key.R))
-            {
-                if (rope.length > 1)
-                    rope.length -= Time.deltaTimeS;
-
-            }
-
-            if (Input.GetKey(Key.F))
-            {
-                 rope.length += Time.deltaTimeS;
-
-            }
+            
             //shitty air friction
-            obj1.velocity -= obj1.velocity * Time.deltaTimeS * 0.3f;
+            crane.Update();
             PhysicsObject.UndateAll();
-            rope.Apply(Time.deltaTimeS);
-            rope.Display();
+            //rope.Apply(Time.deltaTimeS);
+            //rope.Display();
             FirstPersonViewUpdate();
             Gizmos.DrawPlus(new Vector3(0,2,0), 0.1f);
-            Gizmos.DrawLine(new Vector3(0, 2, 0), hook.position, width:10, color: 0xff777777);
+            //Gizmos.DrawLine(new Vector3(0, 2, 0), hook.position, width:10, color: 0xff777777);
             (floor.collider as BoxCollider).DrawExtents();
 
         }
         public void SetupScene()
         {
-            obj1 = new PhysicsMesh("test models/monki.obj", "test models/bake.png", Vector3.zero);
-            obj1.scale = 0.5f;
-            obj1.velocity = Vector3.one;
-            AddChild(obj1);
+            //obj1 = new PhysicsMesh("test models/monki.obj", "test models/suzanne.png", Vector3.zero);
+            //obj1.scale = 0.5f;
+            //obj1.velocity = Vector3.one;
+            //AddChild(obj1);
 
             floor = new PhysicsBox("cubeTex.png", Vector3.zero);
             floor.scaleY = 1f;
@@ -88,11 +59,14 @@ namespace GXPEngine
             floor.simulated = false;
             AddChild(floor);
 
-            hook = new PhysicsBox("cubeTex.png", new Vector3(0f, 2, 2f));
-            hook.scale = 0.1f;
-            hook.simulated = false;
-            AddChild(hook);
-            rope = new Spring(hook, obj1, 1f, 4, 0.1f);
+            //hook = new PhysicsBox("cubeTex.png", new Vector3(0f, 2, 2f));
+            //hook.scale = 0.1f;
+            //hook.simulated = false;
+            //AddChild(hook);
+            //rope = new Rope(hook, obj1, 0.1f, 4);
+
+            crane = new Crane(Vector3.zero);
+            crane.AddToGame(this);
 
         }
         public void FirstPersonViewUpdate()

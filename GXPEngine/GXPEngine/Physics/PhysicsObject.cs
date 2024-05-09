@@ -23,7 +23,7 @@ namespace GXPEngine.Physics
     public class PhysicsObject : GameObject
     {
         protected static List<PhysicsObject> collection = new List<PhysicsObject>();
-        public static float gravity = -10;
+        public static float gravity = -2;
         public static int substeps = 10;
         public static Material defaultMaterial = new Material
         (
@@ -47,7 +47,7 @@ namespace GXPEngine.Physics
         public Material material;
         public GameObject renderAs;
 
-        public PhysicsObject(Vector3 pos, bool simulated = true, bool addCollider = true) : base(addCollider)
+        public PhysicsObject(Vector3 pos, bool simulated = true, bool addCollider = true, bool enable = true) : base(addCollider)
         {
             renderAs = new Box("cubeTex.png");
             this.pos = pos;
@@ -57,8 +57,8 @@ namespace GXPEngine.Physics
             material = defaultMaterial;
             if (simulated )
                 AddForce("gravity", new Force(new Vector3(0, gravity * mass, 0)));
-            collection.Add(this);
-
+            if (enable)
+                collection.Add(this);
         }
         public virtual void PhysicsUpdate()
         {
@@ -93,14 +93,14 @@ namespace GXPEngine.Physics
                             {
                                 OnCollision(collision);
                                 other.OnCollision(collision);
-                                Vector3 deltaP = 2 * ((relativeVelocity * (mass * other.mass) / (mass + other.mass)) * collision.normal) * collision.normal;
+                                Vector3 deltaP = (1 + material.restitution * other.material.restitution) * (relativeVelocity * (mass * other.mass) / (mass + other.mass));
                                 Vector3 normalDeltaP = deltaP.Project(collision.normal);
                                 Vector3 angularDeltaP = deltaP - normalDeltaP;
                                 if (deltaP * collision.normal < 0)
                                 {
                                     ApplyMomentum(-normalDeltaP);
                                     other.ApplyMomentum(normalDeltaP);
-                                    DisplacePoint(r, collision.penetrationDepth * collision.normal * 0.1f);
+                                    DisplacePoint(r, collision.penetrationDepth * collision.normal * 0.5f);
                                 }
                                 float frictionP = mass * normalDeltaP.Magnitude() * material.friction * other.material.friction;
                                 float angularDeltaPLen = angularDeltaP.Magnitude();
@@ -242,6 +242,15 @@ namespace GXPEngine.Physics
                     po.PhysicsUpdate();
             }
         }
-
+        public void Disable()
+        {
+            if (collection.Contains(this))
+                collection.Remove(this);
+        }
+        public void Enable()
+        {
+            if (!collection.Contains(this))
+                collection.Add(this);
+        }
     }
 }
