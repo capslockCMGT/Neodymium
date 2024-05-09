@@ -267,5 +267,9 @@ namespace GXPEngine.Physics
             if (toIgnore.Contains(po))
                 toIgnore.Remove(po);
         }
+        public override void AddChild(GameObject child)
+        {
+            base.AddChild(child);
+        }
     }
 }

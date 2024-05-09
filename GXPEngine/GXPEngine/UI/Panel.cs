@@ -77,7 +77,7 @@ namespace GXPEngine.UI
         }
         public void ResizeToContent(int marginHorizontal = 5, int marginVertical = 5)
         {
-            Resize((int)_contentWidth + marginHorizontal, (int)_contentHeight + marginVertical);
+            Resize((int)_contentWidth + marginHorizontal, (int)(_contentHeight) + marginVertical);
         }
         public void Resize(int width, int height, bool visible = true)
         {

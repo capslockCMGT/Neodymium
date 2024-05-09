@@ -83,7 +83,7 @@ namespace GXPEngine.UI
 
                     foreach (GameObject child in area.GetChildren())
                     {
-                        child.y -= deltaY / area.height * area.ContentHeight;
+                        child.y -= deltaY / area.height * area.ContentHeight * 2;
                     }
                 }
                 if (barButton.status == Button.Status.HOVER) barButton.color = 0xff00ffff;
