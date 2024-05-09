@@ -21,8 +21,6 @@ namespace GXPEngine.AddOns
             GL.Enable(GL.LIGHT0 + light);
             GL.LightModeli(GL.LIGHT_MODEL_LOCAL_VIEWER, 1);
             GL.LightModeli(GL.LIGHT_MODEL_TWO_SIDE, 0);
-            //ambient light is 10x darker because... IT JUST IS OK????
-            ambientLightColor *= 10;
             GL.Lightfv(GL.LIGHT0 + light, GL.AMBIENT, new float[] { ambientLightColor.x, ambientLightColor.y, ambientLightColor.z, 1f });
             GL.Lightfv(GL.LIGHT0 + light, GL.DIFFUSE, new float[] { lightColor.x, lightColor.y, lightColor.z, 1f});
             GL.Lightfv(GL.LIGHT0 + light, GL.POSITION, new float[] { lightPosition.x, lightPosition.y, lightPosition.z, 1f });

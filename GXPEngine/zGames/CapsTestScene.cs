@@ -88,8 +88,9 @@ namespace GXPEngine
             AddChild(test);
             AddChild(test2);
 
-            ModelRenderer sloppersludge = new ModelRenderer("test models/baketest.obj", "test models/bake.png");
+            ModelRenderer sloppersludge = new ModelRenderer("test models/baketest.obj", "editor/whitePixel.png");
             AddChild(sloppersludge);
+            sloppersludge.color = 0xFFFF88;
             sloppersludge.x = 2;
             sloppersludge.scale = .2f;
 
@@ -117,7 +118,7 @@ namespace GXPEngine
 
             AddChild(new TexturedSkybox(new Bitmap("gaySky.png"),20,20));
             //AddChild(new SimpleSkybox( 10, 10));
-            Lighting.SetLight(0, new Vector3(800, 800, 500), new Vector3(.06f, .12f, .2f), new Vector3(1, 1, 1));
+            Lighting.SetLight(0, new Vector3(800, 800, 500), new Vector3(.06f, .12f, .2f), new Vector3(.5f, .5f, 1));
         }
 
         // For every game object, Update is called every frame, by the engine:

@@ -72,6 +72,7 @@ namespace GXPEngine.OpenGL {
 		public const int LIGHT_MODEL_TWO_SIDE		= 0x0b52;
 		public const int AMBIENT					= 0x1200;
 		public const int DIFFUSE					= 0x1201;
+		public const int AMBIENT_AND_DIFFUSE		= 0x1602;
 		public const int SPECULAR					= 0x1202;
 		public const int POSITION					= 0x1203;
 		public const int LIGHT0						= 0x4000;
@@ -82,6 +83,7 @@ namespace GXPEngine.OpenGL {
         public const int LIGHT5						= 0x4005;
         public const int LIGHT6						= 0x4006;
         public const int LIGHT7						= 0x4007;
+		public const int COLOR_MATERIAL				= 0x0b57;
 
         [DllImport("opengl32.dll", EntryPoint="glEnable")]
 		public static extern void Enable(int cap);
