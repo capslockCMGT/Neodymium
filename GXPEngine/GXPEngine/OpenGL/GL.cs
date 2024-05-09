@@ -67,6 +67,11 @@ namespace GXPEngine.OpenGL {
 		public const int FUNC_REVERSE_SUBTRACT		= 0x800B;
 		public const int GL_REPEAT 					= 0x2901;
 		public const int DEPTH_TEST					= 0x0b71;
+		public const int LIGHTING					= 0x0b50;
+		public const int LIGHT_MODEL_LOCAL_VIEWER	= 0x0b51;
+		public const int LIGHT_MODEL_TWO_SIDE		= 0x0b52;
+		public const int AMBIENT					= 0x1200;
+		public const int POSITION					= 0x1203;
 		public const int GL_LIGHT0					= 0x4000;
 		public const int GL_LIGHT1					= 0x4001;
 		public const int GL_LIGHT2					= 0x4002;

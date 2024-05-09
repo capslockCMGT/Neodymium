@@ -52,21 +52,21 @@ namespace GXPEngine
 
 
                     //FINALLY LIGHTING
-                    GL.Enable(0xb50);
-                    GL.Enable(0x4000);
+                    GL.Enable(GL.LIGHTING);
+                    GL.Enable(GL.GL_LIGHT0);
                     //Vector3 lightpos = InverseTransformPoint(-1,0,0);
                     Vector3 lightpos = new Vector3(0,1,0);
-                    GL.LightModeli(0xb51, 1);
-                    GL.LightModeli(0xb52, 0);
+                    GL.LightModeli(GL.LIGHT_MODEL_LOCAL_VIEWER, 1);
+                    GL.LightModeli(GL.LIGHT_MODEL_TWO_SIDE, 0);
                     //GL.Normal3f(0, 1, 0);
-                    GL.Lightfv(0x4000, 0x1200, new float[] { 1f, 1f, 1f, 1f });
-                    GL.Lightfv(0x4000, 0x1203, new float[] { lightpos.x, lightpos.y, lightpos.z, 1f });
+                    GL.Lightfv(GL.GL_LIGHT0, GL.AMBIENT, new float[] { 1f, 1f, 1f, 1f });
+                    GL.Lightfv(GL.GL_LIGHT0, GL.POSITION, new float[] { lightpos.x, lightpos.y, lightpos.z, 1f });
 
                     _model.DrawBuffers(glContext);
                     glContext.SetColor(255, 255, 255, 255);
 
-                    GL.Disable(0xb50);
-                    GL.Disable(0x4000);
+                    GL.Disable(GL.LIGHTING);
+                    GL.Disable(GL.GL_LIGHT0);
                 }
             }
         }

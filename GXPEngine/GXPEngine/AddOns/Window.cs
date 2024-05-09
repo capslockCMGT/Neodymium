@@ -152,6 +152,7 @@ namespace GXPEngine {
 				_dirty = false;
             }
             onBeforeRenderAnything?.Invoke(glContext);
+			GL.MatrixMode(GL.PROJECTION);
             glContext.PushMatrix (window.matrix);
 
 
@@ -169,6 +170,7 @@ namespace GXPEngine {
 					break;
 				current = current.parent;
 			}
+			GL.MatrixMode(GL.MODELVIEW);
 			if (current is Game)
 			{// otherwise, the camera is not in the scene hierarchy, so render nothing - not even a black background
 				Game main =Game.main;
@@ -181,7 +183,7 @@ namespace GXPEngine {
 				onRenderTransparent = null;
 				main.SetViewport ((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height);
             }
-			
+			GL.MatrixMode(GL.PROJECTION);
 			for (int i=1; i<pushes; i++) {
 				glContext.PopMatrix ();
             }
@@ -190,7 +192,7 @@ namespace GXPEngine {
                 glContext.PopMatrix();
             
             glContext.PopMatrix();
-
+			GL.MatrixMode (GL.MODELVIEW);
 			if (current is Game)
             {
 				RenderDepthSortedObjects(glContext);
