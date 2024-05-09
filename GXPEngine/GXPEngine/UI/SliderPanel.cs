@@ -43,6 +43,7 @@ namespace GXPEngine.UI
         public override void OrganiseChildrenVertical(float marginVertical = 5, float marginHorizontal = 5, CenterMode centerVertical = CenterMode.Min, CenterMode centerHorizontal = CenterMode.Min)
         {
             content.OrganiseChildrenVertical(marginVertical, marginHorizontal, centerVertical, centerHorizontal);
+            content.ResizeToContent();
         }
 
         public override void Render(GLContext glContext)
@@ -87,6 +88,7 @@ namespace GXPEngine.UI
                 }
                 if (barButton.status == Button.Status.HOVER) barButton.color = 0xff00ffff;
                 if (barButton.status == Button.Status.REST) barButton.color = 0xffffffff;
+
             }
         }
         public void SaveMousePosition()
