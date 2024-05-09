@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GXPEngine.Core;
+using GXPEngine.OpenGL;
 
 namespace GXPEngine
 {
@@ -47,8 +48,25 @@ namespace GXPEngine
                                        (byte)((color >> 8) & 0xFF),
                                        (byte)(color & 0xFF),
                                        (byte)(0xFF));
+
+
+
+                    //FINALLY LIGHTING
+                    GL.Enable(0xb50);
+                    GL.Enable(0x4000);
+                    //Vector3 lightpos = InverseTransformPoint(-1,0,0);
+                    Vector3 lightpos = new Vector3(0,1,0);
+                    GL.LightModeli(0xb51, 1);
+                    GL.LightModeli(0xb52, 0);
+                    //GL.Normal3f(0, 1, 0);
+                    GL.Lightfv(0x4000, 0x1200, new float[] { 1f, 1f, 1f, 1f });
+                    GL.Lightfv(0x4000, 0x1203, new float[] { lightpos.x, lightpos.y, lightpos.z, 1f });
+
                     _model.DrawBuffers(glContext);
                     glContext.SetColor(255, 255, 255, 255);
+
+                    GL.Disable(0xb50);
+                    GL.Disable(0x4000);
                 }
             }
         }

@@ -52,6 +52,7 @@
     <Compile Include="GXPEngine\Physics\PhysicsBox.cs" />
     <Compile Include="GXPEngine\Physics\PhysicsMesh.cs" />
     <Compile Include="GXPEngine\Physics\PhysicsObject.cs" />
+    <Compile Include="GXPEngine\Physics\Rope.cs" />
     <Compile Include="GXPEngine\Physics\Spring.cs" />
     <Compile Include="LavaHitbox.cs" />
     <Compile Include="MainMenu.cs" />

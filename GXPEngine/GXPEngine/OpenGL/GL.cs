@@ -37,7 +37,8 @@ namespace GXPEngine.OpenGL {
 		public const int FLOAT						= 0x1406;
 		public const int UNSIGNED_INT				= 0x1405;
 		public const int VERTEX_ARRAY				= 0x8074;
-		public const int INT						= 0x1404;
+        public const int NORMAL_ARRAY				= 0x8075;
+        public const int INT						= 0x1404;
 		public const int DOUBLE						= 0x140A;
 		public const int INDEX_ARRAY				= 0x8077;
 		public const int TEXTURE_COORD_ARRAY		= 0x8078;
@@ -128,8 +129,11 @@ namespace GXPEngine.OpenGL {
 		[DllImport("opengl32.dll", EntryPoint="glVertexPointer")]
 		public static extern void VertexPointer(int size, int type, int stride, float[] pointer);
 		
-		[DllImport("opengl32.dll", EntryPoint="glTexCoordPointer")]
-		public static extern void TexCoordPointer(int size, int type, int stride, float[] pointer);
+		[DllImport("opengl32.dll", EntryPoint= "glNormalPointer")]
+        public static extern void NormalPointer(int type, int stride, float[] pointer);
+
+        [DllImport("opengl32.dll", EntryPoint = "glTexCoordPointer")]
+        public static extern void TexCoordPointer(int size, int type, int stride, float[] pointer);
 		
 		[DllImport("opengl32.dll", EntryPoint="glDrawElements")]
 		public static extern void DrawElements(int mode, int count, int type, int[] indices);
@@ -149,11 +153,21 @@ namespace GXPEngine.OpenGL {
 		[DllImport("opengl32.dll", EntryPoint="glLineWidth")]
 		public static extern void LineWidth(float width);
 
-		//----------------------------------------------------------------------------------------------------------------------
-		//														GLFW
-		//----------------------------------------------------------------------------------------------------------------------
-		
-		public const int GLFW_OPENED 					= 0x00020001;
+        [DllImport("opengl32.dll", EntryPoint = "glLightfv")]
+        public static extern void Lightfv(int light, int pname, float[] pos);
+
+        [DllImport("opengl32.dll", EntryPoint = "glLightModeli")]
+        public static extern void LightModeli(int pname, int param);
+
+        [DllImport("opengl32.dll", EntryPoint = "glNormal3f")]
+        public static extern void Normal3f(float x, float y, float z);
+
+
+        //----------------------------------------------------------------------------------------------------------------------
+        //														GLFW
+        //----------------------------------------------------------------------------------------------------------------------
+
+        public const int GLFW_OPENED 					= 0x00020001;
 		public const int GLFW_WINDOWED             		= 0x00010001;
 		public const int GLFW_FULLSCREEN           		= 0x00010002;
 		public const int GLFW_ACTIVE               		= 0x00020001;
@@ -208,5 +222,5 @@ namespace GXPEngine.OpenGL {
         public static extern void glfwEnable(int property);
 		[DllImport("lib/glfw.dll")]
 		public static extern void glfwDisable(int property);
-	}
+    }
 }
