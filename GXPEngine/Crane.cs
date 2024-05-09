@@ -91,6 +91,7 @@ namespace GXPEngine
                 rope.length += Time.deltaTimeS;
 
             }
+            //shitty air friction
             magnet.velocity -= magnet.velocity * Time.deltaTimeS * 0.3f;
         }
         /// <summary>

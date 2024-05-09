@@ -10,11 +10,11 @@ namespace GXPEngine
         bool showCursor;
         Camera cam;
 
-        PhysicsObject obj1;
+        PhysicsBox obj1;
         PhysicsObject hook;
         PhysicsObject floor;
         Rope rope;
-
+        Glue glue;
         Crane crane;
 
         public PhysicsTest() : base(800, 600, false, true, false, "UnreelEngine")
@@ -26,15 +26,15 @@ namespace GXPEngine
 
             SetupScene();
 
-
         }
         void Update()
         {
             if (Input.GetKeyDown(Key.TAB)) showCursor = !showCursor;
             game.ShowMouse(showCursor);
-            
-            //shitty air friction
+
             crane.Update();
+            if (glue != null)
+                glue.Apply(Time.deltaTimeS);
             PhysicsObject.UndateAll();
             //rope.Apply(Time.deltaTimeS);
             //rope.Display();
@@ -43,10 +43,15 @@ namespace GXPEngine
             //Gizmos.DrawLine(new Vector3(0, 2, 0), hook.position, width:10, color: 0xff777777);
             (floor.collider as BoxCollider).DrawExtents();
 
+            if (Input.GetKey(Key.T))
+            {
+                glue = null;
+            }
         }
         public void SetupScene()
         {
-            //obj1 = new PhysicsMesh("test models/monki.obj", "test models/suzanne.png", Vector3.zero);
+            obj1 = new PhysicsBox("test models/suzanne.png", Vector3.zero);
+            AddChild(obj1);
             //obj1.scale = 0.5f;
             //obj1.velocity = Vector3.one;
             //AddChild(obj1);
@@ -67,7 +72,7 @@ namespace GXPEngine
 
             crane = new Crane(Vector3.zero);
             crane.AddToGame(this);
-
+            glue = new Glue(crane.magnet, obj1, new Vector3(0, -1, 0));
         }
         public void FirstPersonViewUpdate()
         {

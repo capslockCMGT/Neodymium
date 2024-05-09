@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +25,8 @@ namespace GXPEngine.Physics
             prevLength = (g1.TransformPoint(0, 0, 0) - g2.TransformPoint(0, 0, 0)).Magnitude();
             this.length = (length == 0) ? prevLength : length;
             this.bounciness= bounciness;
+            if (!g1.simulated && !g2.simulated)
+                Console.WriteLine("'Rope' constraint cannot be applied, at least one object must be dynamic");
         }
         public override void Display()
         {
@@ -44,6 +47,7 @@ namespace GXPEngine.Physics
             // if both are simulated, we have to preserve mass center
             if (first.simulated && second.simulated)
             {
+                first.pos -= dir * penetration * second.mass/(first.mass + second.mass);
                 if (relativeVelocity * dir < 0)
                     return;
                 Vector3 deltaP = (1 + bounciness) * (relativeVelocity * (first.mass * second.mass) / (first.mass + second.mass) * dir * dir);

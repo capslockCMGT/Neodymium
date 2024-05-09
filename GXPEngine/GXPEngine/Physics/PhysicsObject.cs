@@ -23,7 +23,7 @@ namespace GXPEngine.Physics
     public class PhysicsObject : GameObject
     {
         protected static List<PhysicsObject> collection = new List<PhysicsObject>();
-        public static float gravity = -2;
+        public static float gravity = -5;
         public static int substeps = 10;
         public static Material defaultMaterial = new Material
         (
@@ -38,6 +38,10 @@ namespace GXPEngine.Physics
             get { return material.density * GetVolume(); }
             set { material.density = value/ GetVolume(); }
         }
+        public Vector3 momentum
+        {
+            get { return mass * velocity; }
+        }
         public bool simulated;
         public Vector3 prevPos, pos, velocity;
         public Dictionary<string,Force> staticForces = new Dictionary<string, Force>();
@@ -46,6 +50,7 @@ namespace GXPEngine.Physics
         public readonly Vector3 netForce;
         public Material material;
         public GameObject renderAs;
+        private List<PhysicsObject> toIgnore = new List<PhysicsObject>();
 
         public PhysicsObject(Vector3 pos, bool simulated = true, bool addCollider = true, bool enable = true) : base(addCollider)
         {
@@ -79,7 +84,7 @@ namespace GXPEngine.Physics
                     //resolving collision
                     foreach (PhysicsObject other in collection)
                     {
-                        if (other == this || other == null)
+                        if (other == this || other == null || toIgnore.Contains(other))
                             continue;
                         Collision collision = collider.GetCollisionInfo(other.collider);
                         if (collision == null)
@@ -251,6 +256,16 @@ namespace GXPEngine.Physics
         {
             if (!collection.Contains(this))
                 collection.Add(this);
+        }
+        public void Ignore(PhysicsObject po)
+        {
+            if (!toIgnore.Contains(po))
+                toIgnore.Add(po);
+        }
+        public void Unignore(PhysicsObject po)
+        {
+            if (toIgnore.Contains(po))
+                toIgnore.Remove(po);
         }
     }
 }

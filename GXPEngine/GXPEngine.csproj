@@ -51,6 +51,7 @@
     <Compile Include="GXPEngine\Editor\GameObjectWriter.cs" />
     <Compile Include="GXPEngine\Physics\Constraint.cs" />
     <Compile Include="GXPEngine\Physics\Force.cs" />
+    <Compile Include="GXPEngine\Physics\Glue.cs" />
     <Compile Include="GXPEngine\Physics\PhysicsBox.cs" />
     <Compile Include="GXPEngine\Physics\PhysicsMesh.cs" />
     <Compile Include="GXPEngine\Physics\PhysicsObject.cs" />
