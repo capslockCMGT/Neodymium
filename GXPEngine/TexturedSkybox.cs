@@ -45,7 +45,7 @@ namespace GXPEngine.GXPEngine
             //GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.GL_REPEAT);
             renderer.DrawBuffers(glContext);
             glContext.PopMatrix();
-            GL.Clear(0x100);
+            GL.Clear(GL.DEPTH_BUFFER_BIT);
         }
         protected override void OnDestroy()
         {

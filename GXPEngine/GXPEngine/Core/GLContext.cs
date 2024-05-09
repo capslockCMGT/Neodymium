@@ -128,7 +128,7 @@ namespace GXPEngine.Core {
                 GL.ClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 				//enable depth buffer
-                GL.Enable(0xb71);
+                GL.Enable(GL.DEPTH_TEST);
 
                 // Load the basic projection settings:
                 GL.MatrixMode(GL.PROJECTION);
@@ -259,15 +259,15 @@ namespace GXPEngine.Core {
 		//														display()
 		//------------------------------------------------------------------------------------------------------------------------
 		private void Display () {
-			GL.Clear(GL.COLOR_BUFFER_BIT);
-            GL.Clear(0x4000 | 0x100); //depth buffer
+			//GL.Clear(GL.COLOR_BUFFER_BIT);
+            GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT); //depth buffer
 
             GL.MatrixMode(GL.MODELVIEW);
 			GL.LoadIdentity();
 			
 			_owner.Render(this);
 
-            //GL.Clear(0x100); //clear depth buffer again so it doesnt overlap with ui
+            //GL.Clear(GL.DEPTH_BUFFER_BITS); //clear depth buffer again so it doesnt overlap with ui
 
             //_owner.uiManager.Render(this);
 

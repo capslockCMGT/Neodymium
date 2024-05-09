@@ -364,7 +364,7 @@ namespace GXPEngine.Editor.Exclusives
 
             glContext.PushMatrix(matrix);
             //this is evil & i cant believe im doing this
-            GL.Clear(0x100);
+            GL.Clear(GL.DEPTH_BUFFER_BIT);
 
             activeRenderer.visible = true;
             activeRenderer.rotation = forward;

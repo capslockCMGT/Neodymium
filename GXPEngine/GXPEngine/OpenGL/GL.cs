@@ -15,6 +15,7 @@ namespace GXPEngine.OpenGL {
 		public const int MODELVIEW					= 0x1700;		
 		public const int PROJECTION					= 0x1701;
 		public const int COLOR_BUFFER_BIT			= 0x4000;
+		public const int DEPTH_BUFFER_BIT			= 0x0100;
 		public const int QUADS						= 0x0007;
 		public const int TRIANGLES					= 0x0004;
 		public const int LINES						= 0x0001;
@@ -65,8 +66,17 @@ namespace GXPEngine.OpenGL {
 		public const int FUNC_SUBTRACT				= 0x800A;
 		public const int FUNC_REVERSE_SUBTRACT		= 0x800B;
 		public const int GL_REPEAT 					= 0x2901;
+		public const int DEPTH_TEST					= 0x0b71;
+		public const int GL_LIGHT0					= 0x4000;
+		public const int GL_LIGHT1					= 0x4001;
+		public const int GL_LIGHT2					= 0x4002;
+		public const int GL_LIGHT3					= 0x4003;
+        public const int GL_LIGHT4					= 0x4004;
+        public const int GL_LIGHT5					= 0x4005;
+        public const int GL_LIGHT6					= 0x4006;
+        public const int GL_LIGHT7					= 0x4007;
 
-		[DllImport("opengl32.dll", EntryPoint="glEnable")]
+        [DllImport("opengl32.dll", EntryPoint="glEnable")]
 		public static extern void Enable(int cap);
 		[DllImport("opengl32.dll", EntryPoint="glDisable")]
 		public static extern void Disable(int cap);

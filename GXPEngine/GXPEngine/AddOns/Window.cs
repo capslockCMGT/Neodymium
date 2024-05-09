@@ -239,12 +239,12 @@ namespace GXPEngine {
             var oldRange = main.RenderRange;
             SetRenderRange();
             main.SetViewport(_windowX, _windowY, _width, _height, true);
-            GL.Clear(0x100);
-			GL.Disable(0xb71);
+            GL.Clear(GL.DEPTH_BUFFER_BIT);
+			GL.Disable(GL.DEPTH_TEST);
             main.uiManager.Render(glContext);
             main.SetViewport((int)oldRange.left, (int)oldRange.top, (int)oldRange.width, (int)oldRange.height, true);
             glContext.PopMatrix();
-			GL.Enable(0xb71);
+			GL.Enable(GL.DEPTH_TEST);
         }
 
 		void SetRenderRange() {

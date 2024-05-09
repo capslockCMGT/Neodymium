@@ -106,7 +106,7 @@ namespace GXPEngine.GXPEngine
             }
             base.RenderSelf(glContext);
             glContext.PopMatrix();
-            GL.Clear(0x100);
+            GL.Clear(GL.DEPTH_BUFFER_BIT);
         }
         protected override void OnDestroy()
         {
