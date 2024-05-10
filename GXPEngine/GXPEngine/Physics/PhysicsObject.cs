@@ -28,7 +28,7 @@ namespace GXPEngine.Physics
         (
             friction: 0.3f,
             density: 0.02f,
-            restitution: 0.9f
+            restitution: 0.7f
         );
 
 

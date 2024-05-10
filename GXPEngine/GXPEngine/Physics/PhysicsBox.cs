@@ -12,6 +12,11 @@ namespace GXPEngine.Physics
             renderAs = new Box(filename);
             (collider as BoxCollider).size = new Vector3(1, 1, 1);
         }
+        public PhysicsBox(Texture2D texture, bool addCollider = true) : base(Vector3.zero, false)
+        {
+            renderAs = new Box(texture);
+            (collider as BoxCollider).size = new Vector3(1, 1, 1);
+        }
         protected override Collider createCollider()
         {
             return new BoxCollider(this);
