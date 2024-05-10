@@ -37,7 +37,7 @@ namespace GXPEngine
             game.ShowMouse(showCursor);
 
             crane.Update();
-            Vector3 r = crane.magnet.position - obj1.position;
+            Vector3 r = crane.magnet.TransformPoint(Vector3.zero) - obj1.TransformPoint(Vector3.zero);
             float rl = r.Magnitude();
             float k = 10f;
             if (crane.magnet.isAttracting) obj1.AddForce("magnet", new Force(k / rl / rl / rl * r));
@@ -80,8 +80,9 @@ namespace GXPEngine
             //AddChild(hook);
             //rope = new Rope(hook, obj1, 0.1f, 4);
 
-            crane = new Crane(Vector3.zero);
-            crane.AddToGame(this);
+            crane = new Crane(new Vector3(0,-2,0));
+            AddChild(crane);
+            crane.position += new Vector3(-3, 0, -3);
 
         }
         public void FirstPersonViewUpdate()

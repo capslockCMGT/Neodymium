@@ -24,7 +24,7 @@ namespace GXPEngine
             if (toPick.simulated)
             {
                 Glue(toPick);
-                toPick.pos = new Vector3(0, -1.6f, 0);
+                toPick.pos = parent.TransformPoint(new Vector3(0, -1.6f, 0));
             }
         }
         public void Update()

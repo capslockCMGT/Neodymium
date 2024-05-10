@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GXPEngine
 {
-    public class Crane
+    public class Crane : GameObject
     {
         public PhysicsObject trunk;
         public PhysicsObject cabin;
@@ -59,13 +59,15 @@ namespace GXPEngine
 
             r = upperLimit.y;
             y = (lowerLimit.z + upperLimit.z) / 2;
+
+            AddChildren();
         }
-        public void AddToGame(Game game)
+        public void AddChildren()
         {
-            game.AddChild(trunk);
-            game.AddChild(cabin);
-            game.AddChild(hook);
-            game.AddChild(magnet);
+            AddChild(trunk);
+            AddChild(cabin);
+            AddChild(hook);
+            AddChild(magnet);
         }
         public void Update()
         {
