@@ -18,6 +18,9 @@ namespace GXPEngine
             Lighting.SetLight(0, position1, ambientColor1, color1);
             Lighting.SetLight(1, position2, ambientColor2, color2);
             Lighting.SetLight(2, position3, ambientColor3, color3);
+        }
+        void Update()
+        {
             Destroy();
         }
     }
