@@ -44,7 +44,7 @@ namespace GXPEngine
             else obj1.AddForce("magnet", new Force(Vector3.zero));
             //crane.magnet.AddForce("magnet", new Force(-k / rl / rl / rl * r));
 
-            PhysicsObject.UndateAll();
+            PhysicsObject.UpdateAll();
             //rope.Apply(Time.deltaTimeS);
             //rope.Display();
             FirstPersonViewUpdate();

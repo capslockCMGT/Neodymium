@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GXPEngine.Core;
+using GXPEngine.Physics;
 
 namespace GXPEngine
 {
@@ -23,6 +24,7 @@ namespace GXPEngine
         }
         void Update()
         {
+            PhysicsObject.UpdateAll();
         }
     }
 }

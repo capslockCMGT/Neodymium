@@ -1,8 +1,6 @@
 ﻿using GXPEngine.Core;
 using System;
 using System.Collections.Generic;
-using System.Xml.Schema;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace GXPEngine.Physics
 {
@@ -258,7 +256,7 @@ namespace GXPEngine.Physics
         {
             renderAs.Render(gLContext);
         }
-        public static void UndateAll()
+        public static void UpdateAll()
         {
             foreach(PhysicsObject po in collection)
             {
