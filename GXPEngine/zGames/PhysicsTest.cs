@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GXPEngine.AddOns;
 using GXPEngine.Core;
 using GXPEngine.OpenGL;
@@ -27,6 +27,7 @@ namespace GXPEngine
 
             SetupScene();
 
+            obj1.pos = new Vector3(3,0,3);
             Lighting.SetLight(0, new Vector3(5, 5, 5), new Vector3(.4f, .2f, .2f), new Vector3(.0f, .2f, .7f));
             Lighting.SetLight(1, new Vector3(-5, -5, -0), new Vector3(.0f, .0f, .0f), new Vector3(.5f, .2f, .0f));
         }
@@ -36,8 +37,13 @@ namespace GXPEngine
             game.ShowMouse(showCursor);
 
             crane.Update();
-            if (glue != null)
-                glue.Apply(Time.deltaTimeS);
+            Vector3 r = crane.magnet.position - obj1.position;
+            float rl = r.Magnitude();
+            float k = 10f;
+            if (crane.magnet.isAttracting) obj1.AddForce("magnet", new Force(k / rl / rl / rl * r));
+            else obj1.AddForce("magnet", new Force(Vector3.zero));
+            //crane.magnet.AddForce("magnet", new Force(-k / rl / rl / rl * r));
+
             PhysicsObject.UndateAll();
             //rope.Apply(Time.deltaTimeS);
             //rope.Display();
@@ -48,8 +54,9 @@ namespace GXPEngine
 
             if (Input.GetKey(Key.T))
             {
-                glue = null;
+                crane.magnet.Unglue(obj1);
             }
+
         }
         public void SetupScene()
         {
@@ -75,7 +82,7 @@ namespace GXPEngine
 
             crane = new Crane(Vector3.zero);
             crane.AddToGame(this);
-            glue = new Glue(crane.magnet, obj1, new Vector3(0, -1, 0));
+
         }
         public void FirstPersonViewUpdate()
         {
