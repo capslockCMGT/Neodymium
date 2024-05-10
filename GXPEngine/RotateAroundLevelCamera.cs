@@ -11,7 +11,7 @@ namespace GXPEngine
     {
         private Camera _cam;
         public Camera cam { get { return _cam; } }
-        public float distance = 16;
+        public float distance = 20;
         public bool CamEnabled = false;
         Pivot Arm;
         Vector2 screenRotation = new Vector2(0, .2f);
@@ -24,7 +24,7 @@ namespace GXPEngine
             Arm = new Pivot();
             AddChild(Arm);
 
-            y = -5f;
+            y = -3f;
             Arm.z = distance;
             _cam.position = Arm.globalPosition;
             _cam.rotation = Arm.globalRotation;
@@ -61,7 +61,7 @@ namespace GXPEngine
         }
         void StartGameAnimation()
         {
-            distance += (8 - distance) * Time.deltaTimeS * 5f;
+            distance += (12 - distance) * Time.deltaTimeS * 5f;
             y *= 1 - Time.deltaTimeS * 5;
         }
     }

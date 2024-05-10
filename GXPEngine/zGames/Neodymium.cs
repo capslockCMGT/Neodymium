@@ -13,7 +13,7 @@ namespace GXPEngine
         public RotateAroundLevelCamera Camera;
         public Neodymium() : base(1200, 750, false, gameName:"Neodymium") 
         {
-            Camera = new RotateAroundLevelCamera(new Camera(new ProjectionMatrix(120, 75, .1f, 100)));
+            Camera = new RotateAroundLevelCamera(new Camera(new ProjectionMatrix(80, 60, .1f, 100)));
             AddChild(Camera);
             AddChild(Editor.GameObjectReader.ReadGameObjectTree("neodymium/Level1.gxp3d"));
             MainMenu sl = new MainMenu();
