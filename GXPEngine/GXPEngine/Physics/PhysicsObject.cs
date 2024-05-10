@@ -1,7 +1,8 @@
 ﻿using GXPEngine.Core;
 using System;
 using System.Collections.Generic;
-
+using System.Xml.Schema;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace GXPEngine.Physics
 {
@@ -27,7 +28,7 @@ namespace GXPEngine.Physics
         public static int substeps = 10;
         public static Material defaultMaterial = new Material
         (
-            friction: 0.1f,
+            friction: 0.3f,
             density: 0.02f,
             restitution: 0.9f
         );
@@ -35,7 +36,12 @@ namespace GXPEngine.Physics
 
 
         public float mass {
-            get { return material.density * GetVolume(); }
+            get {
+                float res = material.density * GetVolume();
+                //foreach (PhysicsObject po in GetChildren())
+                //    res += po.material.density * po.GetVolume();
+                return res;
+            }
             set { material.density = value/ GetVolume(); }
         }
         public Vector3 momentum
@@ -43,6 +49,7 @@ namespace GXPEngine.Physics
             get { return mass * velocity; }
         }
         public bool simulated;
+        public bool dependant = false;
         public Vector3 prevPos, pos, velocity;
         public Dictionary<string,Force> staticForces = new Dictionary<string, Force>();
         private List<Force> forces;
@@ -51,6 +58,7 @@ namespace GXPEngine.Physics
         public Material material;
         public GameObject renderAs;
         private List<PhysicsObject> toIgnore = new List<PhysicsObject>();
+        private List<PhysicsObject> glued = new List<PhysicsObject>();
 
         public PhysicsObject(Vector3 pos, bool simulated = true, bool addCollider = true, bool enable = true) : base(addCollider)
         {
@@ -69,8 +77,10 @@ namespace GXPEngine.Physics
         {
             if (simulated)
             {
+                float totalMass = mass;
                 float freemoveTime = Time.deltaTimeS / substeps;
                 int iterations = 0;
+
                 //CalculateAcceleration();
                 while (freemoveTime > 0)
                 {
@@ -84,11 +94,20 @@ namespace GXPEngine.Physics
                     //resolving collision
                     foreach (PhysicsObject other in collection)
                     {
-                        if (other == this || other == null || toIgnore.Contains(other))
-                            continue;
+                        ResolveCollision(this, other);
+                    }
+                    void ResolveCollision (PhysicsObject first, PhysicsObject other)
+                    {
+                        if (other == first || other == null || toIgnore.Contains(other))
+                            return;
                         Collision collision = collider.GetCollisionInfo(other.collider);
+                        foreach (PhysicsObject child in glued)
+                        {
+                            if (collision != null) break;
+                            collision = child.collider.GetCollisionInfo(other.collider);
+                        }    
                         if (collision == null)
-                            continue;
+                            return;
                         Vector3 relativeVelocity = velocity - other.velocity;
                         Vector3 r = collision.point - pos;
                         Vector3 pnormal = mass * (relativeVelocity);
@@ -145,9 +164,10 @@ namespace GXPEngine.Physics
                             }
                         }
                     }
-
-                    //PhysicsStep(freemoveTime, ref freemoveTime);
-
+                    foreach (PhysicsObject child in glued)
+                    {
+                        child.position = position + child.pos;
+                    }
                     //if (PhysicsEngine.showGizmos)
                     //{
                     //    Gizmos.DrawArrow(pos.x + MyGame.main.width / 2, pos.y + MyGame.main.height / 2, velocity.x, velocity.y);
@@ -155,7 +175,6 @@ namespace GXPEngine.Physics
                     //}
 
                 }
-                //Console.WriteLine(iterations);
             }
         }
         public void PhysicsStep(float time, ref float totalTime)
@@ -170,7 +189,7 @@ namespace GXPEngine.Physics
             }
             Vector3 deltaV = velocity - startVel;
             velocity += deltaV / 2;
-            pos += velocity * time;
+            Displace(velocity * time);
             velocity += deltaV / 2;
             position = pos;
         }
@@ -243,6 +262,7 @@ namespace GXPEngine.Physics
         {
             foreach(PhysicsObject po in collection)
             {
+                if (po.dependant) continue;
                 for (int i=0; i<substeps; i++)
                     po.PhysicsUpdate();
             }
@@ -267,9 +287,32 @@ namespace GXPEngine.Physics
             if (toIgnore.Contains(po))
                 toIgnore.Remove(po);
         }
-        public override void AddChild(GameObject child)
+        public void Glue(PhysicsObject po)
         {
-            base.AddChild(child);
+            if (!glued.Contains(po))
+            {
+                po.Ignore(this);
+                Ignore(po);
+                glued.Add(po);
+                po.dependant = true;
+                po.pos = po.position - position;
+            }
+        }
+        public void Unglue(PhysicsObject po)
+        {
+            if (glued.Contains(po))
+            {
+                po.Unignore(this);
+                Unignore(po);
+                glued?.Remove(po);
+                po.dependant = false;
+                po.pos = po.position;
+                po.velocity = velocity;
+            }
+        }
+        public void Displace (Vector3 delta)
+        {
+            pos += delta;
         }
     }
 }

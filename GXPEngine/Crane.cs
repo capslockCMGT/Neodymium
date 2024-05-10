@@ -13,7 +13,7 @@ namespace GXPEngine
         public PhysicsObject trunk;
         public PhysicsObject cabin;
         public PhysicsObject hook;
-        public PhysicsObject magnet;
+        public Magnet magnet;
         public Rope rope;
 
         //magnet has 3 freedom degrees, which can be represented in cylindric coordinate system
@@ -40,12 +40,13 @@ namespace GXPEngine
 
             float hookElevation = cabin.scaleY;
             hook = new PhysicsBox("cubeTex.png", groundPos + new Vector3(0, trunkLength - hookElevation, rMax), false);
-            magnet = new PhysicsMesh("test models/monki.obj", "test models/suzanne.png", hook.pos - new Vector3(0, rMin, 0));
+            magnet = new Magnet("test models/monki.obj", "test models/suzanne.png", hook.pos - new Vector3(0, rMin, 0));
 
             hook.scale = 0.4f;
             hook.scaleY /= 3;
 
             magnet.scale = 0.4f;
+            magnet.mass = 0.16f;
             rope = new Rope(hook, magnet, 0.1f);
         }
         public void AddToGame(Game game)
