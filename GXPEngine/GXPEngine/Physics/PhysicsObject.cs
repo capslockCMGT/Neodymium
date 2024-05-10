@@ -295,7 +295,7 @@ namespace GXPEngine.Physics
                 Ignore(po);
                 glued.Add(po);
                 po.dependant = true;
-                po.pos = po.position - position;
+                po.pos = po.position - TransformPoint(Vector3.zero);
             }
         }
         public void Unglue(PhysicsObject po)
