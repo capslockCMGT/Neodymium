@@ -180,14 +180,7 @@ namespace GXPEngine {
 				SetRenderRange();
 				main.SetViewport (_windowX, _windowY, _width, _height, false);
 
-
-				Lighting.SetLight(0, new Vector3(5, 5, 5), new Vector3(.4f, .2f, .2f), new Vector3(.0f, .2f, .7f));
-                Lighting.SetLight(1, new Vector3(-5, -5, -0), new Vector3(.0f, .0f, .0f), new Vector3(.5f, .2f, .0f));
-                Lighting.Enable();
-
                 current.Render (glContext);
-
-				Lighting.Disable();
 
                 onRenderTransparent?.Invoke(glContext);
 				onRenderTransparent = null;

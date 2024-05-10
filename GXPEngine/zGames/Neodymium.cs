@@ -15,7 +15,7 @@ namespace GXPEngine
         {
             Camera = new RotateAroundLevelCamera(new Camera(new ProjectionMatrix(120, 75, .1f, 100)));
             AddChild(Camera);
-            AddChild(Editor.GameObjectReader.ReadGameObjectTree("level1.gxp3d"));
+            AddChild(Editor.GameObjectReader.ReadGameObjectTree("neodymium/Level1.gxp3d"));
             MainMenu sl = new MainMenu();
             uiManager.Add(sl);
             //sl.
