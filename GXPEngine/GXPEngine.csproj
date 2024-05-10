@@ -58,6 +58,7 @@
     <Compile Include="GXPEngine\Physics\Rope.cs" />
     <Compile Include="GXPEngine\Physics\Spring.cs" />
     <Compile Include="LavaHitbox.cs" />
+    <Compile Include="LightingSetter.cs" />
     <Compile Include="Magnet.cs" />
     <Compile Include="MainMenu.cs" />
     <Compile Include="RotateAroundLevelCamera.cs" />

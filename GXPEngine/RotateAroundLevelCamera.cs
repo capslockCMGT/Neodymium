@@ -50,7 +50,7 @@ namespace GXPEngine
 
             screenRotation += mouseVelSmoothed * Time.deltaTimeS;
             if (screenRotation.y > .3f * Mathf.PI) screenRotation.y = Mathf.PI * .299f;
-            if (screenRotation.y < -.2f * Mathf.PI) screenRotation.y = Mathf.PI * -.199f;
+            if (screenRotation.y < -.1f * Mathf.PI) screenRotation.y = Mathf.PI * -.099f;
             screenRotation.x %= 2 * Mathf.PI;
 
             rotation = Quaternion.FromRotationAroundAxis(Vector3.up, screenRotation.x);
