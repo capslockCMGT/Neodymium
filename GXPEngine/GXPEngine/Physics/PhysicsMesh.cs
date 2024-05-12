@@ -19,7 +19,7 @@ namespace GXPEngine.Physics
         }
         public override Vector3[] GetExtents()
         {
-            return renderAs.GetExtents();
+            return (collider as BoxCollider).GetExtents();
         }
     }
 }

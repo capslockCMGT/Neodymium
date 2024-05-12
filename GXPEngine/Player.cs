@@ -1,167 +1,125 @@
 ﻿using GXPEngine.Core;
+using GXPEngine.Physics;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace GXPEngine
 {
-    public class Player : GameObject
+    public class Player : PhysicsMesh
     {
-        BoxCollider pCollider;
-        public List<Collider> colliders;
-        Camera cam;
-        Vector3 size = new Vector3(0.1f, 0.5f, 0.1f);
-        Vector3 velocity = new Vector3(0, 0, 0);
-        Vector3 groundNormal = Vector3.up;
-        public bool grounded = false;
-
-        float cameraTilt;//, targetTilt = 0.1f;
-        Vector3 camOffset = new Vector3(0, 0, 0);
-        Vector3 targetOffset = new Vector3(0.3f,0.1f,0);
-        bool xChanged;
-
-        Timer tiltTimer;
-        public override Vector3[] GetExtents()
+        public enum Status
         {
-            Vector3[] res = new Vector3[]
+            REST,
+            MOVE,
+            DEAD
+        }
+
+        private float elevation = 0.1f;
+        private List<GameObject> path;
+        public int currentCheckpointPointer = 0;
+        public Status status = Status.REST;
+        public GameObject currentCheckpoint 
+        {
+            get { return path[currentCheckpointPointer]; }
+        }
+        public GameObject nextCheckpoint
+        {
+            get { return path[currentCheckpointPointer+1]; }
+        }
+        public Player(string modelFilename, string textureFilename, Vector3 pos) : base(modelFilename,textureFilename,pos,true)
+        {
+            SetMass (0.5f);
+            (collider as BoxCollider).size = new Vector3(0.8f, 0.8f, 0.8f);
+            path = new List<GameObject>();
+            AddCheckpoint(pos);
+        }
+        /// <summary>
+        /// returns true if there is a ground ddetected
+        /// </summary>
+        /// <returns></returns>
+        public bool CorrectHeight()
+        {
+            float dist = 0;
+            float minDist = float.MaxValue;
+            foreach (PhysicsObject other in collection)
             {
-                new Vector3(-size.x, size.y, size.z),
-                new Vector3( size.x, size.y, size.z),
-                new Vector3( size.x,-size.y, size.z),
-                new Vector3(-size.x,-size.y, size.z),
-                new Vector3(-size.x, size.y,-size.z),
-                new Vector3( size.x, size.y,-size.z),
-                new Vector3( size.x,-size.y,-size.z),
-                new Vector3(-size.x,-size.y,-size.z)
-            };
-            for (int i = 0; i < 8; i++)
-                res[i] = TransformPoint(res[i]);
-            return res;
-        }
-        public Player() : base()
-        {
-            pCollider = new BoxCollider(this);
-            colliders = new List<Collider>();
-            tiltTimer = new Timer();
-            tiltTimer.SetLaunch(0.5f);
-            tiltTimer.autoReset= true;
-            tiltTimer.OnTimerEnd += ChangeShakeDirection;
-        }
-
-
-        public void AssignCamera(Camera cam)
-        {
-            this.cam = cam;
+                if (other == null || other == this || toIgnore.Contains(other))
+                    continue;
+                Vector3[] verts = GetExtents();
+                Vector3 normal;
+                Check(verts[0] + new Vector3(0.001f, 0.001f, 0.001f));
+                Check(verts[1] + new Vector3(0.001f, 0.001f, -0.001f));
+                Check(verts[4] + new Vector3(-0.001f, 0.001f, 0.001f));
+                Check(verts[5] + new Vector3(-0.001f, 0.001f, -0.001f));
+                void Check(Vector3 vert)
+                {
+                    if (other.collider.RayCast(vert + new Vector3(0, 0.0001f, 0), vert - Vector3.up, out dist, out normal))
+                    {
+                        if (dist < minDist && normal.y > 0.5f)
+                            minDist = dist;
+                    }
+                }
+            }
+            if (minDist < elevation)
+            {
+                if (velocity.y < 0)
+                    velocity.y = 0;
+                pos.y += elevation - minDist;
+                return true;
+            }
+            return false;
         }
         public void Update()
         {
-            position += velocity * Time.deltaTimeS;
-            Vector3[] extents = GetExtents();
-            if (extents[2].y < -2)
+            if (!dependant)
             {
-                y += -extents[2].y-2;
-                grounded = true;
-            }
-            foreach (Collider coll in colliders)
-            {
-                Collision collision = pCollider.GetCollisionInfo(coll);
-                if (collision != null)
+                if (CorrectHeight() && status == Status.MOVE)
                 {
-                    position -= collision.normal * collision.penetrationDepth;
-                    if (collision.normal.y < -0.5f)
+                    Vector3 dir = nextCheckpoint.position - pos;
+                    dir.y = 0;
+                    float dist = dir.Magnitude();
+                    if (dist > scaleX)
                     {
-                        groundNormal = -collision.normal;
-                        grounded = true;
-                    }
-                }
-                else
-                {
-                    float distance = float.MaxValue;
-                    float minDist = float.MaxValue;
-                    Vector3 normal = Vector3.zero;
-                    if (extents[2].y > -2 && grounded)
-                    {
-                        if (coll.RayCast(extents[2], extents[2] - Vector3.up, out distance, out normal))
-                            if (minDist > distance) { minDist = distance; }
-                        if (coll.RayCast(extents[3], extents[3] - Vector3.up, out distance, out normal))
-                            if (minDist > distance) { minDist = distance; }
-                        if (coll.RayCast(extents[6], extents[6] - Vector3.up, out distance, out normal))
-                            if (minDist > distance) { minDist = distance; }
-                        if (coll.RayCast(extents[7], extents[7] - Vector3.up, out distance, out normal))
-                            if (minDist > distance) { minDist = distance; }
-                        if (minDist > 0.01f) grounded = false;
+                        dir.Normalize();
+                        velocity.x = dir.x * 3;
+                        velocity.z = dir.z * 3;
+                        rotation = Quaternion.FromRotationAroundAxis(Vector3.up, Mathf.Atan2(dir.x, -dir.z));
                     }
                 }
             }
-            ControlsUpdate();
-            if (cam != null)
-                cam.position = TransformPoint(camOffset);
-            if (grounded)
+            velocity -= velocity * Time.deltaTimeS * 2;
+            DrawPath();
+
+            if (Input.GetKeyDown(Key.ENTER))
             {
-                if (Input.GetKeyDown(Key.SPACE))
+                if (status == Status.REST)
+                    status = Status.MOVE;
+                else if (status == Status.MOVE)
                 {
-                    velocity.y += 3;
-                    grounded = false;
+                    velocity.x = 0; velocity.z = 0;
+                    status = Status.REST;
                 }
-                else
-                    velocity.y = 0;
             }
-            else
+        }
+        public void DrawPath()
+        {
+            Gizmos.DrawLine(position, nextCheckpoint.position, color: 0xffffff00);
+            for (int i=currentCheckpointPointer + 1; i<path.Count - 1 ; i++)
             {
-                groundNormal = Vector3.up;
-                velocity.y -= 10 * Time.deltaTimeS;
-            }
-            DrawBB();
-        }
-        public void ControlsUpdate()
-        {
-            float msex = Input.mouseX / 800f * Mathf.PI;
-            float msey = Input.mouseY / 600f * Mathf.PI;
-            cam.rotation = (Quaternion.FromRotationAroundAxis(0, 1, 0, msex));
-            rotation = cam.rotation;
-            cam.Rotate(Quaternion.FromRotationAroundAxis(1, 0, 0, msey));
-            //minecraft creative mode controls
-            if (Input.GetKey(Key.D))
-                position += (TransformDirection(new Vector3(0, 0, -1)) ^ groundNormal).normalized() * Time.deltaTimeS;
-            if (Input.GetKey(Key.A))
-                position += (TransformDirection(new Vector3(0, 0, 1)) ^ groundNormal).normalized() * Time.deltaTimeS;
-            if (Input.GetKey(Key.W))
-                position += (TransformDirection(new Vector3(-1, 0, 0)) ^ groundNormal).normalized() * Time.deltaTimeS;
-            if (Input.GetKey(Key.S))
-                position += (TransformDirection(new Vector3(1, 0, 0)) ^ groundNormal).normalized() * Time.deltaTimeS;
-            if ((Input.GetKey(Key.D) || Input.GetKey(Key.A) || Input.GetKey(Key.W) || Input.GetKey(Key.S)) && grounded)
-                CameraShake();
-            else
-            {
-                camOffset = Vector3.Lerp(Time.deltaTimeS, camOffset, Vector3.zero);
-                cameraTilt = Mathf.Lerp(Time.deltaTimeS,cameraTilt, 0);
-                cam.Rotate(Quaternion.FromRotationAroundAxis(new Vector3(0, 0, 1), cameraTilt));
-            }
-                
-        }
-        public void DrawBB()
-        {
-            if (pCollider != null)
-            {
-                Gizmos.DrawBox(0, 0, 0, size.x, size.y, size.z, this, color: 0xff00ffff);
+                Gizmos.DrawLine(path[i].position, path[i + 1].position, color: 0xffffff00);
             }
         }
-        public void CameraShake()
+        public void AddCheckpoint(Vector3 pos)
         {
-            if (tiltTimer.time < tiltTimer.interval / 6 || tiltTimer.time > tiltTimer.interval * 2 / 3)
-                targetOffset.y = -0.2f;
-            else
-                targetOffset.y = +0.2f;
-
-
-            camOffset.x = Mathf.Lerp(Time.deltaTimeS, camOffset.x, targetOffset.x);
-            camOffset.y = Mathf.Lerp(Time.deltaTimeS, camOffset.y, targetOffset.y);
-            cameraTilt = camOffset.x * 0.7f;
-            cam.Rotate(Quaternion.FromRotationAroundAxis(new Vector3(0, 0, 1), cameraTilt));
-        }
-        public void ChangeShakeDirection()
-        {
-            targetOffset.x = -targetOffset.x;
+            Pivot checkpoint = new Pivot();
+            checkpoint.scale = 0.1f;
+            checkpoint.CreateBoxCollider();
+            checkpoint.collider.isTrigger = true;
+            checkpoint.position = pos;
+            path.Add(checkpoint);
         }
     }
 }

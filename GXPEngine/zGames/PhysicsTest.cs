@@ -13,10 +13,11 @@ namespace GXPEngine
 
         PhysicsBox obj1;
         PhysicsObject hook;
-        PhysicsObject floor;
+        PhysicsObject floor, platform1, platform2;
         Rope rope;
         Glue glue;
         Crane crane;
+        Player robot;
 
         public PhysicsTest() : base(800, 600, false, true, false, "UnreelEngine")
         {
@@ -27,9 +28,9 @@ namespace GXPEngine
 
             SetupScene();
 
-            obj1.pos = new Vector3(3,0,3);
-            Lighting.SetLight(0, new Vector3(5, 5, 5), new Vector3(.4f, .2f, .2f), new Vector3(.0f, .2f, .7f));
-            Lighting.SetLight(1, new Vector3(-5, -5, -0), new Vector3(.0f, .0f, .0f), new Vector3(.5f, .2f, .0f));
+
+            crane.magnet.AddAttract(obj1);
+            //crane.magnet.AddAttract(robot);
         }
         void Update()
         {
@@ -37,30 +38,17 @@ namespace GXPEngine
             game.ShowMouse(showCursor);
 
             crane.Update();
-            Vector3 r = crane.magnet.TransformPoint(Vector3.zero) - obj1.TransformPoint(Vector3.zero);
-            float rl = r.Magnitude();
-            float k = 10f;
-            if (crane.magnet.isAttracting) obj1.AddForce("magnet", new Force(k / rl / rl / rl * r));
-            else obj1.AddForce("magnet", new Force(Vector3.zero));
-            //crane.magnet.AddForce("magnet", new Force(-k / rl / rl / rl * r));
 
             PhysicsObject.UpdateAll();
-            //rope.Apply(Time.deltaTimeS);
-            //rope.Display();
             FirstPersonViewUpdate();
             Gizmos.DrawPlus(new Vector3(0,2,0), 0.1f);
-            //Gizmos.DrawLine(new Vector3(0, 2, 0), hook.position, width:10, color: 0xff777777);
-            (floor.collider as BoxCollider).DrawExtents();
-
-            if (Input.GetKey(Key.T))
-            {
-                crane.magnet.Unglue(obj1);
-            }
+            (robot.collider as BoxCollider).DrawExtents();
 
         }
         public void SetupScene()
         {
-            obj1 = new PhysicsBox("test models/suzanne.png", Vector3.zero);
+            obj1 = new PhysicsBox("test models/suzanne.png", new Vector3(3, 0, 3));
+            //obj1.rotation = Quaternion.FromRotationAroundAxis(Vector3.up, 0.1f);
             AddChild(obj1);
             //obj1.scale = 0.5f;
             //obj1.velocity = Vector3.one;
@@ -74,6 +62,13 @@ namespace GXPEngine
             floor.simulated = false;
             AddChild(floor);
 
+            platform1 = new PhysicsBox("cubeTex.png", new Vector3(-3, -2.5f, -1.5f),false);
+            platform1.scaleY = 0.5f;
+            AddChild(platform1);
+
+            platform2 = new PhysicsBox("cubeTex.png", new Vector3(-3, -2.5f, 3), false);
+            platform2.scaleY = 0.5f;
+            AddChild(platform2);
             //hook = new PhysicsBox("cubeTex.png", new Vector3(0f, 2, 2f));
             //hook.scale = 0.1f;
             //hook.simulated = false;
@@ -84,6 +79,13 @@ namespace GXPEngine
             AddChild(crane);
             crane.position += new Vector3(-3, 0, -3);
 
+            robot = new Player("robot/model.obj", "robot/texture.png", new Vector3(-3, 0, 3));
+            AddChild(robot);
+            robot.AddCheckpoint(new Vector3(-3, -0.5f, -1));
+            //robot.AddCheckpoint(new Vector3(5, 0, 5));
+
+            Lighting.SetLight(0, new Vector3(5, 5, 5), new Vector3(.4f, .2f, .2f), new Vector3(.0f, .2f, .7f));
+            Lighting.SetLight(1, new Vector3(-5, -5, -0), new Vector3(.0f, .0f, .0f), new Vector3(.5f, .2f, .0f));
         }
         public void FirstPersonViewUpdate()
         {

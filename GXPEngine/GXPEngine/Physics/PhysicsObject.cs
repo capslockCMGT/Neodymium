@@ -55,7 +55,7 @@ namespace GXPEngine.Physics
         public readonly Vector3 netForce;
         public Material material;
         public GameObject renderAs;
-        private List<PhysicsObject> toIgnore = new List<PhysicsObject>();
+        protected List<PhysicsObject> toIgnore = new List<PhysicsObject>();
         private List<PhysicsObject> glued = new List<PhysicsObject>();
 
         public PhysicsObject(Vector3 pos, bool simulated = true, bool addCollider = true, bool enable = true) : base(addCollider)
