@@ -639,19 +639,19 @@ namespace GXPEngine.Core
                 n = dEdges[0] ^ dEdges[1];
                 if (!updateCollisionPoint(
                     d[0], n, dEdges[2], c,
-                    true, ref penetrationDepth, ref normal, ref point))
+                    false, ref penetrationDepth, ref normal, ref point))
                     return null;
 
                 n = dEdges[1] ^ dEdges[2];
                 if (!updateCollisionPoint(
                     d[0], n, dEdges[0], c,
-                    true, ref penetrationDepth, ref normal, ref point))
+                    false, ref penetrationDepth, ref normal, ref point))
                     return null;
 
                 n = dEdges[2] ^ dEdges[0];
                 if (!updateCollisionPoint(
                     d[0], n, dEdges[1], c,
-                    true, ref penetrationDepth, ref normal, ref point))
+                    false, ref penetrationDepth, ref normal, ref point))
                     return null;
 				/*
 				if (convertToParentSpace && _owner.parent!=null) {
@@ -676,7 +676,7 @@ namespace GXPEngine.Core
 						Vector3 p = boundDistance(n, cEdges[0], cEdges[1], cEdges[2]);
                         if (!updateCollisionPoint(
 							cO + p, n, - p * 2, d,
-							false, ref penetrationDepth, ref normal, ref point))
+							true, ref penetrationDepth, ref normal, ref point))
 						{
 							//Gizmos.DrawPlus(cO + p, 0.05f, color: 0xff55ffff);
 							//Gizmos.DrawLine(cO + p, cO - p, color: 0xff55ffff);

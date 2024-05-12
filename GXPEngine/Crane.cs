@@ -48,13 +48,13 @@ namespace GXPEngine
             hook = new PhysicsBox("cubeTex.png", groundPos + new Vector3(0, trunkLength - hookElevation, upperLimit.y), false);
             magnet = new Magnet("crane/magnet.obj", "crane/magnet.png", hook.pos - new Vector3(0, lowerLimit.y, 0));
             magnet.rotation = Quaternion.FromRotationAroundAxis(Vector3.left,-Mathf.PI/2);
+            magnet.scale = 0.2f;
+            (magnet.collider as BoxCollider).size = new Vector3(3f, 1f, 3f) * 0.7f;
+            magnet.mass = 0.16f;
 
             hook.scale = 0.4f;
             hook.scaleY /= 3;
 
-            magnet.scale = 0.2f;
-            (magnet.collider as BoxCollider).size = new Vector3(3f, 1f, 3f);
-            magnet.mass = 0.16f;
             rope = new Rope(hook, magnet, 0.1f);
 
             r = upperLimit.y;

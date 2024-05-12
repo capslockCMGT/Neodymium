@@ -48,11 +48,8 @@ namespace GXPEngine
         public void SetupScene()
         {
             obj1 = new PhysicsBox("test models/suzanne.png", new Vector3(3, 0, 3));
-            //obj1.rotation = Quaternion.FromRotationAroundAxis(Vector3.up, 0.1f);
+            obj1.rotation = Quaternion.FromEulers(new Vector3(-0.05f, -0.05f, -0.05f));
             AddChild(obj1);
-            //obj1.scale = 0.5f;
-            //obj1.velocity = Vector3.one;
-            //AddChild(obj1);
 
             floor = new PhysicsBox("cubeTex.png", Vector3.zero);
             floor.scaleY = 1f;
@@ -69,17 +66,13 @@ namespace GXPEngine
             platform2 = new PhysicsBox("cubeTex.png", new Vector3(-3, -2.5f, 3), false);
             platform2.scaleY = 0.5f;
             AddChild(platform2);
-            //hook = new PhysicsBox("cubeTex.png", new Vector3(0f, 2, 2f));
-            //hook.scale = 0.1f;
-            //hook.simulated = false;
-            //AddChild(hook);
-            //rope = new Rope(hook, obj1, 0.1f, 4);
 
             crane = new Crane(new Vector3(0,-2,0));
             AddChild(crane);
             crane.position += new Vector3(-3, 0, -3);
 
             robot = new Player("robot/model.obj", "robot/texture.png", new Vector3(-3, 0, 3));
+            robot.SetMass(0.01f);
             AddChild(robot);
             robot.AddCheckpoint(new Vector3(-3, -0.5f, -1));
             //robot.AddCheckpoint(new Vector3(5, 0, 5));
