@@ -17,7 +17,7 @@ namespace GXPEngine
         {
             Camera = new RotateAroundLevelCamera(new Camera(new ProjectionMatrix(80, 60, .1f, 100)));
             AddChild(Camera);
-            scene = Editor.GameObjectReader.ReadGameObjectTree("neodymium/Level1.gxp3d");
+            scene = Editor.GameObjectReader.ReadGameObjectTree("neodymium/Level1test.gxp3d");
             AddChild(scene);
             Checkpoint.AddCheckpointsToPlayer(scene.FindObjectOfType<Player>());
             cleanupPhysicsObjects(scene);

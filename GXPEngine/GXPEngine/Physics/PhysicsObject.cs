@@ -75,7 +75,6 @@ namespace GXPEngine.Physics
         {
             if (simulated)
             {
-                float totalMass = mass;
                 float freemoveTime = Time.deltaTimeS / substeps;
                 int iterations = 0;
 
@@ -193,6 +192,7 @@ namespace GXPEngine.Physics
         }
         public void CalculateForces()
         {
+            AddForce("gravity", new Force(new Vector3(0, gravity * mass, 0)));
             forces = new List<Force>();
             foreach (Force f in staticForces.Values)
             {
