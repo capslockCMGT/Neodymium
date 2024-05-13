@@ -7,14 +7,14 @@ namespace GXPEngine.Physics
     public struct Material
     {
         public float friction;
-        public float density;
+        public float mass;
         public float restitution;
         public readonly bool isSet;
-        public Material(float friction, float density, float restitution)
+        public Material(float friction, float mass, float restitution)
         {
             this.isSet = true;
             this.friction = friction;
-            this.density = density;
+            this.mass = mass;
             this.restitution = restitution;
         }
     }
@@ -27,7 +27,7 @@ namespace GXPEngine.Physics
         public static Material defaultMaterial = new Material
         (
             friction: 0.3f,
-            density: 0.02f,
+            mass: 0.02f,
             restitution: 0.7f
         );
 
@@ -35,12 +35,12 @@ namespace GXPEngine.Physics
 
         public float mass {
             get {
-                float res = material.density * GetVolume();
+                float res = material.mass;
                 //foreach (PhysicsObject po in GetChildren())
                 //    res += po.material.density * po.GetVolume();
                 return res;
             }
-            set { material.density = value/ GetVolume(); }
+            set { material.mass = value; }
         }
         public Vector3 momentum
         {

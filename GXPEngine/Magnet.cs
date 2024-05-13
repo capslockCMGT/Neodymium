@@ -16,7 +16,7 @@ namespace GXPEngine
         private List<PhysicsObject> toAttract = new List<PhysicsObject>();
         private PhysicsObject attached;
         public bool picked = false;
-        public float strength = 5f;
+        public float strength = 0.05f;
         public Vector3 grabOffset = new Vector3(0, 0, 5);
 
         public Magnet(string modelFilename, string textureFilename, Vector3 pos, bool simulated = true) : base(modelFilename, textureFilename, pos, simulated)
@@ -81,9 +81,12 @@ namespace GXPEngine
             {
                 if (box is MetalBox)
                 {
+                    box.material = defaultMaterial;
                     AddAttract(box);
+                    Console.WriteLine("box:" + box.mass);
                 }
             }
+            Console.WriteLine("magnet:" + mass);
         }
     }
 }
