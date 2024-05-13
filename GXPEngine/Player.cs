@@ -17,6 +17,7 @@ namespace GXPEngine
         private List<Checkpoint> path;
         public int currentCheckpointPointer = 0;
         public Status status = Status.REST;
+        //temporarily for technical reasons current checkpoint = next checkpoint :(
         public Checkpoint currentCheckpoint 
         {
             get { return path[currentCheckpointPointer]; }
@@ -32,7 +33,7 @@ namespace GXPEngine
             path = new List<Checkpoint>();
         }
         /// <summary>
-        /// returns true if there is a ground ddetected
+        /// returns true if there is a ground d etected
         /// </summary>
         /// <returns></returns>
         public bool CorrectHeight()
@@ -105,12 +106,14 @@ namespace GXPEngine
                     status = Status.REST;
                 }
             }
+
+            UpdateCheckpoint();
         }
         public void DrawPath()
         {
            // if (path.Count < 2) return;
             Gizmos.DrawLine(TransformPoint(0,0,0), currentCheckpoint.TransformPoint(0,0,0), color: 0xffffff00);
-            for (int i=0; i<path.Count - 1 ; i++)
+            for (int i=currentCheckpointPointer; i<path.Count - 1 ; i++)
             {
                 Gizmos.DrawLine(path[i].TransformPoint(0, 0, 0), path[i + 1].TransformPoint(0, 0, 0), color: 0xffffff00);
             }
@@ -127,6 +130,15 @@ namespace GXPEngine
         public void AddCheckpoint(Checkpoint c)
         {
             path.Add(c);
+        }
+        public void UpdateCheckpoint()
+        {
+            if (HitTest(currentCheckpoint))
+            {
+
+                status = Status.REST;
+                currentCheckpointPointer++;
+            }
         }
     }
 }
