@@ -16,6 +16,8 @@ namespace GXPEngine
         public float height = 3;
         public float maxAngleLow = -.1f;
         public float maxAngleHigh = .3f;
+        public float maxDistance = 15;
+        public float minDistance = 9;
         float _maxAngleLow = -.1f;
         float _maxAngleHigh = .3f;
         public bool CamEnabled = false;
@@ -65,6 +67,8 @@ namespace GXPEngine
         }
         void LerpToLevel()
         {
+            if (distance > maxDistance) distance = maxDistance;
+            if (distance < minDistance) distance = minDistance;
             _distance += (distance - _distance) * Time.deltaTimeS * 5f;
             y += (height - y)*Time.deltaTimeS * 5;
             _maxAngleHigh += (maxAngleHigh - _maxAngleHigh) * Time.deltaTimeS * 5f;

@@ -63,6 +63,10 @@ namespace GXPEngine
                 menu.NextLevelTransition();
             if (Input.GetKeyDown(Key.R))
                 resetLevel();
+            if (Input.GetKeyDown(Key.MINUS_UNDERSCORE))
+                Camera.distance += 3;
+            if (Input.GetKeyDown(Key.EQUALS))
+                Camera.distance -= 3;
         }
     }
 }
