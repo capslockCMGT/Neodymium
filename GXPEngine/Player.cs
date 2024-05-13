@@ -1,5 +1,6 @@
 ﻿using GXPEngine.Core;
 using GXPEngine.Physics;
+using System;
 using System.Collections.Generic;
 
 namespace GXPEngine
@@ -13,7 +14,7 @@ namespace GXPEngine
             DEAD
         }
 
-        private float elevation = 0.1f;
+        private float elevation = 0.3f;
         private List<Checkpoint> path;
         public int currentCheckpointPointer = 0;
         public Status status = Status.REST;
@@ -50,10 +51,15 @@ namespace GXPEngine
                 Check(verts[1] + new Vector3(0.001f, 0.001f, -0.001f));
                 Check(verts[4] + new Vector3(-0.001f, 0.001f, 0.001f));
                 Check(verts[5] + new Vector3(-0.001f, 0.001f, -0.001f));
+
+                //this mf might get stuck midplatform </3
+                Check((verts[0] + verts[5]) / 2);
+
                 void Check(Vector3 vert)
                 {
-                    if (other.collider.RayCast(vert + new Vector3(0, 0.0001f, 0), vert - Vector3.up, out dist, out normal))
+                    if (other.collider.RayCast(vert + new Vector3(0, 0, 0), vert - Vector3.up * elevation, out dist, out normal))
                     {
+                        Console.WriteLine(normal.y);
                         if (dist < minDist && normal.y > 0.5f)
                             minDist = dist;
                     }
