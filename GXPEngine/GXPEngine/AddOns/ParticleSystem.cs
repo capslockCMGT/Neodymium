@@ -93,6 +93,7 @@ namespace GXPEngine
                     case Mode.position:
                         x = Mathf.Lerp(fac, spawnPos.x, endPos.x);
                         y = Mathf.Lerp(fac, spawnPos.y, endPos.y);
+                        z = Mathf.Lerp(fac, spawnPos.z, endPos.z);
                         break;
                     case Mode.velocity:
                         speed = Vector3.Lerp(fac, startSpeed, endSpeed);
@@ -122,8 +123,8 @@ namespace GXPEngine
 
                 if (totaltime < lifetime)
                 {
-                    ps.particleCount--;
                     Destroy();
+                    ps.particles.Remove(this);
                 }
             }
         }
@@ -168,6 +169,8 @@ namespace GXPEngine
             else
                 this.worldSpace = worldSpace;
         }
+        public bool pixelated = false;
+
         public float radius;
         public Vector3 size;
 
@@ -176,7 +179,7 @@ namespace GXPEngine
         public List<Force> forces = null;
         public GameObject cam = null;
         public bool enabled = true;
-        public int particleCount = 0;
+        public int particleCount { get { return particles.Count; } }
 
         public float lifetime = 0.5f;
         public float lifetimeDelta = 0.1f;
@@ -219,10 +222,10 @@ namespace GXPEngine
             particles.Add(p);
             worldSpace.AddChild(p);
             p.ps = this;
-            particleCount++;
             p.mode = mode;
             p.lifetime = 0;
 
+            p.pixelated = pixelated;
             p.SetOrigin(p.width / 2, p.height / 2);
             //p.startAngle = Utils.Random(startAngle - startAngleDelta, startAngle + startAngleDelta);
             //p.endAngle = Utils.Random(endAngle -endAngleDelta, endAngle + endAngleDelta);
@@ -261,13 +264,13 @@ namespace GXPEngine
                 p.alpha = startAlpha;
             p.size = startSize;
         }
-        public void Update()
+        public virtual void Update()
         {
             if (Input.GetKeyDown(Key.N))
             {
                 enabled = !enabled;
             }
-            if (enabled)
+            if (enabled && particles.Count < maxParticleCount)
             {
                 spawnCooldown += Time.deltaTimeS;
                 int particlesGenerated = (int)(spawnCooldown / spawnPeriod);

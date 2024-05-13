@@ -39,7 +39,7 @@ namespace GXPEngine
             AddChild(scene);
             Checkpoint.AddCheckpointsToPlayer(scene.FindObjectOfType<Player>());
             cleanupPhysicsObjects(scene);
-            scene.FindObjectOfType<Magnet>().DetectAttractable();
+            scene.FindObjectOfType<Magnet>()?.DetectAttractable();
         }
         void cleanupPhysicsObjects(GameObject p)
         {
