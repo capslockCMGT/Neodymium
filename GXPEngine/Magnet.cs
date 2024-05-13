@@ -79,7 +79,7 @@ namespace GXPEngine
         {
             foreach (PhysicsObject box in collection)
             {
-                if (box is PhysicsMesh)
+                if (box is MetalBox)
                 {
                     AddAttract(box);
                 }

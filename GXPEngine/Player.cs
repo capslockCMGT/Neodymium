@@ -137,7 +137,8 @@ namespace GXPEngine
             {
 
                 status = Status.REST;
-                currentCheckpointPointer++;
+                if (currentCheckpointPointer < path.Count - 1)
+                    currentCheckpointPointer++;
             }
         }
     }
