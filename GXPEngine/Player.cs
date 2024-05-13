@@ -31,7 +31,7 @@ namespace GXPEngine
         }
         public Player(string modelFilename, string textureFilename, Vector3 pos) : base(modelFilename,textureFilename,pos,true)
         {
-            SetMass (0.5f);
+            SetMass(0.5f);
             (collider as BoxCollider).size = new Vector3(0.8f, 0.8f, 0.8f);
             path = new List<GameObject>();
             AddCheckpoint(pos);
@@ -88,10 +88,17 @@ namespace GXPEngine
                         velocity.z = dir.z * 3;
                         rotation = Quaternion.FromRotationAroundAxis(Vector3.up, Mathf.Atan2(dir.x, -dir.z));
                     }
+                    velocity.x -= velocity.x * Time.deltaTimeS * 3;
+                    velocity.z -= velocity.z * Time.deltaTimeS * 3;
+                }
+                if (CorrectHeight() && status == Status.REST)
+                {
+                    velocity.x -= velocity.x * Time.deltaTimeS * 3;
+                    velocity.z -= velocity.z * Time.deltaTimeS * 3;
                 }
             }
-            velocity -= velocity * Time.deltaTimeS * 2;
             DrawPath();
+            (collider as BoxCollider).DrawExtents();
 
             if (Input.GetKeyDown(Key.ENTER))
             {
@@ -107,7 +114,7 @@ namespace GXPEngine
         public void DrawPath()
         {
            // if (path.Count < 2) return;
-            Gizmos.DrawLine(position, nextCheckpoint.position, color: 0xffffff00);
+            Gizmos.DrawLine(TransformPoint(0,0,0), nextCheckpoint.position, color: 0xffffff00);
             for (int i=currentCheckpointPointer + 1; i<path.Count - 1 ; i++)
             {
                 Gizmos.DrawLine(path[i].position, path[i + 1].position, color: 0xffffff00);

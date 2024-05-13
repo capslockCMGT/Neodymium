@@ -48,8 +48,9 @@ namespace GXPEngine.Core
 		//------------------------------------------------------------------------------------------------------------------------		
 		public Vector3[] GetExtents()
 		{
-			if (size.x == 0 && size.y == 0 && size.z == 0)
-				return _owner.GetExtents();
+			if (_size.x == 0) _size.x = 1;
+            if (_size.y == 0) _size.y = 1;
+            if (_size.z == 0) _size.z = 1;
 			Vector3[] result = new Vector3[]
 			{
 				new Vector3(-_size.x,-_size.y,-_size.z),
@@ -771,7 +772,11 @@ namespace GXPEngine.Core
 
         public override float GetArea()
         {
-			return _owner.scaleX * _owner.scaleY * _owner.scaleZ * 8;
+            if (_size.x == 0) _size.x = 1;
+            if (_size.y == 0) _size.y = 1;
+            if (_size.z == 0) _size.z = 1;
+            return _owner.scaleX * _owner.scaleY * _owner.scaleZ
+				 * _size.x * _size.y * _size.z * 8;
         }
     }
 }
