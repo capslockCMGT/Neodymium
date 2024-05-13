@@ -17,7 +17,7 @@ namespace GXPEngine
         MainMenu menu;
         public Neodymium() : base(1200, 750, false, gameName:"Neodymium") 
         {
-            Camera = new RotateAroundLevelCamera(new Camera(new ProjectionMatrix(80, 60, .1f, 100)));
+            Camera = new RotateAroundLevelCamera(new Camera(new ProjectionMatrix(80, 50, .1f, 100)));
             AddChild(Camera);
             loadScene(currentScene);
 

@@ -19,5 +19,9 @@ namespace GXPEngine
             if (game is Editor.Exclusives.SceneEditor)
                 base.RenderSelf(glContext);
         }
+        public void TurnIntoObsidian()
+        {
+
+        }
     }
 }
