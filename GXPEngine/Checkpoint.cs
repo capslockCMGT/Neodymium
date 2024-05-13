@@ -16,11 +16,11 @@ namespace GXPEngine
             collider.isTrigger = true;
             Checkpoints.Add(this);
             this.order = order;
-            Console.WriteLine("i am added");
         }
 
         public static void AddCheckpointsToPlayer(Player player)
         {
+            if (player == null) return;
             Checkpoints.Sort(delegate(Checkpoint a, Checkpoint b) { return a.order.CompareTo(b.order); });
             foreach(Checkpoint a in Checkpoints)
             {

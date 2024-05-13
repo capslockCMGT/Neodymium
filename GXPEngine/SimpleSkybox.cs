@@ -9,6 +9,7 @@ namespace GXPEngine.GXPEngine
         Pen single = new Pen(Color.White, 1);
         Camera cam;
         public Vector3 SkyColor = new Vector3(.25f,.5f,1);
+        public bool renderTransparent;
         public bool ToneMap = true;
         public float GradientIntensity = 3;
         public SimpleSkybox(int width, int height) : base(width, height, false)
@@ -23,6 +24,7 @@ namespace GXPEngine.GXPEngine
             //}
             cam = game.uiManager.mainWindow.camera as Camera;
             game.uiManager.mainWindow.onBeforeRenderAnything += RenderSkybox;
+            pixelated = false;
         }
 
         protected override void RenderSelf(GLContext glContext)
@@ -32,8 +34,7 @@ namespace GXPEngine.GXPEngine
 
         void RenderSkybox(GLContext glContext)
         {
-            _texture.pixelFilter = false;
-            _graphics.Clear(Color.White);
+            graphics.Clear(Color.Transparent);
             glContext.PushMatrix(new float[]
             {
                 1,0,0,0,
@@ -68,6 +69,7 @@ namespace GXPEngine.GXPEngine
 
             Vector3 ACESfilm(Vector3 x) //a good tonemap can change a man's life
             {
+                //taken from https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
                 const float a = 2.51f;
                 const float b = .03f;
                 const float c = 2.43f;
@@ -78,7 +80,8 @@ namespace GXPEngine.GXPEngine
                     return ((i * (a * i + b)) / (i * (c * i + d) + e));
                 }
                 return new Vector3(ace(x.x), ace(x.y), ace(x.z));
-            } //taken from https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
+            } 
+
             for (int x = 0; x < _texture.width; x++)
             {
                 for (int y = 0; y < _texture.height; y++)
@@ -97,11 +100,11 @@ namespace GXPEngine.GXPEngine
 
                     if(ToneMap) rgb = ACESfilm(rgb);
 
-                    int col = range01toc(rgb.z) | (range01toc(rgb.y) << 8) | (range01toc(rgb.x) << 16) | (0xFF << 24);
+                    int col = range01toc(rgb.z) | (range01toc(rgb.y) << 8) | (range01toc(rgb.x) << 16) | ((renderTransparent?range01toc(b):0xFF) << 24);
 
                     single.Color = Color.FromArgb(col);
 
-                    graphics.DrawLine(single, x, y, x + 1, y);
+                    graphics.DrawLine(single, x, y, x + .01f, y);
                 }
             }
             base.RenderSelf(glContext);

@@ -13,19 +13,31 @@ namespace GXPEngine
         bool showCursor;
         public RotateAroundLevelCamera Camera;
         GameObject scene;
+        int currentScene = 1;
         public Neodymium() : base(1200, 750, false, gameName:"Neodymium") 
         {
             Camera = new RotateAroundLevelCamera(new Camera(new ProjectionMatrix(80, 60, .1f, 100)));
             AddChild(Camera);
-            scene = Editor.GameObjectReader.ReadGameObjectTree("neodymium/Level1.gxp3d");
-            AddChild(scene);
-            Checkpoint.AddCheckpointsToPlayer(scene.FindObjectOfType<Player>());
-            cleanupPhysicsObjects(scene);
+            loadScene(currentScene);
 
             MainMenu sl = new MainMenu();
             uiManager.Add(sl);
             //sl.
 
+        }
+        public void nextLevel()
+        {
+            currentScene++;
+            loadScene(currentScene);
+        }
+
+        void loadScene(int n)
+        {
+            scene?.Destroy();
+            scene = Editor.GameObjectReader.ReadGameObjectTree("neodymium/Level"+n+".gxp3d");
+            AddChild(scene);
+            Checkpoint.AddCheckpointsToPlayer(scene.FindObjectOfType<Player>());
+            cleanupPhysicsObjects(scene);
         }
         void cleanupPhysicsObjects(GameObject p)
         {
