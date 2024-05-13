@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CameraSetter.cs" />
     <Compile Include="Checkpoint.cs" />
     <Compile Include="GXPEngine\AddOns\EditableBufferRenderer.cs" />
     <Compile Include="GXPEngine\AddOns\Lighting.cs" />

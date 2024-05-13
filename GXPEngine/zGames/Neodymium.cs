@@ -14,14 +14,15 @@ namespace GXPEngine
         public RotateAroundLevelCamera Camera;
         GameObject scene;
         int currentScene = 1;
+        MainMenu menu;
         public Neodymium() : base(1200, 750, false, gameName:"Neodymium") 
         {
             Camera = new RotateAroundLevelCamera(new Camera(new ProjectionMatrix(80, 60, .1f, 100)));
             AddChild(Camera);
             loadScene(currentScene);
 
-            MainMenu sl = new MainMenu();
-            uiManager.Add(sl);
+            menu = new MainMenu();
+            uiManager.Add(menu);
             //sl.
 
         }
@@ -53,6 +54,8 @@ namespace GXPEngine
         void Update()
         {
             PhysicsObject.UpdateAll();
+            if(Input.GetKeyDown(Key.N))
+                menu.NextLevelTransition();
         }
     }
 }
