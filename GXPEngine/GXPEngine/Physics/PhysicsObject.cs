@@ -163,7 +163,7 @@ namespace GXPEngine.Physics
                     }
                     foreach (PhysicsObject child in glued)
                     {
-                        child.position = position + child.pos;
+                        child.position = child.parent.InverseTransformPoint(TransformPoint(child.pos));
                     }
                     //if (PhysicsEngine.showGizmos)
                     //{
@@ -293,7 +293,9 @@ namespace GXPEngine.Physics
                 Ignore(po);
                 glued.Add(po);
                 po.dependant = true;
-                po.pos = po.position - TransformPoint(Vector3.zero);
+                po.pos = Vector3.zero;
+                //Vector3 gPos = TransformPoint(Vector3.zero);
+                //po.pos = po.position - po.parent.InverseTransformPoint(gPos);
             }
         }
         public void Unglue(PhysicsObject po)

@@ -16,6 +16,8 @@ namespace GXPEngine
         private List<PhysicsObject> toAttract = new List<PhysicsObject>();
         private PhysicsObject attached;
         public bool picked = false;
+        public float strength = 5f;
+        public Vector3 grabOffset = new Vector3(0, 0, 5);
 
         public Magnet(string modelFilename, string textureFilename, Vector3 pos, bool simulated = true) : base(modelFilename, textureFilename, pos, simulated)
         {
@@ -30,8 +32,7 @@ namespace GXPEngine
                 Glue(toPick);
                 attached = toPick;
                 picked = true;
-                toPick.pos = parent.TransformPoint(new Vector3(0, -1.6f, 0));
-
+                toPick.pos = grabOffset;
             }
         }
         public void Update()
@@ -55,8 +56,7 @@ namespace GXPEngine
                 {
                     Vector3 r = TransformPoint(Vector3.zero) - obj.TransformPoint(Vector3.zero);
                     float rl = r.Magnitude();
-                    float k = 10f; 
-                    obj.AddForce("magnet", new Force(k / rl / rl / rl * r));
+                    obj.AddForce("magnet", new Force(strength / rl / rl / rl * r));
                 }
             }
             else
