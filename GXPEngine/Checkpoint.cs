@@ -24,8 +24,7 @@ namespace GXPEngine
             Checkpoints.Sort(delegate(Checkpoint a, Checkpoint b) { return a.order.CompareTo(b.order); });
             foreach(Checkpoint a in Checkpoints)
             {
-                player.AddCheckpoint(a.position);
-                Console.WriteLine("yeah?");
+                player.AddCheckpoint(a);
             }
             Checkpoints.Clear();
         }
