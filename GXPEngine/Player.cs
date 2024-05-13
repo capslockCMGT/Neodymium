@@ -106,6 +106,7 @@ namespace GXPEngine
         }
         public void DrawPath()
         {
+           // if (path.Count < 2) return;
             Gizmos.DrawLine(position, nextCheckpoint.position, color: 0xffffff00);
             for (int i=currentCheckpointPointer + 1; i<path.Count - 1 ; i++)
             {
