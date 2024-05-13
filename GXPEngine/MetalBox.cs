@@ -3,9 +3,9 @@ using GXPEngine.Physics;
 
 namespace GXPEngine
 {
-    public class MetalBox : PhysicsBox
+    public class MetalBox : PhysicsMesh
     {
-        public MetalBox(string filename, Vector3 pos) :base(filename, pos, true)
+        public MetalBox(Vector3 pos) :base ("objects/block.obj", "objects/metal_box.png", pos, true)
         {
             
         }
