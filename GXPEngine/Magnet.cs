@@ -37,7 +37,7 @@ namespace GXPEngine
         }
         public void Update()
         {
-            if (Input.GetKeyDown (Key.T))
+            if (Input.GetKeyDown (Key.SPACE))
             {
                 isAttracting = !isAttracting;
                 if (picked)

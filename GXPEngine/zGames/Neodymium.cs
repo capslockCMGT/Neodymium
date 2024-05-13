@@ -31,6 +31,10 @@ namespace GXPEngine
             currentScene++;
             loadScene(currentScene);
         }
+        public void resetLevel()
+        {
+            loadScene(currentScene);
+        }
 
         void loadScene(int n)
         {
@@ -57,6 +61,8 @@ namespace GXPEngine
             PhysicsObject.UpdateAll();
             if(Input.GetKeyDown(Key.N))
                 menu.NextLevelTransition();
+            if (Input.GetKeyDown(Key.R))
+                resetLevel();
         }
     }
 }

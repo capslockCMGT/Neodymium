@@ -85,24 +85,24 @@ namespace GXPEngine
                 velocity.x -= acceleration.x * Time.deltaTimeS;
                 if (velocity.x < -speedLimits.x) velocity.x = -speedLimits.x;
             }
-            if (!Input.GetKey(Key.Q) && !Input.GetKey(Key.E))
+            if (!Input.GetKey(Key.E) && !Input.GetKey(Key.Q))
                 velocity.x -= velocity.x * Time.deltaTimeS * 3;
 
 
 
             //r
-            if (Input.GetKey(Key.Z))
+            if (Input.GetKey(Key.D))
             {
                 velocity.y += acceleration.y * Time.deltaTimeS;
                 if (velocity.y > speedLimits.y) velocity.y = speedLimits.y;
 
             }
-            if (Input.GetKey(Key.X))
+            if (Input.GetKey(Key.A))
             {
                 velocity.y -= acceleration.y * Time.deltaTimeS;
                 if (velocity.y < -speedLimits.y) velocity.y = -speedLimits.y;
             }
-            if (!Input.GetKey(Key.Z) && !Input.GetKey(Key.X))
+            if (!Input.GetKey(Key.D) && !Input.GetKey(Key.A))
                 velocity.y -= velocity.y * Time.deltaTimeS * 3;
 
             r += velocity.y;
@@ -114,17 +114,17 @@ namespace GXPEngine
 
 
             //y
-            if (Input.GetKey(Key.F))
+            if (Input.GetKey(Key.S))
             {
                 velocity.z += acceleration.z * Time.deltaTimeS;
                 if (velocity.z > speedLimits.z) velocity.z = speedLimits.z;
             }
-            if (Input.GetKey(Key.R))
+            if (Input.GetKey(Key.W))
             {
                 velocity.z -= acceleration.z * Time.deltaTimeS;
                 if (velocity.z < -speedLimits.z) velocity.z = -speedLimits.z;
             }
-            if (!Input.GetKey(Key.Z) && !Input.GetKey(Key.X))
+            if (!Input.GetKey(Key.S) && !Input.GetKey(Key.W))
                 velocity.z -= velocity.z * Time.deltaTimeS * 3;
 
             y += velocity.z;
