@@ -314,5 +314,10 @@ namespace GXPEngine.Physics
         {
             pos += delta;
         }
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            Disable();
+        }
     }
 }

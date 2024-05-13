@@ -59,7 +59,7 @@ namespace GXPEngine
                 {
                     if (other.collider.RayCast(vert + new Vector3(0, 0, 0), vert - Vector3.up * elevation, out dist, out normal))
                     {
-                        Console.WriteLine(normal.y);
+                        //Console.WriteLine(normal.y);
                         if (dist < minDist && normal.y > 0.5f)
                             minDist = dist;
                     }

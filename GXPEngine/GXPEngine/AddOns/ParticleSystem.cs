@@ -165,7 +165,7 @@ namespace GXPEngine
 
             this.cam = cam;
             if (worldSpace == null)
-                this.worldSpace = game;
+                this.worldSpace = this;
             else
                 this.worldSpace = worldSpace;
         }
@@ -282,7 +282,11 @@ namespace GXPEngine
                 
             }
         }
-
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            DestroyAllParticles();
+        }
         public void DestroyAllParticles()
         {
             for (int i=particles.Count - 1; i>=0; i--)
