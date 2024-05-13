@@ -1,10 +1,6 @@
 ﻿using GXPEngine.Core;
 using GXPEngine.Physics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GXPEngine
 {
@@ -18,14 +14,14 @@ namespace GXPEngine
         }
 
         private float elevation = 0.1f;
-        private List<GameObject> path;
+        private List<Checkpoint> path;
         public int currentCheckpointPointer = 0;
         public Status status = Status.REST;
-        public GameObject currentCheckpoint 
+        public Checkpoint currentCheckpoint 
         {
             get { return path[currentCheckpointPointer]; }
         }
-        public GameObject nextCheckpoint
+        public Checkpoint nextCheckpoint
         {
             get { return path[currentCheckpointPointer+1]; }
         }
@@ -33,8 +29,7 @@ namespace GXPEngine
         {
             SetMass(0.5f);
             (collider as BoxCollider).size = new Vector3(0.8f, 0.8f, 0.8f);
-            path = new List<GameObject>();
-            AddCheckpoint(pos);
+            path = new List<Checkpoint>();
         }
         /// <summary>
         /// returns true if there is a ground ddetected
@@ -78,7 +73,7 @@ namespace GXPEngine
             {
                 if (CorrectHeight() && status == Status.MOVE)
                 {
-                    Vector3 dir = nextCheckpoint.position - pos;
+                    Vector3 dir = currentCheckpoint.position - pos;
                     dir.y = 0;
                     float dist = dir.Magnitude();
                     if (dist > scaleX)
@@ -114,20 +109,24 @@ namespace GXPEngine
         public void DrawPath()
         {
            // if (path.Count < 2) return;
-            Gizmos.DrawLine(TransformPoint(0,0,0), nextCheckpoint.position, color: 0xffffff00);
-            for (int i=currentCheckpointPointer + 1; i<path.Count - 1 ; i++)
+            Gizmos.DrawLine(TransformPoint(0,0,0), currentCheckpoint.TransformPoint(0,0,0), color: 0xffffff00);
+            for (int i=0; i<path.Count - 1 ; i++)
             {
-                Gizmos.DrawLine(path[i].position, path[i + 1].position, color: 0xffffff00);
+                Gizmos.DrawLine(path[i].TransformPoint(0, 0, 0), path[i + 1].TransformPoint(0, 0, 0), color: 0xffffff00);
             }
         }
-        public void AddCheckpoint(Vector3 pos)
+        public void AddCheckpoint(Vector3 pos, int order)
         {
-            Pivot checkpoint = new Pivot();
+            Checkpoint checkpoint = new Checkpoint(order);
             checkpoint.scale = 0.1f;
             checkpoint.CreateBoxCollider();
             checkpoint.collider.isTrigger = true;
             checkpoint.position = pos;
             path.Add(checkpoint);
+        }
+        public void AddCheckpoint(Checkpoint c)
+        {
+            path.Add(c);
         }
     }
 }

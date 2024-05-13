@@ -74,7 +74,7 @@ namespace GXPEngine
             robot = new Player("robot/model.obj", "robot/texture.png", new Vector3(-3, 0, 3));
             robot.SetMass(0.01f);
             AddChild(robot);
-            robot.AddCheckpoint(new Vector3(-3, -0.5f, -1));
+            robot.AddCheckpoint(new Vector3(-3, -0.5f, -1), 1);
             //robot.AddCheckpoint(new Vector3(5, 0, 5));
 
             Lighting.SetLight(0, new Vector3(5, 5, 5), new Vector3(.4f, .2f, .2f), new Vector3(.0f, .2f, .7f));
