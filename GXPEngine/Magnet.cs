@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace GXPEngine
 {
@@ -18,7 +19,8 @@ namespace GXPEngine
 
         public Magnet(string modelFilename, string textureFilename, Vector3 pos, bool simulated = true) : base(modelFilename, textureFilename, pos, simulated)
         {
-            
+            foreach (MetalBox box in collection)
+                AddAttract(box);
         }
         public override void OnCollision(Collision col)
         {
