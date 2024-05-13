@@ -18,6 +18,12 @@ namespace GXPEngine
             _texture.wrap = true;
             uvs = GetUVs();
         }
+        public Waterfall(bool lava = false) : base(lava?"lavafall.png":"waterfall.png")
+        {
+            Editor.Exclusives.SceneEditor.AddToUpdate(this);
+            _texture.wrap = true;
+            uvs = GetUVs();
+        }
 
         void Update()
         {

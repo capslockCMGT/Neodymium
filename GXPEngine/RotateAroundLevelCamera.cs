@@ -24,7 +24,7 @@ namespace GXPEngine
             Arm = new Pivot();
             AddChild(Arm);
 
-            y = -3f;
+            y = 0f;
             Arm.z = distance;
             _cam.position = Arm.globalPosition;
             _cam.rotation = Arm.globalRotation;
@@ -62,7 +62,7 @@ namespace GXPEngine
         void StartGameAnimation()
         {
             distance += (12 - distance) * Time.deltaTimeS * 5f;
-            y *= 1 - Time.deltaTimeS * 5;
+            y += (3 - y)*Time.deltaTimeS * 5;
         }
     }
 }
