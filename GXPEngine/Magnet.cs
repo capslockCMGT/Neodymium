@@ -17,7 +17,7 @@ namespace GXPEngine
         private PhysicsObject attached;
         public bool picked = false;
         public float strength = 0.05f;
-        public Vector3 grabOffset = new Vector3(0, 0, 5);
+        public Vector3 grabOffset = new Vector3(0, -7, 0);
 
         public Magnet(string modelFilename, string textureFilename, Vector3 pos, bool simulated = true) : base(modelFilename, textureFilename, pos, simulated)
         {
@@ -47,7 +47,7 @@ namespace GXPEngine
                 }
             }
             if (isAttracting) (renderAs as ModelRenderer).color = 0xffffff;
-            else (renderAs as ModelRenderer).color = 0x555555;
+            else (renderAs as ModelRenderer).color = 0x222222;
 
             if (!picked && isAttracting)
             {

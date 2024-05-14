@@ -18,42 +18,29 @@ namespace GXPEngine
 
         //magnet has 3 freedom degrees, which can be represented in cylindric coordinate system
         float phi = 0, r = 0, y = 0;
-        float cabinCenterOffset;
-        // for values below I use representation in cylindric coordinates vec3 (value_phi, value_r, value_y) speeds correspondingly (phi in rads)
+        // for values below I use representation in cylindric coordinates vec3 (value_phi, value_r, value_y) correspondingly (phi in rads)
         public Vector3 lowerLimit = new Vector3(0, 2, 2);
-        public Vector3 upperLimit = new Vector3(0, 8, 14);
+        public Vector3 upperLimit = new Vector3(0, 9.6f, 8);
         public Vector3 speedLimits = new Vector3 (1, 0.01f, 0.01f);
         public Vector3 acceleration = new Vector3(3, 0.5f, 0.1f);
         public Vector3 velocity;
 
+        float cabinCenterOffset;
+        float trunkLength;
         public Crane(Vector3 groundPos)
         {
-            float trunkLength = 8f;
+            trunkLength = 8f;
             float cabinLongEnd = upperLimit.y + 1;
             float cabinShortEnd = cabinLongEnd/4;
             cabinCenterOffset = (cabinLongEnd + cabinShortEnd) / 2 - cabinShortEnd;
 
-            trunk = new PhysicsBox("cubeTex.png", groundPos + new Vector3(0, trunkLength / 2, 0),false);
-            cabin = new PhysicsBox("cubeTex.png", groundPos + new Vector3(0, trunkLength, cabinCenterOffset), false);
-
-            trunk.scaleX = 0.5f;
-            trunk.scaleZ = 0.5f;
-            trunk.scaleY = trunkLength/2;
-
-            cabin.scaleZ = (cabinLongEnd + cabinShortEnd)/2;
-            cabin.scaleX = 0.6f;
-            cabin.scaleY = 0.4f;
-
+            trunk = new PhysicsMesh("crane/trunk.obj", "crane/trunk.png", groundPos + new Vector3(0, trunkLength / 2, 0),false);
+            cabin = new PhysicsMesh("crane/cabin.obj", "crane/cabin.png", groundPos + new Vector3(0, trunkLength/2, cabinCenterOffset), false);
             float hookElevation = cabin.scaleY;
-            hook = new PhysicsBox("cubeTex.png", groundPos + new Vector3(0, trunkLength - hookElevation, upperLimit.y), false);
-            magnet = new Magnet("crane/magnet.obj", "crane/magnet.png", hook.pos - new Vector3(0, lowerLimit.y, 0));
-            magnet.rotation = Quaternion.FromRotationAroundAxis(Vector3.left,-Mathf.PI/2);
-            magnet.scale = 0.2f;
-            (magnet.collider as BoxCollider).size = new Vector3(3f, 1f, 3f) * 0.7f;
-            magnet.mass = 0.16f;
+            hook = new PhysicsMesh("crane/hook.obj", "crane/hook.png", groundPos + new Vector3(0, trunkLength - hookElevation, upperLimit.y), false);
+            magnet = new Magnet("crane/magnet.obj", "crane/magnet.png", hook.pos & scaleXYZ - new Vector3(0, lowerLimit.y, 0));
 
-            hook.scale = 0.4f;
-            hook.scaleY /= 3;
+            magnet.scale = 0.2f;
 
             rope = new Rope(hook, magnet, 0.1f);
 
@@ -61,6 +48,13 @@ namespace GXPEngine
             y = (lowerLimit.z + upperLimit.z) / 2;
 
             AddChildren();
+
+            (trunk.collider as BoxCollider).size = new Vector3(0.5f, trunkLength/2, 0.5f);
+            (cabin.collider as BoxCollider).size = new Vector3(0.65f, 0.65f, (cabinLongEnd + cabinShortEnd) / 2);
+            (hook.collider as BoxCollider).size = new Vector3(0.6f, 0.3f, 0.6f);
+            (magnet.collider as BoxCollider).size = new Vector3(3f, 3f, 1f) * 0.7f;
+            (magnet.collider as BoxCollider).offset = new Vector3(0, -2, 0);
+            magnet.SetMass(0.16f);
         }
         public void AddChildren()
         {
@@ -71,7 +65,6 @@ namespace GXPEngine
         }
         public void Update()
         {
-            (magnet.collider as BoxCollider).DrawExtents();
             //phi
             rope.Apply(Time.deltaTimeS);
             rope.Display();
@@ -130,12 +123,17 @@ namespace GXPEngine
             y += velocity.z;
             if (y < lowerLimit.z) y = lowerLimit.z;
             if (y > upperLimit.z) y = upperLimit.z;
-            rope.length = y;
+            rope.length = y * scaleY;
 
 
 
             //shitty air friction
             magnet.velocity -= magnet.velocity * Time.deltaTimeS * 0.3f;
+
+            (trunk.collider as BoxCollider).DrawExtents();
+            (cabin.collider as BoxCollider).DrawExtents();
+            (hook.collider as BoxCollider).DrawExtents();
+            (magnet.collider as BoxCollider).DrawExtents();
         }
         /// <summary>
         /// angle is given in radians
@@ -149,7 +147,7 @@ namespace GXPEngine
                 phi -= Mathf.PI * 2;
             Vector3 dir = new Vector3(Mathf.Sin(phi), 1, Mathf.Cos(phi));
             Vector3 offset = trunk.position ;
-            cabin.position = offset + (dir & new Vector3 (cabinCenterOffset, trunk.scaleY, cabinCenterOffset));
+            cabin.position = offset + (dir & new Vector3 (cabinCenterOffset, trunkLength/2, cabinCenterOffset));
             cabin.rotation = Quaternion.FromRotationAroundAxis(Vector3.up, -phi);
             hook.rotation = cabin.rotation;
             hook.position = dir & new Vector3 (r, cabin.y - cabin.scaleY, r);

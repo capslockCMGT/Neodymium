@@ -30,7 +30,7 @@ namespace GXPEngine.Physics
         }
         public override void Display()
         {
-            Gizmos.DrawLine(first.TransformPoint(0, 0, 0), second.TransformPoint(0, 0, 0));
+            Gizmos.DrawLine(first.TransformPoint(0, 0, 0), second.TransformPoint(0, 0, 0), color: 0xff333322);
         }
         public override void Apply(float time)
         {
