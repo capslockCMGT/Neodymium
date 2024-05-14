@@ -51,6 +51,12 @@ namespace GXPEngine
         }
         private class Particle : DSCFSprite
         {
+            protected GameObject _renderAs = null;
+            public GameObject renderAs
+            {
+                get {  return _renderAs; }
+                set { _renderAs = value; }
+            }
             public Func<float, float> alphaCurve;
             public ParticleSystem ps;
             public Mode mode = Mode.position;
@@ -82,6 +88,13 @@ namespace GXPEngine
             public Vector3 speed = Vector3.zero;
 
             public GameObject cam = null;
+            protected override void RenderSelf (GLContext glContext)
+            {
+                if (renderAs == null)
+                    base.RenderSelf(glContext);
+                else
+                    renderAs.Render(glContext);
+            }
             public void Update()
             {
                 lifetime += Time.deltaTimeS;
@@ -115,7 +128,7 @@ namespace GXPEngine
                     (byte)Mathf.Lerp(fac, startColor.G, endColor.G),
                     (byte)Mathf.Lerp(fac, startColor.B, endColor.B));
 
-                size = Mathf.Lerp(fac, startSize, endSize);
+                scale = Mathf.Lerp(fac, startSize, endSize);
                 if (alphaCurve == null)
                     alpha = Mathf.Lerp(fac, startAlpha, endAlpha);
                 else
@@ -147,6 +160,7 @@ namespace GXPEngine
             velocity = 2,
         }
         public GameObject worldSpace = null;
+        public GameObject renderAs = null;
         public BlendMode blendMode = BlendMode.NORMAL;
         public EmitterType emitterType;
         public Mode mode;
@@ -165,7 +179,7 @@ namespace GXPEngine
 
             this.cam = cam;
             if (worldSpace == null)
-                this.worldSpace = this;
+                this.worldSpace = game;
             else
                 this.worldSpace = worldSpace;
         }
@@ -208,9 +222,9 @@ namespace GXPEngine
         public Color startColor = Color.White;
         public Color endColor = Color.Blue;
 
-        public float startSize = 0.002f;
+        public float startSize = 0.2f;
         public float startSizeDelta = 0f;
-        public float endSize = 0.001f;
+        public float endSize = 0.1f;
         public float endSizeDelta = 0f;
 
         public float startAlpha = 1f;
@@ -219,8 +233,6 @@ namespace GXPEngine
         public void SpawnParticle()
         {
             Particle p = new Particle(texturePath);
-            particles.Add(p);
-            worldSpace.AddChild(p);
             p.ps = this;
             p.mode = mode;
             p.lifetime = 0;
@@ -231,9 +243,9 @@ namespace GXPEngine
             //p.endAngle = Utils.Random(endAngle -endAngleDelta, endAngle + endAngleDelta);
             p.cam = cam;
 
-            p.spawnPos = Utils.Random(TransformPoint(startPos), startPosDelta);
+            p.spawnPos = TransformPoint(Utils.Random(startPos, startPosDelta));
             
-            p.position = startPos;
+            p.position = p.spawnPos;
 
             p.totaltime = Utils.Random(lifetime - lifetimeDelta, lifetime + lifetimeDelta);
             p.blendMode = blendMode;
@@ -241,7 +253,7 @@ namespace GXPEngine
             switch(mode)
             {
                 case Mode.position:
-                    p.endPos = Utils.Random(endPos, endPosDelta);
+                    p.endPos = TransformPoint(Utils.Random(endPos, endPosDelta));
                     p.speed = Vector3.zero;
                     break;
                 case Mode.velocity:
@@ -263,6 +275,11 @@ namespace GXPEngine
             else
                 p.alpha = startAlpha;
             p.size = startSize;
+            p.scale = startSize;
+            p.renderAs = renderAs;
+
+            particles.Add(p);
+            worldSpace.AddChild(p);
         }
         public virtual void Update()
         {

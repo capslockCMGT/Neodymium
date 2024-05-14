@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GXPEngine.Core;
 using GXPEngine.Physics;
+using GXPEngine.UI;
 
 namespace GXPEngine
 {
@@ -15,6 +16,7 @@ namespace GXPEngine
         GameObject scene;
         int currentScene = 1;
         MainMenu menu;
+        ControlsTutorial controlsTutorial;
         public Neodymium() : base(1200, 750, false, gameName:"Neodymium") 
         {
             Camera = new RotateAroundLevelCamera(new Camera(new ProjectionMatrix(80, 50, .1f, 100)));
@@ -24,6 +26,10 @@ namespace GXPEngine
             menu = new MainMenu();
             uiManager.Add(menu);
             //sl.
+            controlsTutorial = new ControlsTutorial();
+            game.AddChild(controlsTutorial);
+            controlsTutorial.SetCraneHints(scene?.FindObjectOfType<Crane>());
+            controlsTutorial.SetPlayerHints(scene?.FindObjectOfType<Player>());
 
         }
         public void nextLevel()

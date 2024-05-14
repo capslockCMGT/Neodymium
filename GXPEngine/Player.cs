@@ -16,6 +16,7 @@ namespace GXPEngine
 
         private float elevation = 0.3f;
         private List<Checkpoint> path;
+        private ParticleSystem trail;
         public int currentCheckpointPointer = 0;
         public Status status = Status.REST;
         //temporarily for technical reasons current checkpoint = next checkpoint :(
@@ -32,6 +33,15 @@ namespace GXPEngine
             SetMass(0.5f);
             (collider as BoxCollider).size = new Vector3(0.8f, 0.8f, 0.8f);
             path = new List<Checkpoint>();
+            trail = new ParticleSystem("cubeTex.png", 0, -1, 0.5f, mode:ParticleSystem.Mode.velocity);
+            trail.startPosDelta = new Vector3(0.5f, 0, 0);
+            trail.spawnPeriod = 0.02f;
+            trail.enabled = false;
+            trail.renderAs = new ModelRenderer("trail.obj","editor/whitePixel.png");
+            trail.startSize = 0.2f * scaleX;
+            trail.endSize = 0.1f * scaleX;
+            trail.endSpeed =  new Vector3(0,0.01f,0);
+            AddChild(trail);
         }
         /// <summary>
         /// returns true if there is a ground d etected
@@ -80,6 +90,7 @@ namespace GXPEngine
             {
                 if (CorrectHeight() && status == Status.MOVE)
                 {
+                    trail.enabled = true;
                     Vector3 dir = currentCheckpoint.position - pos;
                     dir.y = 0;
                     float dist = dir.Magnitude();
@@ -92,9 +103,11 @@ namespace GXPEngine
                     }
                     velocity.x -= velocity.x * Time.deltaTimeS * 3;
                     velocity.z -= velocity.z * Time.deltaTimeS * 3;
+                    trail.startSpeed = - dir * 0.01f;
                 }
                 if (CorrectHeight() && status == Status.REST)
                 {
+                    trail.enabled = false;
                     velocity.x -= velocity.x * Time.deltaTimeS * 3;
                     velocity.z -= velocity.z * Time.deltaTimeS * 3;
                 }

@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="CameraSetter.cs" />
     <Compile Include="Checkpoint.cs" />
+    <Compile Include="ControlsTutorial.cs" />
     <Compile Include="FogSpawner.cs" />
     <Compile Include="GXPEngine\AddOns\EditableBufferRenderer.cs" />
     <Compile Include="GXPEngine\AddOns\Lighting.cs" />
