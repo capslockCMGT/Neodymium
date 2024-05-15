@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GXPEngine.Core;
+using GXPEngine.Physics;
 
 namespace GXPEngine
 {
@@ -34,7 +35,7 @@ namespace GXPEngine
                 {
                     Player player = (Player)go;
                     player.status = Player.Status.DEAD;
-                    player.AddForce("water", new Physics.Force(flow));
+                    player.AddForce("water", new Force(flow));
                 }
             }
         }
