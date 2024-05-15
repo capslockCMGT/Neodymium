@@ -13,6 +13,7 @@ namespace GXPEngine
         {
             collider.isTrigger = true;
             color = 0xFFAA00;
+            Bucket.AddHitbox(this);
         }
         protected override void RenderSelf(GLContext glContext)
         {
@@ -22,6 +23,11 @@ namespace GXPEngine
         public void TurnIntoObsidian()
         {
 
+        }
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            Bucket.RemoveHitbox(this);
         }
     }
 }

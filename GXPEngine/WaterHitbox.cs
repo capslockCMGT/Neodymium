@@ -13,11 +13,17 @@ namespace GXPEngine
         {
             collider.isTrigger = true;
             color = 0x0044FF;
+            Bucket.AddHitbox(this);
         }
         protected override void RenderSelf(GLContext glContext)
         {
             if(game is Editor.Exclusives.SceneEditor)
                 base.RenderSelf(glContext);
+        }
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            Bucket.RemoveHitbox(this);
         }
     }
 }

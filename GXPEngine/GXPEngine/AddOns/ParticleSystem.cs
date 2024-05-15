@@ -309,8 +309,9 @@ namespace GXPEngine
             for (int i=particles.Count - 1; i>=0; i--)
             {
                 particles[i].LateDestroy();
-                particles.RemoveAt(i);
+                particles[i].Remove();
             }
+            particles.Clear();
         }
     }
 }

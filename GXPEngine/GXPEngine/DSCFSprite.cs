@@ -11,16 +11,23 @@ namespace GXPEngine
     /// DepthSortedCameraFacingSprite - a sprite that always faces the camera.
     /// What a mouthful.
     /// </summary>
-    public class DSCFSprite : Sprite
+    public class DSCFSprite : AnimationSprite
     {
         public float size = 1;
-        public DSCFSprite(Texture2D texture, bool addCollider) : base(texture, addCollider)
+        public DSCFSprite(Texture2D texture, bool addCollider) : base(texture, 1,1,1,addCollider)
         {
         }
 
-        public DSCFSprite(string filename, bool keepInCache = true, bool addCollider = false) : base(filename, keepInCache, addCollider)
+        public DSCFSprite(string filename, bool keepInCache = true, bool addCollider = false) : base(filename, 1,1,1, keepInCache, addCollider)
         {
         }
+
+        public DSCFSprite(string filename, int cols, int rows, int frames=-1, bool keepInCache = true, bool addCollider = false) : base(filename, cols, rows, frames, keepInCache, addCollider)
+        {
+        }
+        public DSCFSprite(Texture2D texture, int cols, int rows, int frames = -1, bool addCollider = false) : base(texture, cols, rows, frames, addCollider)
+        { }
+
 
         protected override void RenderSelf(GLContext glContext)
         {

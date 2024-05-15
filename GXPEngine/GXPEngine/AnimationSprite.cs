@@ -81,6 +81,12 @@ namespace GXPEngine
 			name = "BMP " + bitmap.Width + "x" + bitmap.Height;
 			initializeAnimFrames(cols, rows, frames);
 		}
+
+		public AnimationSprite (Texture2D texture, int cols, int rows, int frames=-1, bool addCollider=true) : base(texture, addCollider)
+		{
+			name = texture.filename;
+			initializeAnimFrames (cols, rows, frames);
+		}
 			
 		//------------------------------------------------------------------------------------------------------------------------
 		//														initializeAnimFrames()

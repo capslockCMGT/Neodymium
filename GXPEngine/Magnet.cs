@@ -79,7 +79,7 @@ namespace GXPEngine
         {
             foreach (PhysicsObject box in collection)
             {
-                if (box is MetalBox)
+                if (box is MetalBox || box is Bucket)
                 {
                     box.material = defaultMaterial;
                     AddAttract(box);

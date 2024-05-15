@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bucket.cs" />
     <Compile Include="CameraSetter.cs" />
     <Compile Include="Checkpoint.cs" />
     <Compile Include="ControlsTutorial.cs" />
