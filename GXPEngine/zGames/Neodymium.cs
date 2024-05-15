@@ -12,11 +12,13 @@ namespace GXPEngine
     public class Neodymium : Game
     {
         bool showCursor;
+        bool enableControls = false;
         public RotateAroundLevelCamera Camera;
         GameObject scene;
         int currentScene = 1;
         MainMenu menu;
         Player player;
+        Crane crane;
         ControlsTutorial controlsTutorial;
         Panel HUD;
         public Neodymium() : base(1200, 750, false, gameName:"Neodymium") 
@@ -26,13 +28,12 @@ namespace GXPEngine
             loadScene(currentScene);
 
             player = scene?.FindObjectOfType<Player>();
+            crane = scene?.FindObjectOfType<Crane>();
             menu = new MainMenu();
             uiManager.Add(menu);
             //sl.
             controlsTutorial = new ControlsTutorial();
             game.AddChild(controlsTutorial);
-            controlsTutorial.SetCraneHints(scene?.FindObjectOfType<Crane>());
-            controlsTutorial.SetPlayerHints(player);
             player.finished += menu.NextLevelTransition;
 
             SetupHud();
@@ -70,14 +71,17 @@ namespace GXPEngine
         void Update()
         {
             PhysicsObject.UpdateAll();
-            if(Input.GetKeyDown(Key.N))
-                menu.NextLevelTransition();
-            if (Input.GetKeyDown(Key.R))
-                resetLevel();
-            if (Input.GetKeyDown(Key.MINUS_UNDERSCORE))
-                Camera.distance += 3;
-            if (Input.GetKeyDown(Key.EQUALS))
-                Camera.distance -= 3;
+            if (enableControls)
+            {
+                if (Input.GetKeyDown(Key.N))
+                    menu.NextLevelTransition();
+                if (Input.GetKeyDown(Key.R))
+                    resetLevel();
+                if (Input.GetKeyDown(Key.MINUS_UNDERSCORE))
+                    Camera.distance += 3;
+                if (Input.GetKeyDown(Key.EQUALS))
+                    Camera.distance -= 3;
+            }
         }
         void SetupHud()
         {
@@ -88,6 +92,15 @@ namespace GXPEngine
             controls.SetOrigin(controls.width,controls.height);
             controls.position = new Vector3(HUD.width - 20, HUD.height - 20,0);
             HUD.AddChild(controls);
+        }
+        public void StartGame()
+        {
+            enableControls = true;
+            if (crane != null) crane.enableControls= true;
+            if (player != null) player.enableControls= true;
+            controlsTutorial.SetCraneHints(crane);
+            controlsTutorial.SetPlayerHints(player); 
+            Camera.CamEnabled = true;
         }
     }
 }

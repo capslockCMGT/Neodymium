@@ -21,6 +21,7 @@ namespace GXPEngine
         public Status status = Status.REST;
         public delegate void NoArgs();
         public event NoArgs finished;
+        public bool enableControls;
         //temporarily for technical reasons current checkpoint = next checkpoint :(
         public Checkpoint currentCheckpoint 
         {
@@ -117,7 +118,7 @@ namespace GXPEngine
             }
             if (status == Status.DEAD)
                 trail.enabled = false;
-            if (Input.GetKeyDown(Key.ENTER))
+            if (Input.GetKeyDown(Key.ENTER) && enableControls)
             {
                 if (status == Status.REST)
                     status = Status.MOVE;

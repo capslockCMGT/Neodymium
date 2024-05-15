@@ -123,23 +123,23 @@ namespace GXPEngine.UI
                 switch (centerHorizontal)
                 {
                     case CenterMode.Min:
-                        sprite.SetOrigin(-marginHorizontal, vertAlignment * sprite.height);
+                        sprite.SetOrigin(-marginHorizontal, vertAlignment * sprite.height * sprite.scaleY);
                         break;
                     case CenterMode.Max:
-                        sprite.SetOrigin(sprite.width + marginHorizontal - width, vertAlignment * sprite.height);
+                        sprite.SetOrigin(sprite.width + marginHorizontal - width, vertAlignment * sprite.scaleY);
                         break;
                     default:
-                        sprite.SetOrigin(sprite.width * .5f, vertAlignment * sprite.height);
+                        sprite.SetOrigin(sprite.width * .5f, vertAlignment * sprite.height * sprite.scaleY);
                         sprite.x = width * .5f;
                         break;
                 }
                 sprite.y = currentY;
-                _contentHeight += sprite.height+marginVertical;
-                _contentWidth = Mathf.Max(sprite.width+marginHorizontal, _contentWidth);
+                _contentHeight += sprite.height * sprite.scaleY + marginVertical;
+                _contentWidth = Mathf.Max(sprite.width * sprite.scaleX + marginHorizontal, _contentWidth);
 
                 if(centerVertical == CenterMode.Max)
-                    currentY -= marginVertical + sprite.height;
-                else currentY += marginVertical + sprite.height; 
+                    currentY -= marginVertical + sprite.height * sprite.scaleY;
+                else currentY += marginVertical + sprite.height * sprite.scaleY; 
             }
 
             if (centerVertical == CenterMode.Center)

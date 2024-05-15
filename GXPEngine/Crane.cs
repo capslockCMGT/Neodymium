@@ -15,7 +15,6 @@ namespace GXPEngine
         public PhysicsObject hook;
         public Magnet magnet;
         public Rope rope;
-
         //magnet has 3 freedom degrees, which can be represented in cylindric coordinate system
         float phi = 0, r = 0, y = 0;
         // for values below I use representation in cylindric coordinates vec3 (value_phi, value_r, value_y) correspondingly (phi in rads)
@@ -24,6 +23,8 @@ namespace GXPEngine
         public Vector3 speedLimits = new Vector3 (1, 0.02f, 0.02f);
         public Vector3 acceleration = new Vector3(3, 0.5f, 0.1f);
         public Vector3 velocity;
+
+        public bool enableControls = false;
 
         float cabinCenterOffset;
         float trunkLength;
@@ -65,60 +66,66 @@ namespace GXPEngine
         }
         public void Update()
         {
-            //phi
             rope.Apply(Time.deltaTimeS);
             rope.Display();
-            if (Input.GetKey(Key.E))
+
+            if (enableControls)
             {
-                velocity.x += acceleration.x * Time.deltaTimeS;
-                if (velocity.x > speedLimits.x) velocity.x = speedLimits.x;
-            }
-            if (Input.GetKey(Key.Q))
-            {
-                velocity.x -= acceleration.x * Time.deltaTimeS;
-                if (velocity.x < -speedLimits.x) velocity.x = -speedLimits.x;
-            }
-            if (!Input.GetKey(Key.E) && !Input.GetKey(Key.Q))
-                velocity.x -= velocity.x * Time.deltaTimeS * 3;
+                //phi
+                if (Input.GetKey(Key.E))
+                {
+                    velocity.x += acceleration.x * Time.deltaTimeS;
+                    if (velocity.x > speedLimits.x) velocity.x = speedLimits.x;
+                }
+                if (Input.GetKey(Key.Q))
+                {
+                    velocity.x -= acceleration.x * Time.deltaTimeS;
+                    if (velocity.x < -speedLimits.x) velocity.x = -speedLimits.x;
+                }
+                if (!Input.GetKey(Key.E) && !Input.GetKey(Key.Q))
+                    velocity.x -= velocity.x * Time.deltaTimeS * 3;
 
 
 
-            //r
-            if (Input.GetKey(Key.D))
-            {
-                velocity.y += acceleration.y * Time.deltaTimeS;
-                if (velocity.y > speedLimits.y) velocity.y = speedLimits.y;
+                //r
+                if (Input.GetKey(Key.D))
+                {
+                    velocity.y += acceleration.y * Time.deltaTimeS;
+                    if (velocity.y > speedLimits.y) velocity.y = speedLimits.y;
+
+                }
+                if (Input.GetKey(Key.A))
+                {
+                    velocity.y -= acceleration.y * Time.deltaTimeS;
+                    if (velocity.y < -speedLimits.y) velocity.y = -speedLimits.y;
+                }
+                if (!Input.GetKey(Key.D) && !Input.GetKey(Key.A))
+                    velocity.y -= velocity.y * Time.deltaTimeS * 3;
+
+
+
+                //y
+                if (Input.GetKey(Key.S))
+                {
+                    velocity.z += acceleration.z * Time.deltaTimeS;
+                    if (velocity.z > speedLimits.z) velocity.z = speedLimits.z;
+                }
+                if (Input.GetKey(Key.W))
+                {
+                    velocity.z -= acceleration.z * Time.deltaTimeS;
+                    if (velocity.z < -speedLimits.z) velocity.z = -speedLimits.z;
+                }
+                if (!Input.GetKey(Key.S) && !Input.GetKey(Key.W))
+                    velocity.z -= velocity.z * Time.deltaTimeS * 3;
 
             }
-            if (Input.GetKey(Key.A))
-            {
-                velocity.y -= acceleration.y * Time.deltaTimeS;
-                if (velocity.y < -speedLimits.y) velocity.y = -speedLimits.y;
-            }
-            if (!Input.GetKey(Key.D) && !Input.GetKey(Key.A))
-                velocity.y -= velocity.y * Time.deltaTimeS * 3;
+
 
             r += velocity.y;
-            if (r<lowerLimit.y) r = lowerLimit.y;
-            if (r>upperLimit.y) r = upperLimit.y;
+            if (r < lowerLimit.y) r = lowerLimit.y;
+            if (r > upperLimit.y) r = upperLimit.y;
 
             RotateCabin(Time.deltaTimeS * velocity.x);
-
-
-
-            //y
-            if (Input.GetKey(Key.S))
-            {
-                velocity.z += acceleration.z * Time.deltaTimeS;
-                if (velocity.z > speedLimits.z) velocity.z = speedLimits.z;
-            }
-            if (Input.GetKey(Key.W))
-            {
-                velocity.z -= acceleration.z * Time.deltaTimeS;
-                if (velocity.z < -speedLimits.z) velocity.z = -speedLimits.z;
-            }
-            if (!Input.GetKey(Key.S) && !Input.GetKey(Key.W))
-                velocity.z -= velocity.z * Time.deltaTimeS * 3;
 
             y += velocity.z;
             if (y < lowerLimit.z) y = lowerLimit.z;
@@ -134,6 +141,7 @@ namespace GXPEngine
             //(cabin.collider as BoxCollider).DrawExtents();
             //(hook.collider as BoxCollider).DrawExtents();
             //(magnet.collider as BoxCollider).DrawExtents();
+
         }
         /// <summary>
         /// angle is given in radians
