@@ -64,6 +64,7 @@
     <Compile Include="GXPEngine\Physics\Spring.cs" />
     <Compile Include="ControlsHint.cs" />
     <Compile Include="LavaHitbox.cs" />
+    <Compile Include="LevelTransitioner.cs" />
     <Compile Include="LightingSetter.cs" />
     <Compile Include="Magnet.cs" />
     <Compile Include="MainMenu.cs" />

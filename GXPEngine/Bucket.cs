@@ -21,7 +21,7 @@ namespace GXPEngine
         {
             renderAs.scale = .8f;
             renderAs.y -= 1f;
-            water = new ParticleSystem("neodymium/bucket/water droplet.png", 0, 0, 0, mode: ParticleSystem.Mode.force);
+            water = new ParticleSystem("neodymium/bucket/water drip.png", 0, 0, 0, mode: ParticleSystem.Mode.force);
             AddChild(water);
 
             water.enabled = false;
@@ -32,10 +32,6 @@ namespace GXPEngine
             water.endSize = .001f;
         }
 
-        public override void PhysicsUpdate()
-        {
-            base.PhysicsUpdate();
-        }
         void Update()
         {
             foreach (Box box in hitboxes)

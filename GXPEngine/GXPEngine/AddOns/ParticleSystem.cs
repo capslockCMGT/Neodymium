@@ -49,7 +49,7 @@ namespace GXPEngine
                 return magnitude / r / r / r * (pos - affectorPos);
             }
         }
-        private class Particle : DSCFSprite
+        protected class Particle : DSCFSprite
         {
             protected GameObject _renderAs = null;
             public GameObject renderAs
@@ -189,7 +189,7 @@ namespace GXPEngine
         public Vector3 size;
 
         public string texturePath = "circle.png";
-        private List<Particle> particles = null;
+        protected List<Particle> particles = null;
         public List<Force> forces = null;
         public GameObject cam = null;
         public bool enabled = true;

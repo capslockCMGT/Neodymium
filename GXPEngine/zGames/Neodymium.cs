@@ -15,8 +15,8 @@ namespace GXPEngine
         bool enableControls = false;
         public RotateAroundLevelCamera Camera;
         GameObject scene;
-        int currentScene = 1;
         MainMenu menu;
+        LevelTransitioner transRights;
         Player player;
         Crane crane;
         ControlsTutorial controlsTutorial;
@@ -25,7 +25,10 @@ namespace GXPEngine
         {
             Camera = new RotateAroundLevelCamera(new Camera(new ProjectionMatrix(80, 50, .1f, 100)));
             AddChild(Camera);
-            loadScene(currentScene);
+
+            transRights = new LevelTransitioner();
+            AddChild(transRights);
+            loadScene(transRights.CurrentScene);
 
             player = scene?.FindObjectOfType<Player>();
             crane = scene?.FindObjectOfType<Crane>();
@@ -34,21 +37,12 @@ namespace GXPEngine
             //sl.
             controlsTutorial = new ControlsTutorial();
             game.AddChild(controlsTutorial);
-            player.finished += menu.NextLevelTransition;
+            player.finished += NextLevel;
 
             SetupHud();
         }
-        public void nextLevel()
-        {
-            currentScene++;
-            loadScene(currentScene);
-        }
-        public void resetLevel()
-        {
-            loadScene(currentScene);
-        }
 
-        void loadScene(int n)
+        public void loadScene(int n)
         {
             scene?.Destroy();
             scene = Editor.GameObjectReader.ReadGameObjectTree("neodymium/Level"+n+".gxp3d");
@@ -74,14 +68,18 @@ namespace GXPEngine
             if (enableControls)
             {
                 if (Input.GetKeyDown(Key.N))
-                    menu.NextLevelTransition();
+                    NextLevel();
                 if (Input.GetKeyDown(Key.R))
-                    resetLevel();
+                    transRights.Reload();
                 if (Input.GetKeyDown(Key.MINUS_UNDERSCORE))
                     Camera.distance += 3;
                 if (Input.GetKeyDown(Key.EQUALS))
                     Camera.distance -= 3;
             }
+        }
+        void NextLevel()
+        {
+            transRights.LevelTransition(transRights.CurrentScene + 1);
         }
         void SetupHud()
         {
