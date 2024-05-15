@@ -23,7 +23,10 @@ namespace GXPEngine
             renderAs.y -= 1f;
             water = new ParticleSystem("neodymium/bucket/water drip.png", 0, 0, 0, mode: ParticleSystem.Mode.force);
             AddChild(water);
+
             water.enabled = false;
+            water.startPosDelta = new Vector3(0.5f, 0.5f, 0.5f);
+            water.startSpeedDelta = new Vector3(0.005f, 0f, 0.005f);
             water.forces.Add(new ParticleSystem.GravityForce(Vector3.down*5));
             water.startSize = .001f;
             water.endSize = .001f;
@@ -31,7 +34,6 @@ namespace GXPEngine
 
         void Update()
         {
-            water.position = pos;
             foreach (Box box in hitboxes)
             {
                 if (!box.collider.HitTest(collider)) continue;
