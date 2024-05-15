@@ -30,16 +30,16 @@ namespace GXPEngine
             Button StartGame = new Button("neodymium/buttons/START.png");
             StartGame.scale = 0.3f;
             StartGame.OnRelease += delegate () {
-                visible = false;
-                (Game.main as Neodymium).StartGame();
+                if (visible)
+                {
+                    visible = false;
+                    (Game.main as Neodymium).StartGame();
+                }
             };
 
             Button QuitGame = new Button("neodymium/buttons/QUIT.png");
             QuitGame.scale = 0.3f;
-            QuitGame.OnRelease += delegate () {
-                visible = false;
-                GL.glfwCloseWindow();
-            };
+            QuitGame.OnRelease += delegate () { if (visible) GL.glfwCloseWindow(); };
 
             mainButtons.AddChild(StartGame);
             mainButtons.AddChild(QuitGame);
