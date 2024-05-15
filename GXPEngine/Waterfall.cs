@@ -12,13 +12,13 @@ namespace GXPEngine
         public int tiles = 1;
         public float period = 1;
         float[] uvs;
-        public Waterfall() : base("waterfall.png")
+        public Waterfall() : base("neodymium/Liquids/Water.png")
         {
             Editor.Exclusives.SceneEditor.AddToUpdate(this);
             _texture.wrap = true;
             uvs = GetUVs();
         }
-        public Waterfall(bool lava = false) : base(lava?"lavafall.png":"waterfall.png")
+        public Waterfall(bool lava = false) : base(lava? "neodymium/Liquids/Lava.png" : "neodymium/Liquids/Water.png")
         {
             Editor.Exclusives.SceneEditor.AddToUpdate(this);
             _texture.wrap = true;
