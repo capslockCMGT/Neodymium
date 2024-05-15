@@ -6,8 +6,8 @@ namespace GXPEngine
 {
     public class ControlsTutorial : GameObject
     {
-        bool enabled = false;
-        Panel controlsPanel = new Panel("neodymium/controls.png");
+        public bool enabled = false;
+        Panel controlsPanel = new Panel("editor/whitePixel.png");
         ControlsHint QE = new ControlsHint("neodymium/buttons/E.png", Key.Q, Key.E);
         ControlsHint AD = new ControlsHint("neodymium/buttons/A.png", Key.A, Key.D);
         ControlsHint WS = new ControlsHint("neodymium/buttons/W.png", Key.W, Key.S);
@@ -17,8 +17,18 @@ namespace GXPEngine
         {
             game.uiManager.Add(controlsPanel);
             controlsPanel.alpha = 0;
-            controlsPanel.width = controlsPanel.game.width;
-            controlsPanel.height = controlsPanel.game.height;
+            controlsPanel.scale = game.height * 0.8f;
+            controlsPanel.color = 0x334066;
+            controlsPanel.SetOrigin(controlsPanel.width/2, controlsPanel.height/2);
+            controlsPanel.position = new Vector3 (game.width/2, game.height/2, 0);
+            //controlsPanel.width = controlsPanel.game.width;
+            //controlsPanel.height = controlsPanel.game.height;
+
+            Panel yonk = new Panel("neodymium/buttons/CONTROLS.png");
+            yonk.SetOrigin(yonk.width / 2, yonk.height / 2);
+            yonk.scale = 1 / controlsPanel.scaleY / 2;
+            yonk.position = new Vector3(0, 0, 0);
+            controlsPanel.AddChild(yonk);
         }
         public void Update()
         {
@@ -39,6 +49,13 @@ namespace GXPEngine
                     controlsPanel.alpha -= 0.02f;
                 else
                     controlsPanel.alpha = 0;
+            }
+            foreach (GameObject p in controlsPanel.GetChildren())
+            {
+                if (p is Panel)
+                {
+                    (p as Panel).alpha = controlsPanel.alpha;
+                }
             }
         }
         public void SetCraneHints (Crane crane)

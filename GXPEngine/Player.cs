@@ -19,6 +19,8 @@ namespace GXPEngine
         private ParticleSystem trail;
         public int currentCheckpointPointer = 0;
         public Status status = Status.REST;
+        public delegate void NoArgs();
+        public event NoArgs finished;
         //temporarily for technical reasons current checkpoint = next checkpoint :(
         public Checkpoint currentCheckpoint 
         {
@@ -160,6 +162,8 @@ namespace GXPEngine
                 status = Status.REST;
                 if (currentCheckpointPointer < path.Count - 1)
                     currentCheckpointPointer++;
+                else
+                    finished?.Invoke();
             }
         }
     }
