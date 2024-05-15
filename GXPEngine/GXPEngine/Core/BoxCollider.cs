@@ -210,7 +210,7 @@ namespace GXPEngine.Core
 
 			normal.Normalize();
 			//Gizmos.DrawLine(p1, p2);
-            Gizmos.DrawPlus(minIntersection.x, minIntersection.y, minIntersection.z, 0.05f, color: 0xff0044ff);
+            //Gizmos.DrawPlus(minIntersection.x, minIntersection.y, minIntersection.z, 0.05f, color: 0xff0044ff);
             //Gizmos.DrawLine(minIntersection.x, minIntersection.y, minIntersection.z, 
 			//				minIntersection.x + normal.x * 0.1f, minIntersection.y + normal.y * 0.1f, minIntersection.z + normal.z * 0.1f, color: 0xff00ff00);
 			if (distance == float.MaxValue)

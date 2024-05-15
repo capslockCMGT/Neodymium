@@ -31,7 +31,7 @@ namespace GXPEngine
 
         protected override void RenderSelf(GLContext glContext)
         {
-            Gizmos.DrawBox(Vector3.zero, new Vector3(1,1,1), this, 0xFFFFFFFF, 1);
+            //Gizmos.DrawBox(Vector3.zero, new Vector3(1,1,1), this, 0xFFFFFFFF, 1);
         }
     }
 }

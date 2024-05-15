@@ -57,10 +57,10 @@ namespace GXPEngine
                     continue;
                 Vector3[] verts = GetExtents();
                 Vector3 normal;
-                Check(verts[0] + new Vector3(0.001f, 0.001f, 0.001f));
-                Check(verts[1] + new Vector3(0.001f, 0.001f, -0.001f));
-                Check(verts[4] + new Vector3(-0.001f, 0.001f, 0.001f));
-                Check(verts[5] + new Vector3(-0.001f, 0.001f, -0.001f));
+                Check(verts[0] + TransformDirection(new Vector3(0.2f, 0.2f, 0.2f)));
+                Check(verts[1] + TransformDirection(new Vector3(0.2f, 0.2f, -0.2f)));
+                Check(verts[4] + TransformDirection(new Vector3(-0.2f, 0.2f, 0.2f)));
+                Check(verts[5] + TransformDirection(new Vector3(-0.2f, 0.2f, -0.2f)));
 
                 //this mf might get stuck midplatform </3
                 Check((verts[0] + verts[5]) / 2);
@@ -70,6 +70,7 @@ namespace GXPEngine
                     if (other.collider.RayCast(vert + new Vector3(0, 0, 0), vert - Vector3.up * elevation, out dist, out normal))
                     {
                         //Console.WriteLine(normal.y);
+                        if ((other is Magnet)) return;
                         if (dist < minDist && normal.y > 0.5f)
                             minDist = dist;
                     }
@@ -112,9 +113,8 @@ namespace GXPEngine
                     velocity.z -= velocity.z * Time.deltaTimeS * 3;
                 }
             }
-            DrawPath();
-            (collider as BoxCollider).DrawExtents();
-
+            if (status == Status.DEAD)
+                trail.enabled = false;
             if (Input.GetKeyDown(Key.ENTER))
             {
                 if (status == Status.REST)
@@ -126,6 +126,8 @@ namespace GXPEngine
                 }
             }
 
+            if (staticForces.ContainsKey("water"))
+                AddForce("water", new Force(Vector3.zero));
             UpdateCheckpoint();
         }
         public void DrawPath()
