@@ -9,6 +9,7 @@ namespace GXPEngine
 {
     public class WaterHitbox : Box
     {
+        public Vector3 flow = new Vector3(0, 0, 1);
         public WaterHitbox() : base("editor/whitePixel.png", true, true)
         {
             collider.isTrigger = true;
@@ -24,6 +25,18 @@ namespace GXPEngine
         {
             base.OnDestroy();
             Bucket.RemoveHitbox(this);
+        }
+        public void Update()
+        {
+            foreach ( GameObject go in GetCollisions())
+            {
+                if (go is Player)
+                {
+                    Player player = (Player)go;
+                    player.status = Player.Status.DEAD;
+                    player.AddForce("water", new Physics.Force(flow));
+                }
+            }
         }
     }
 }

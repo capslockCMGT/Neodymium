@@ -130,10 +130,10 @@ namespace GXPEngine
             //shitty air friction
             magnet.velocity -= magnet.velocity * Time.deltaTimeS * 0.3f;
 
-            (trunk.collider as BoxCollider).DrawExtents();
-            (cabin.collider as BoxCollider).DrawExtents();
-            (hook.collider as BoxCollider).DrawExtents();
-            (magnet.collider as BoxCollider).DrawExtents();
+            //(trunk.collider as BoxCollider).DrawExtents();
+            //(cabin.collider as BoxCollider).DrawExtents();
+            //(hook.collider as BoxCollider).DrawExtents();
+            //(magnet.collider as BoxCollider).DrawExtents();
         }
         /// <summary>
         /// angle is given in radians
