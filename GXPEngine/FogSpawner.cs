@@ -11,6 +11,7 @@ namespace GXPEngine
     {
         readonly float[] curvenums = {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,.5f,0,0};
         public float maxAlpha = .5f;
+        bool yuck = true;
         public FogSpawner() : base("neodymium/fogBall.png",0,0,0)
         {
             //renderAs = new ModelRenderer("test models/monki.obj", "test models/bake.png");
@@ -32,6 +33,14 @@ namespace GXPEngine
         public override void Update()
         {
             base.Update();
+            if(yuck)
+            {
+                yuck = false;
+                for (int i = 0; i < maxParticleCount; i++)
+                    SpawnParticle();
+                foreach (var p in particles)
+                    p.lifetime = Utils.Random(0, p.totaltime);
+            }
             //Console.WriteLine(particleCount);
         }
     }

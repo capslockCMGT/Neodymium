@@ -14,14 +14,17 @@ namespace GXPEngine
         bool showCursor;
         public RotateAroundLevelCamera Camera;
         GameObject scene;
-        int currentScene = 1;
         MainMenu menu;
+        LevelTransitioner transRights;
         ControlsTutorial controlsTutorial;
         public Neodymium() : base(1200, 750, false, gameName:"Neodymium") 
         {
             Camera = new RotateAroundLevelCamera(new Camera(new ProjectionMatrix(80, 50, .1f, 100)));
             AddChild(Camera);
-            loadScene(currentScene);
+
+            transRights = new LevelTransitioner();
+            AddChild(transRights);
+            loadScene(transRights.CurrentScene);
 
             menu = new MainMenu();
             uiManager.Add(menu);
@@ -32,17 +35,8 @@ namespace GXPEngine
             controlsTutorial.SetPlayerHints(scene?.FindObjectOfType<Player>());
 
         }
-        public void nextLevel()
-        {
-            currentScene++;
-            loadScene(currentScene);
-        }
-        public void resetLevel()
-        {
-            loadScene(currentScene);
-        }
 
-        void loadScene(int n)
+        public void loadScene(int n)
         {
             scene?.Destroy();
             scene = Editor.GameObjectReader.ReadGameObjectTree("neodymium/Level"+n+".gxp3d");
@@ -65,10 +59,10 @@ namespace GXPEngine
         void Update()
         {
             PhysicsObject.UpdateAll();
-            if(Input.GetKeyDown(Key.N))
-                menu.NextLevelTransition();
+            if (Input.GetKeyDown(Key.N))
+                transRights.LevelTransition(transRights.CurrentScene + 1);
             if (Input.GetKeyDown(Key.R))
-                resetLevel();
+                transRights.Reload();
             if (Input.GetKeyDown(Key.MINUS_UNDERSCORE))
                 Camera.distance += 3;
             if (Input.GetKeyDown(Key.EQUALS))
