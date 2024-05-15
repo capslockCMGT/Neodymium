@@ -8,11 +8,11 @@ namespace GXPEngine
     {
         bool enabled = false;
         Panel controlsPanel = new Panel("neodymium/controls.png");
-        DSCFSprite QE = new DSCFSprite("amongus.png");
-        DSCFSprite AD = new DSCFSprite("amongus.png");
-        DSCFSprite WS = new DSCFSprite("amongus.png");
-        DSCFSprite SPACE = new DSCFSprite("amongus.png");
-        DSCFSprite ENTER = new DSCFSprite("amongus.png");
+        ControlsHint QE = new ControlsHint("neodymium/buttons/E.png", Key.Q, Key.E);
+        ControlsHint AD = new ControlsHint("neodymium/buttons/A.png", Key.A, Key.D);
+        ControlsHint WS = new ControlsHint("neodymium/buttons/W.png", Key.W, Key.S);
+        ControlsHint SPACE = new ControlsHint("neodymium/buttons/SPACE.png", Key.SPACE);
+        ControlsHint ENTER = new ControlsHint("neodymium/buttons/ENTER.png", Key.ENTER);
         public ControlsTutorial()
         {
             game.uiManager.Add(controlsPanel);
@@ -40,16 +40,6 @@ namespace GXPEngine
                 else
                     controlsPanel.alpha = 0;
             }
-            if (Input.GetKeyDown(Key.Q) || Input.GetKeyDown(Key.E))
-                QE.alpha = 0;
-            if (Input.GetKeyDown(Key.A) || Input.GetKeyDown(Key.D))
-                AD.alpha = 0;
-            if (Input.GetKeyDown(Key.W) || Input.GetKeyDown(Key.S))
-                WS.alpha = 0;
-            if (Input.GetKeyDown(Key.SPACE))
-                SPACE.alpha = 0;
-            if (Input.GetKeyDown(Key.ENTER))
-                ENTER.alpha = 0;
         }
         public void SetCraneHints (Crane crane)
         {
@@ -59,19 +49,34 @@ namespace GXPEngine
             crane.trunk.AddChild(QE);
 
             QE.position = new Vector3(1, 1, 0);
-            QE.size = 0.001f;
-            AD.position = new Vector3(1, 1, 0);
-            AD.size = 0.001f;
+            QE.size = 0.002f;
+            DSCFSprite Q = new DSCFSprite("neodymium/buttons/Q.png");
+            Q.size = QE.size;
+            Q.position = new Vector3(-3, 0, 0);
+            QE.AddChild(Q);
+
+            AD.position = new Vector3(0, -1, 0);
+            AD.size = 0.002f;
+            DSCFSprite D = new DSCFSprite("neodymium/buttons/D.png");
+            D.size = QE.size;
+            D.position = new Vector3(0, 0, 1);
+            AD.AddChild(D);
+
             WS.position = new Vector3(1, 1, 0);
-            WS.size = 0.001f;
+            WS.size = 0.002f;
+            DSCFSprite S = new DSCFSprite("neodymium/buttons/S.png");
+            S.size = QE.size;
+            S.position = new Vector3(0, -1, 0);
+            WS.AddChild(S);
+
             SPACE.position = new Vector3(1, 1, 0);
-            SPACE.size = 0.001f;
+            SPACE.size = 0.002f;
         }
         public void SetPlayerHints(Player player)
         {
             player.parent.AddChild(ENTER);
             ENTER.position = player.position + new Vector3(0.2f, 0.2f, 0);
-            ENTER.size = 0.001f;
+            ENTER.size = 0.002f;
         }
     }
 }

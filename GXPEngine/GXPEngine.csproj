@@ -62,6 +62,7 @@
     <Compile Include="GXPEngine\Physics\PhysicsObject.cs" />
     <Compile Include="GXPEngine\Physics\Rope.cs" />
     <Compile Include="GXPEngine\Physics\Spring.cs" />
+    <Compile Include="ControlsHint.cs" />
     <Compile Include="LavaHitbox.cs" />
     <Compile Include="LightingSetter.cs" />
     <Compile Include="Magnet.cs" />

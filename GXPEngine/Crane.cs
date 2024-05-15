@@ -21,7 +21,7 @@ namespace GXPEngine
         // for values below I use representation in cylindric coordinates vec3 (value_phi, value_r, value_y) correspondingly (phi in rads)
         public Vector3 lowerLimit = new Vector3(0, 2, 2);
         public Vector3 upperLimit = new Vector3(0, 9.6f, 8);
-        public Vector3 speedLimits = new Vector3 (1, 0.01f, 0.02f);
+        public Vector3 speedLimits = new Vector3 (1, 0.02f, 0.02f);
         public Vector3 acceleration = new Vector3(3, 0.5f, 0.1f);
         public Vector3 velocity;
 
