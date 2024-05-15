@@ -13,6 +13,7 @@ namespace GXPEngine
         public float maxAlpha = .5f;
         public FogSpawner() : base("neodymium/fogBall.png",0,0,0)
         {
+            //renderAs = new ModelRenderer("test models/monki.obj", "test models/bake.png");
             endSize = 1;
             startSize = 1;
             lifetime = 50;

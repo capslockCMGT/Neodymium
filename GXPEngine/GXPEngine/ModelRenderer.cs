@@ -13,6 +13,8 @@ namespace GXPEngine
     {
         BufferRenderer _model;
         Texture2D _texture;
+        public BlendMode blendMode;
+        public bool transparent;
 
         public uint color = 0xFFFFFF;
         public bool pixelated = Game.main.PixelArt;
@@ -35,13 +37,14 @@ namespace GXPEngine
             _texture = Texture2D.GetInstance(textureFilename);
         }
 
-        override protected void RenderSelf(GLContext glContext)
+        protected void RenderModel(GLContext glContext)
         {
             if (game != null)
             {
 
                 if (OnScreen())
                 {
+                    if (blendMode != null) blendMode.enable();
                     _model.texture = _texture;
                     _model.pixelated = pixelated;
                     glContext.SetColor((byte)((color >> 16) & 0xFF),
@@ -49,6 +52,7 @@ namespace GXPEngine
                                        (byte)(color & 0xFF),
                                        (byte)(0xFF));
                     _model.DrawBuffers(glContext);
+                    if (blendMode != null) BlendMode.NORMAL.enable();
                     glContext.SetColor(255, 255, 255, 255);
                 }
             }
@@ -64,6 +68,40 @@ namespace GXPEngine
         protected bool OnScreen()
         {
             return true;
+        }
+        protected override void RenderSelf(GLContext glContext)
+        {
+            if (transparent)
+            {
+
+                GL.Disable(GL.DEPTH_TEST);
+                RenderModel(glContext);
+                GL.Enable(GL.DEPTH_TEST);
+
+            }
+                //Window.ActiveWindow.onRenderTransparent += RenderTransparent;
+            else
+                RenderModel(glContext);
+        }
+
+        void RenderTransparent(GLContext glContext)
+        {
+            GL.Disable(GL.DEPTH_TEST);
+            GameObject current = this;
+            List<GameObject> parentstack = new List<GameObject>();
+            while (true)
+            {
+                parentstack.Add(current);
+                if (current.parent == null)
+                    break;
+                current = current.parent;
+            }
+            for (int i = parentstack.Count; i-- > 0;)
+                glContext.PushMatrix(parentstack[i].matrix);
+            RenderModel(glContext);
+            for (int i = parentstack.Count; i-- > 0;)
+                glContext.PopMatrix();
+            GL.Enable(GL.DEPTH_TEST);
         }
     }
 }
