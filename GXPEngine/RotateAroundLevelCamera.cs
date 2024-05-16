@@ -29,6 +29,7 @@ namespace GXPEngine
         {
             _cam = cam;
             game.AddChild(cam);
+            cam.AddChild(new AudioListener());
             Arm = new Pivot();
             AddChild(Arm);
 
@@ -55,8 +56,16 @@ namespace GXPEngine
             Arm.z = _distance;
 
             screenRotation += mouseVelSmoothed * Time.deltaTimeS;
-            if (screenRotation.y > _maxAngleHigh * Mathf.PI) screenRotation.y = Mathf.PI * .99f * _maxAngleHigh;
-            if (screenRotation.y < _maxAngleLow * Mathf.PI) screenRotation.y = Mathf.PI * .99f * _maxAngleLow;
+            if (screenRotation.y > _maxAngleHigh * Mathf.PI)
+            {
+                screenRotation.y = Mathf.PI * .99f * _maxAngleHigh;
+                mouseVelSmoothed.y = Mathf.Min(0, screenRotation.y);
+            }
+            if (screenRotation.y < _maxAngleLow * Mathf.PI)
+            {
+                screenRotation.y = Mathf.PI * .99f * _maxAngleLow;
+                mouseVelSmoothed.y = Mathf.Max(0, screenRotation.y);
+            }
             screenRotation.x %= 2 * Mathf.PI;
 
             rotation = Quaternion.FromRotationAroundAxis(Vector3.up, screenRotation.x);

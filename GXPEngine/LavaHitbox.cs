@@ -10,11 +10,14 @@ namespace GXPEngine
 {
     public class LavaHitbox : Box
     {
+        SpatialSound audio;
         public LavaHitbox() : base("editor/whitePixel.png",true,true)
         {
             collider.isTrigger = true;
             color = 0xFFAA00;
             Bucket.AddHitbox(this);
+            audio = new SpatialSound(new Sound("Sounds/Lava ambient sound.wav", true, true), 8);
+            AddChild(audio);
         }
         protected override void RenderSelf(GLContext glContext)
         {
@@ -37,6 +40,8 @@ namespace GXPEngine
             if (obs == null) return;
             obs.Enable();
             obs.renderAs.visible = true;
+            audio.halfVolumeDistance *= .6f;
+            AddChild(new SpatialSound(new Sound("Sounds/Lava hardening.wav"),15));
         }
         protected override void OnDestroy()
         {

@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudioListener.cs" />
     <Compile Include="Bucket.cs" />
     <Compile Include="CameraSetter.cs" />
     <Compile Include="Checkpoint.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Obsidian.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="RotateAroundLevelCamera.cs" />
+    <Compile Include="SpatialSound.cs" />
     <Compile Include="TexturedSkybox.cs" />
     <Compile Include="SimpleSkybox.cs" />
     <Compile Include="GXPEngine\UI\CheckBox.cs" />

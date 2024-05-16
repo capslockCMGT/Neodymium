@@ -16,6 +16,7 @@ namespace GXPEngine
             collider.isTrigger = true;
             color = 0x0044FF;
             Bucket.AddHitbox(this);
+            AddChild(new SpatialSound(new Sound("Sounds/River ambient (unlooped).wav", true, true), 8));
         }
         protected override void RenderSelf(GLContext glContext)
         {

@@ -63,6 +63,7 @@ namespace GXPEngine
                 }
             }
             transition.alpha = Mathf.Clamp(transition.alpha, 0, 1);
+            SpatialSound.globalVolume = 1 - transition.alpha;
         }
     }
 }

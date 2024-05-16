@@ -96,6 +96,8 @@ namespace GXPEngine
 
             particles = new ParticleSystem("amongus.png", 0, 0, 0, ParticleSystem.EmitterType.rect, ParticleSystem.Mode.velocity, main, cam);
             particles.lifetime = 1;
+            particles.startSize = .001f;
+            particles.endSize = .001f;
 
             leftPanel = new Panel(200, 100, 100, 100);
             //uiManager.Add(leftPanel);
@@ -119,6 +121,9 @@ namespace GXPEngine
             AddChild(new TexturedSkybox(new Bitmap("gaySky.png"),20,20));
             //AddChild(new SimpleSkybox( 10, 10));
             Lighting.SetLight(0, new Vector3(800, 800, 500), new Vector3(.06f, .12f, .2f), new Vector3(.5f, .5f, 1));
+
+            cam.AddChild(new AudioListener());
+            AddChild(new SpatialSound(new Sound("Sounds/River ambient (unlooped).wav", true, true)));
         }
 
         // For every game object, Update is called every frame, by the engine:
