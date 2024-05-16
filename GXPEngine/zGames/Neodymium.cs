@@ -22,6 +22,7 @@ namespace GXPEngine
         Crane crane;
         ControlsTutorial controlsTutorial;
         Panel HUD;
+        SoundChannel music;
         public Neodymium() : base(1200, 750, false, gameName:"Neodymium") 
         {
             Camera = new RotateAroundLevelCamera(new Camera(new ProjectionMatrix(80, 50, .1f, 100)));
@@ -38,6 +39,8 @@ namespace GXPEngine
             game.AddChild(controlsTutorial);
 
             SetupHud();
+
+            music = new Sound("Sounds/Neodymium soundtrack.wav",true,true).Play(volume:.35f);
         }
 
         public void loadScene(int n)

@@ -51,5 +51,12 @@ namespace GXPEngine
                 }
             }
         }
+        public override void OnCollision(Collision col)
+        {
+            float mag = velocity * col.normal;
+            if (mag < -1)
+                AddChild(new SpatialSound(new Sound("Sounds/Bucket falling.wav"), mag * -1.2f));
+            base.OnCollision(col);
+        }
     }
 }

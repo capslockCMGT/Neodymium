@@ -1,4 +1,5 @@
-﻿using GXPEngine.Core;
+﻿using System;
+using GXPEngine.Core;
 using GXPEngine.Physics;
 
 namespace GXPEngine
@@ -16,6 +17,13 @@ namespace GXPEngine
             {
                 AddChild(new SpatialSound(new Sound("Sounds/Block dropped in water.wav")));
             }
+        }
+        public override void OnCollision(Collision col)
+        {
+            float mag = velocity * col.normal;
+            if(mag < -1)
+                AddChild(new SpatialSound(new Sound("Sounds/Block dropped sound.wav"), mag*-1.2f));
+            base.OnCollision(col);
         }
     }
 }

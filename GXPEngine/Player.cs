@@ -2,6 +2,7 @@ using GXPEngine.Core;
 using GXPEngine.Physics;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace GXPEngine
 {
@@ -11,7 +12,8 @@ namespace GXPEngine
         {
             REST,
             MOVE,
-            DEAD
+            DEAD,
+            FALLEN
         }
 
         private float elevation = 0.3f;
@@ -133,6 +135,11 @@ namespace GXPEngine
 
             movingAudio.halfVolumeDistance = Mathf.Min(10, (velocity.x * velocity.x + velocity.z * velocity.z));
             UpdateCheckpoint();
+            if (y < -10 && status != Status.FALLEN)
+            {
+                status = Status.FALLEN;
+                AddChild(new SpatialSound(new Sound("Sounds/Ody falling off mountain.wav")));
+            }
         }
         public void DrawPath()
         {
