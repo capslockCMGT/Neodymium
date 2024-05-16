@@ -19,6 +19,9 @@ namespace GXPEngine
         private ParticleSystem trail;
         public int currentCheckpointPointer = 0;
         public Status status = Status.REST;
+        public delegate void NoArgs();
+        public event NoArgs finished;
+        public bool enableControls;
         //temporarily for technical reasons current checkpoint = next checkpoint :(
         public Checkpoint currentCheckpoint 
         {
@@ -115,7 +118,7 @@ namespace GXPEngine
             }
             if (status == Status.DEAD)
                 trail.enabled = false;
-            if (Input.GetKeyDown(Key.ENTER))
+            if (Input.GetKeyDown(Key.ENTER) && enableControls)
             {
                 if (status == Status.REST)
                     status = Status.MOVE;
@@ -160,6 +163,8 @@ namespace GXPEngine
                 status = Status.REST;
                 if (currentCheckpointPointer < path.Count - 1)
                     currentCheckpointPointer++;
+                else
+                    finished?.Invoke();
             }
         }
     }

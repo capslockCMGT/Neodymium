@@ -12,11 +12,15 @@ namespace GXPEngine
     public class Neodymium : Game
     {
         bool showCursor;
+        bool enableControls = false;
         public RotateAroundLevelCamera Camera;
         GameObject scene;
         MainMenu menu;
         LevelTransitioner transRights;
+        Player player;
+        Crane crane;
         ControlsTutorial controlsTutorial;
+        Panel HUD;
         public Neodymium() : base(1200, 750, false, gameName:"Neodymium") 
         {
             Camera = new RotateAroundLevelCamera(new Camera(new ProjectionMatrix(80, 50, .1f, 100)));
@@ -26,14 +30,16 @@ namespace GXPEngine
             AddChild(transRights);
             loadScene(transRights.CurrentScene);
 
+            player = scene?.FindObjectOfType<Player>();
+            crane = scene?.FindObjectOfType<Crane>();
             menu = new MainMenu();
             uiManager.Add(menu);
             //sl.
             controlsTutorial = new ControlsTutorial();
             game.AddChild(controlsTutorial);
-            controlsTutorial.SetCraneHints(scene?.FindObjectOfType<Crane>());
-            controlsTutorial.SetPlayerHints(scene?.FindObjectOfType<Player>());
+            player.finished += NextLevel;
 
+            SetupHud();
         }
 
         public void loadScene(int n)
@@ -59,14 +65,40 @@ namespace GXPEngine
         void Update()
         {
             PhysicsObject.UpdateAll();
-            if (Input.GetKeyDown(Key.N))
-                transRights.LevelTransition(transRights.CurrentScene + 1);
-            if (Input.GetKeyDown(Key.R))
-                transRights.Reload();
-            if (Input.GetKeyDown(Key.MINUS_UNDERSCORE))
-                Camera.distance += 3;
-            if (Input.GetKeyDown(Key.EQUALS))
-                Camera.distance -= 3;
+            if (enableControls)
+            {
+                if (Input.GetKeyDown(Key.N))
+                    NextLevel();
+                if (Input.GetKeyDown(Key.R))
+                    transRights.Reload();
+                if (Input.GetKeyDown(Key.MINUS_UNDERSCORE))
+                    Camera.distance += 3;
+                if (Input.GetKeyDown(Key.EQUALS))
+                    Camera.distance -= 3;
+            }
+        }
+        void NextLevel()
+        {
+            transRights.LevelTransition(transRights.CurrentScene + 1);
+        }
+        void SetupHud()
+        {
+            HUD = new Panel(game.width, game.height, invisible:true);
+            uiManager.Add(HUD);
+            Panel controls = new Panel("neodymium/buttons/MENU.png");
+            controls.scale = 0.2f;
+            controls.SetOrigin(controls.width,controls.height);
+            controls.position = new Vector3(HUD.width - 20, HUD.height - 20,0);
+            HUD.AddChild(controls);
+        }
+        public void StartGame()
+        {
+            enableControls = true;
+            if (crane != null) crane.enableControls= true;
+            if (player != null) player.enableControls= true;
+            controlsTutorial.SetCraneHints(crane);
+            controlsTutorial.SetPlayerHints(player); 
+            Camera.CamEnabled = true;
         }
     }
 }

@@ -57,6 +57,7 @@ namespace GXPEngine.Physics
         public GameObject renderAs;
         protected List<PhysicsObject> toIgnore = new List<PhysicsObject>();
         private List<PhysicsObject> glued = new List<PhysicsObject>();
+        private PhysicsObject gluedTo = null;
 
         public PhysicsObject(Vector3 pos, bool simulated = true, bool addCollider = true, bool enable = true) : base(addCollider)
         {
@@ -293,6 +294,7 @@ namespace GXPEngine.Physics
                 Ignore(po);
                 glued.Add(po);
                 po.dependant = true;
+                po.gluedTo = this;
                 po.pos = Vector3.zero;
                 //Vector3 gPos = TransformPoint(Vector3.zero);
                 //po.pos = po.position - po.parent.InverseTransformPoint(gPos);
@@ -306,6 +308,7 @@ namespace GXPEngine.Physics
                 Unignore(po);
                 glued?.Remove(po);
                 po.dependant = false;
+                po.gluedTo = null;
                 po.pos = po.position;
                 po.velocity = velocity;
             }
@@ -317,6 +320,8 @@ namespace GXPEngine.Physics
         protected override void OnDestroy()
         {
             base.OnDestroy();
+            if (dependant)
+                gluedTo.Unglue(this);
             Disable();
         }
     }

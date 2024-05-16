@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GXPEngine.Core;
+using GXPEngine.OpenGL;
 using GXPEngine.UI;
 
 namespace GXPEngine
@@ -26,13 +27,23 @@ namespace GXPEngine
             mainButtons.y = 500;
             AddChild(mainButtons);
 
-            TextButton StartGame = new TextButton(300, 75, "Start Game", 50);
+            Button StartGame = new Button("neodymium/buttons/START.png");
+            StartGame.scale = 0.3f;
             StartGame.OnRelease += delegate () {
-                visible = false;
-                Console.WriteLine("RAAA");
-                (Game.main as Neodymium).Camera.CamEnabled = true;
+                if (visible)
+                {
+                    visible = false;
+                    (Game.main as Neodymium).StartGame();
+                }
             };
+
+            Button QuitGame = new Button("neodymium/buttons/QUIT.png");
+            QuitGame.scale = 0.3f;
+            QuitGame.OnRelease += delegate () { if (visible) GL.glfwCloseWindow(); };
+
             mainButtons.AddChild(StartGame);
+            mainButtons.AddChild(QuitGame);
+
             mainButtons.OrganiseChildrenVertical(centerHorizontal: CenterMode.Center);
         }
     }
