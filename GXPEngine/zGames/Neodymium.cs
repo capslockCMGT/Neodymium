@@ -12,7 +12,8 @@ namespace GXPEngine
     public class Neodymium : Game
     {
         bool showCursor;
-        bool enableControls = false;
+        static bool enableControls = false;
+        public static bool controlsEnabled { get {  return enableControls; } }
         public RotateAroundLevelCamera Camera;
         GameObject scene;
         MainMenu menu;
@@ -94,8 +95,8 @@ namespace GXPEngine
         public void StartGame()
         {
             enableControls = true;
-            if (crane != null) crane.enableControls= true;
-            if (player != null) player.enableControls= true;
+            //if (crane != null) crane.enableControls= true;
+            //if (player != null) player.enableControls= true;
             controlsTutorial.SetCraneHints(crane);
             controlsTutorial.SetPlayerHints(player); 
             Camera.CamEnabled = true;

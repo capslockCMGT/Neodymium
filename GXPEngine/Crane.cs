@@ -24,8 +24,6 @@ namespace GXPEngine
         public Vector3 acceleration = new Vector3(3, 0.5f, 0.1f);
         public Vector3 velocity;
 
-        public bool enableControls = false;
-
         float cabinCenterOffset;
         float trunkLength;
         public Crane(Vector3 groundPos)
@@ -69,7 +67,7 @@ namespace GXPEngine
             rope.Apply(Time.deltaTimeS);
             rope.Display();
 
-            if (enableControls)
+            if (Neodymium.controlsEnabled)
             {
                 //phi
                 if (Input.GetKey(Key.E))
