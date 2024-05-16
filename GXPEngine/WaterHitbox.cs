@@ -32,9 +32,9 @@ namespace GXPEngine
         {
             foreach ( GameObject go in GetCollisions())
             {
-                if (go is Player)
+                if (go is PhysicsObject)
                 {
-                    Player player = (Player)go;
+                    PhysicsObject player = (PhysicsObject)go;
                     player.EnterField(this);
                 }
             }

@@ -165,9 +165,9 @@ namespace GXPEngine
             }
         }
 
-        public override void EnterField(GameObject c)
+        public override void OnEnterField(GameObject c)
         {
-            base.EnterField(c);
+            base.OnEnterField(c);
             if (c is WaterHitbox)
                 status = Status.DEAD;
         }
@@ -180,9 +180,9 @@ namespace GXPEngine
                 AddForce("water", new Force(wh.flow));
             }
         }
-        public override void LeaveField(GameObject c)
+        public override void OnLeaveField(GameObject c)
         {
-            base.LeaveField(c);
+            base.OnLeaveField(c);
             if (c is WaterHitbox)
                 RemoveForce("water");
         }
