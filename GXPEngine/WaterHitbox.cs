@@ -35,8 +35,7 @@ namespace GXPEngine
                 if (go is Player)
                 {
                     Player player = (Player)go;
-                    player.status = Player.Status.DEAD;
-                    player.AddForce("water", new Force(flow));
+                    player.EnterField(this);
                 }
             }
         }
