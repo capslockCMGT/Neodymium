@@ -24,7 +24,7 @@ namespace GXPEngine
         }
         public override void OnCollision(Collision col)
         {
-            if (!isAttracting) return;
+            if (!isAttracting || picked) return;
             base.OnCollision(col);
             PhysicsObject toPick = (PhysicsObject)((col.self is Magnet) ? col.other : col.self);
             if (toPick.simulated && toAttract.Contains(toPick))
@@ -33,6 +33,7 @@ namespace GXPEngine
                 attached = toPick;
                 picked = true;
                 toPick.pos = grabOffset;
+                Console.WriteLine("gay");
             }
         }
         public void Update()
