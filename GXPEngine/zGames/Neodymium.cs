@@ -31,14 +31,11 @@ namespace GXPEngine
             AddChild(transRights);
             loadScene(transRights.CurrentScene);
 
-            player = scene?.FindObjectOfType<Player>();
-            crane = scene?.FindObjectOfType<Crane>();
             menu = new MainMenu();
             uiManager.Add(menu);
             //sl.
             controlsTutorial = new ControlsTutorial();
             game.AddChild(controlsTutorial);
-            player.finished += NextLevel;
 
             SetupHud();
         }
@@ -51,6 +48,9 @@ namespace GXPEngine
             Checkpoint.AddCheckpointsToPlayer(scene.FindObjectOfType<Player>());
             cleanupPhysicsObjects(scene);
             scene.FindObjectOfType<Magnet>()?.DetectAttractable();
+            player = scene?.FindObjectOfType<Player>();
+            crane = scene?.FindObjectOfType<Crane>();
+            if(player != null) player.finished += NextLevel;
         }
         void cleanupPhysicsObjects(GameObject p)
         {
@@ -80,6 +80,7 @@ namespace GXPEngine
         }
         void NextLevel()
         {
+            Console.WriteLine("LOL?");
             transRights.LevelTransition(transRights.CurrentScene + 1);
         }
         void SetupHud()

@@ -41,14 +41,12 @@ namespace GXPEngine
                 {
                     filledWithWater = true;
                     water.enabled = true;
-                    Console.WriteLine("bucket is filled (:");
                 }
                 if (box is LavaHitbox && filledWithWater)
                 {
                     (box as LavaHitbox).TurnIntoObsidian();
                     filledWithWater = false;
                     water.enabled = false;
-                    Console.WriteLine("bucket is unfilled ):");
                 }
             }
         }

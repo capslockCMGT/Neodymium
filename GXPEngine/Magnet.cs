@@ -33,6 +33,9 @@ namespace GXPEngine
                 attached = toPick;
                 picked = true;
                 toPick.pos = grabOffset;
+                Console.WriteLine("oh my god");
+                if (toPick is Bucket || toPick is MetalBox)
+                    AddChild(new SpatialSound(new Sound("Sounds/Magnet picking up block.wav")));
             }
         }
         public void Update()

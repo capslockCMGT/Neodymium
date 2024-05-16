@@ -21,6 +21,7 @@ namespace GXPEngine
         public Status status = Status.REST;
         public delegate void NoArgs();
         public event NoArgs finished;
+        SpatialSound movingAudio;
         //temporarily for technical reasons current checkpoint = next checkpoint :(
         public Checkpoint currentCheckpoint 
         {
@@ -44,6 +45,8 @@ namespace GXPEngine
             trail.endSize = 0.1f * scaleX;
             trail.endSpeed =  new Vector3(0,0.01f,0);
             AddChild(trail);
+            movingAudio = new SpatialSound(new Sound("Sounds/robot movement.wav", true, true), .1f);
+            AddChild(movingAudio);
         }
         /// <summary>
         /// returns true if there is a ground d etected
@@ -128,6 +131,8 @@ namespace GXPEngine
                 }
             }
 
+            movingAudio.halfVolumeDistance = Mathf.Min(10, (velocity.x * velocity.x + velocity.z * velocity.z));
+
             if (staticForces.ContainsKey("water"))
                 AddForce("water", new Force(Vector3.zero));
             UpdateCheckpoint();
@@ -163,7 +168,10 @@ namespace GXPEngine
                 if (currentCheckpointPointer < path.Count - 1)
                     currentCheckpointPointer++;
                 else
+                {
                     finished?.Invoke();
+                    finished = null;
+                }
             }
         }
     }

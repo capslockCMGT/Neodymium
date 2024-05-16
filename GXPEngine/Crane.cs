@@ -26,6 +26,9 @@ namespace GXPEngine
 
         float cabinCenterOffset;
         float trunkLength;
+
+        SpatialSound turningCrane;
+        SpatialSound movingCable;
         public Crane(Vector3 groundPos)
         {
             trunkLength = 8f;
@@ -54,6 +57,11 @@ namespace GXPEngine
             (magnet.collider as BoxCollider).size = new Vector3(3f, 3f, 1f) * 0.7f;
             (magnet.collider as BoxCollider).offset = new Vector3(0, -2, 0);
             magnet.SetMass(0.16f);
+
+            turningCrane = new SpatialSound(new Sound("Sounds/Crane turning.wav", true), 0.1f);
+            movingCable = new SpatialSound(new Sound("Sounds/Cable length increasing decreasing.wav", true), 0.1f);
+            cabin.AddChild(turningCrane);
+            hook.AddChild(movingCable);
         }
         public void AddChildren()
         {
@@ -134,6 +142,11 @@ namespace GXPEngine
 
             //shitty air friction
             magnet.velocity -= magnet.velocity * Time.deltaTimeS * 0.3f;
+            //fym shitty? this is literally exactly what air friction should look like oh wait yeah that sucks actually
+            //not that bad tho
+
+            turningCrane.halfVolumeDistance = (Mathf.Abs(velocity.x / speedLimits.x) + Mathf.Abs(velocity.y / speedLimits.y)) * 5;
+            movingCable.halfVolumeDistance = Mathf.Abs(velocity.z / speedLimits.z) * 10;
 
             //(trunk.collider as BoxCollider).DrawExtents();
             //(cabin.collider as BoxCollider).DrawExtents();
