@@ -9,5 +9,13 @@ namespace GXPEngine
         {
             
         }
+        public override void OnEnterField(GameObject c)
+        {
+            base.OnEnterField(c);
+            if(c is WaterHitbox)
+            {
+                AddChild(new SpatialSound(new Sound("Sounds/Block dropped in water.wav")));
+            }
+        }
     }
 }

@@ -45,7 +45,7 @@ namespace GXPEngine
             trail.endSize = 0.1f * scaleX;
             trail.endSpeed =  new Vector3(0,0.01f,0);
             AddChild(trail);
-            movingAudio = new SpatialSound(new Sound("Sounds/robot movement.wav", true, true), .1f);
+            movingAudio = new SpatialSound(new Sound("Sounds/robot movement 2.wav", true, true), .1f);
             AddChild(movingAudio);
         }
         /// <summary>

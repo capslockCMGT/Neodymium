@@ -41,6 +41,7 @@ namespace GXPEngine
                 {
                     filledWithWater = true;
                     water.enabled = true;
+                    AddChild(new SpatialSound(new Sound("Sounds/bucket filling with water.wav")));
                 }
                 if (box is LavaHitbox && filledWithWater)
                 {
