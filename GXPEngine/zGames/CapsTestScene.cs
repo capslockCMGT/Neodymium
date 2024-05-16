@@ -118,8 +118,8 @@ namespace GXPEngine
 
             AddChild(Editor.GameObjectReader.ReadGameObjectTree("Waterfall test.gxp3d"));
 
-            AddChild(new TexturedSkybox(new Bitmap("gaySky.png"),20,20));
-            //AddChild(new SimpleSkybox( 10, 10));
+            //AddChild(new TexturedSkybox(new Bitmap("gaySky.png"),20,20));
+            AddChild(new SimpleSkybox( 10, 10));
             Lighting.SetLight(0, new Vector3(800, 800, 500), new Vector3(.06f, .12f, .2f), new Vector3(.5f, .5f, 1));
 
             cam.AddChild(new AudioListener());

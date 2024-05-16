@@ -31,6 +31,7 @@ namespace GXPEngine
             {
                 if(!(j is PhysicsObject)) continue;
                 if (!(j as PhysicsObject).simulated || j is Magnet) continue;
+                AddChild(new SpatialSound(new Sound("Sounds/Block dropped in lava.wav")));
                 j.Destroy();
             }
         }
