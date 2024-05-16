@@ -36,9 +36,14 @@ namespace GXPEngine.Physics
                 waterParticles.lifetimeDelta = 0.1f;
                 waterParticles.forces.Add(new ParticleSystem.GravityForce(new Vector3(0,gravity,0)));
                 waterParticles.name = "waterParticles";
-                waterParticles.startSize = 0.001f;
-                waterParticles.endSize = 0.0005f;
+                //waterParticles.startSize = 0.001f;
+                //waterParticles.endSize = 0.0005f;
                 waterParticles.endColor = Color.White;
+
+                ModelRenderer particle = new ModelRenderer("trail.obj", "neodymium/Liquids/Water.png");
+                particle.color = 0xffffffff;
+                waterParticles.renderAs = particle;
+
                 AddChild(waterParticles);
             }
         }
