@@ -1,4 +1,4 @@
-﻿using GXPEngine.Core;
+using GXPEngine.Core;
 using GXPEngine.Physics;
 using System;
 using System.Collections.Generic;
@@ -24,7 +24,7 @@ namespace GXPEngine
         }
         public override void OnCollision(Collision col)
         {
-            if (!isAttracting) return;
+            if (!isAttracting || picked) return;
             base.OnCollision(col);
             PhysicsObject toPick = (PhysicsObject)((col.self is Magnet) ? col.other : col.self);
             if (toPick.simulated && toAttract.Contains(toPick))
@@ -33,7 +33,6 @@ namespace GXPEngine
                 attached = toPick;
                 picked = true;
                 toPick.pos = grabOffset;
-                Console.WriteLine("oh my god");
                 if (toPick is Bucket || toPick is MetalBox)
                     AddChild(new SpatialSound(new Sound("Sounds/Magnet picking up block.wav")));
             }
