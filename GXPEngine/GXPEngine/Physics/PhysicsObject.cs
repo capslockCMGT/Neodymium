@@ -58,6 +58,11 @@ namespace GXPEngine.Physics
         protected List<PhysicsObject> toIgnore = new List<PhysicsObject>();
         private List<PhysicsObject> glued = new List<PhysicsObject>();
         private PhysicsObject gluedTo = null;
+        private List<GameObject> fields = new List<GameObject>();
+
+        public delegate void FieldCollisionHandler(GameObject field, PhysicsObject obj);
+        public event FieldCollisionHandler OnFieldEnter;
+        public event FieldCollisionHandler OnFieldLeave;
 
         public PhysicsObject(Vector3 pos, bool simulated = true, bool addCollider = true, bool enable = true) : base(addCollider)
         {
@@ -86,7 +91,7 @@ namespace GXPEngine.Physics
                     PhysicsStep(freemoveTime, ref freemoveTime);
                     bool collided = false;
                     
-                    //if there is no collider, object becomes a ghost (no collision check
+                    //if there is no collider, object becomes a ghost (no collision check)
                     if (collider == null) return;
 
                     //resolving collision
@@ -94,6 +99,16 @@ namespace GXPEngine.Physics
                     {
                         ResolveCollision(this, other);
                     }
+                    for (int i=fields.Count - 1; i >= 0; i--)
+                    {
+                        if (collider.GetCollisionInfo(fields[i].collider) == null)
+                            LeaveField(fields[i]);
+                        else
+                            OnFieldRemain(fields[i]);
+                    }
+
+
+
                     void ResolveCollision (PhysicsObject first, PhysicsObject other)
                     {
                         if (other == first || other == null || toIgnore.Contains(other))
@@ -162,6 +177,7 @@ namespace GXPEngine.Physics
                             }
                         }
                     }
+
                     foreach (PhysicsObject child in glued)
                     {
                         child.position = child.parent.InverseTransformPoint(TransformPoint(child.pos));
@@ -209,6 +225,12 @@ namespace GXPEngine.Physics
             }
             else
                 staticForces.Add(name, force);
+        }
+
+        public void RemoveForce(string name)
+        {
+            if (staticForces.ContainsKey(name))
+                staticForces.Remove(name);
         }
         public float GetFE()
         {
@@ -285,6 +307,30 @@ namespace GXPEngine.Physics
         {
             if (toIgnore.Contains(po))
                 toIgnore.Remove(po);
+        }
+        private void AddField (GameObject c)
+        {
+            if (!fields.Contains(c))
+                fields.Add(c);
+        }
+        private void RemoveField(GameObject c)
+        {
+            if (fields.Contains(c))
+                fields.Remove(c);
+        }
+        public virtual void EnterField(GameObject c)
+        {
+            AddField(c);
+            OnFieldEnter?.Invoke(c, this);
+        }
+        public virtual void OnFieldRemain (GameObject c)
+        {
+
+        }
+        public virtual void LeaveField(GameObject c)
+        {
+            RemoveField(c);
+            OnFieldLeave?.Invoke(c, this);
         }
         public void Glue(PhysicsObject po)
         {

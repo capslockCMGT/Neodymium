@@ -1,4 +1,4 @@
-﻿using GXPEngine.Core;
+using GXPEngine.Core;
 using GXPEngine.Physics;
 using System;
 using System.Collections.Generic;
@@ -132,9 +132,6 @@ namespace GXPEngine
             }
 
             movingAudio.halfVolumeDistance = Mathf.Min(10, (velocity.x * velocity.x + velocity.z * velocity.z));
-
-            if (staticForces.ContainsKey("water"))
-                AddForce("water", new Force(Vector3.zero));
             UpdateCheckpoint();
         }
         public void DrawPath()
@@ -173,6 +170,28 @@ namespace GXPEngine
                     finished = null;
                 }
             }
+        }
+
+        public override void EnterField(GameObject c)
+        {
+            base.EnterField(c);
+            if (c is WaterHitbox)
+                status = Status.DEAD;
+        }
+        public override void OnFieldRemain(GameObject c)
+        {
+            base.OnFieldRemain(c);
+            if (c is WaterHitbox)
+            {
+                WaterHitbox wh = (WaterHitbox)c;
+                AddForce("water", new Force(wh.flow));
+            }
+        }
+        public override void LeaveField(GameObject c)
+        {
+            base.LeaveField(c);
+            if (c is WaterHitbox)
+                RemoveForce("water");
         }
     }
 }
