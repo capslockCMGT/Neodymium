@@ -24,8 +24,13 @@ namespace GXPEngine
         {
             mainButtons = new Panel(1, 1, invisible: true);
             mainButtons.width = width;
-            mainButtons.y = 500;
+            mainButtons.y = 300;
             AddChild(mainButtons);
+
+            Panel title = new Panel("neodymium/logo.png");
+            float rat = 200 / title.height;
+            title.height *= rat;
+            title.width *= rat;
 
             Button StartGame = new Button("neodymium/buttons/START.png");
             StartGame.scale = 0.3f;
@@ -41,6 +46,7 @@ namespace GXPEngine
             QuitGame.scale = 0.3f;
             QuitGame.OnRelease += delegate () { if (visible) GL.glfwCloseWindow(); };
 
+            mainButtons.AddChild(title);
             mainButtons.AddChild(StartGame);
             mainButtons.AddChild(QuitGame);
 

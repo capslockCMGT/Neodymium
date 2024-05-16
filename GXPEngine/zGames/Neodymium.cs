@@ -35,10 +35,7 @@ namespace GXPEngine
             menu = new MainMenu();
             uiManager.Add(menu);
             //sl.
-            controlsTutorial = new ControlsTutorial();
-            game.AddChild(controlsTutorial);
 
-            SetupHud();
 
             music = new Sound("Sounds/Neodymium soundtrack.wav",true,true).Play(volume:.35f);
         }
@@ -71,14 +68,14 @@ namespace GXPEngine
             PhysicsObject.UpdateAll();
             if (enableControls)
             {
-                if (Input.GetKeyDown(Key.N))
-                    NextLevel();
+                //if (Input.GetKeyDown(Key.N))
+                //    NextLevel();
                 if (Input.GetKeyDown(Key.R))
                     transRights.Reload();
-                if (Input.GetKeyDown(Key.MINUS_UNDERSCORE))
-                    Camera.distance += 3;
-                if (Input.GetKeyDown(Key.EQUALS))
-                    Camera.distance -= 3;
+                //if (Input.GetKeyDown(Key.MINUS_UNDERSCORE))
+                //    Camera.distance += 3;
+                //if (Input.GetKeyDown(Key.EQUALS))
+                //    Camera.distance -= 3;
             }
         }
         void NextLevel()
@@ -86,8 +83,11 @@ namespace GXPEngine
             Console.WriteLine("LOL?");
             transRights.LevelTransition(transRights.CurrentScene + 1);
         }
-        void SetupHud()
+        public void SetupHud()
         {
+            controlsTutorial = new ControlsTutorial();
+            game.AddChild(controlsTutorial);
+
             HUD = new Panel(game.width, game.height, invisible:true);
             uiManager.Add(HUD);
             Panel controls = new Panel("neodymium/buttons/MENU.png");
@@ -98,6 +98,7 @@ namespace GXPEngine
         }
         public void StartGame()
         {
+            SetupHud();
             enableControls = true;
             //if (crane != null) crane.enableControls= true;
             //if (player != null) player.enableControls= true;
