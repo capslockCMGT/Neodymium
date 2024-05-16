@@ -58,7 +58,7 @@ namespace GXPEngine.Physics
         protected List<PhysicsObject> toIgnore = new List<PhysicsObject>();
         private List<PhysicsObject> glued = new List<PhysicsObject>();
         private PhysicsObject gluedTo = null;
-        private List<GameObject> fields = new List<GameObject>();
+        protected List<GameObject> fields = new List<GameObject>();
 
         public delegate void FieldCollisionHandler(GameObject field, PhysicsObject obj);
         public event FieldCollisionHandler OnFieldEnter;
@@ -308,29 +308,29 @@ namespace GXPEngine.Physics
             if (toIgnore.Contains(po))
                 toIgnore.Remove(po);
         }
-        private void AddField (GameObject c)
+        public virtual void OnEnterField(GameObject c)
         {
-            if (!fields.Contains(c))
-                fields.Add(c);
-        }
-        private void RemoveField(GameObject c)
-        {
-            if (fields.Contains(c))
-                fields.Remove(c);
-        }
-        public virtual void EnterField(GameObject c)
-        {
-            AddField(c);
+            fields.Add(c);
             OnFieldEnter?.Invoke(c, this);
         }
-        public virtual void OnFieldRemain (GameObject c)
+        public virtual void OnLeaveField(GameObject c)
+        {
+            fields.Remove(c);
+            OnFieldEnter?.Invoke(c, this);
+        }
+        public virtual void OnFieldRemain(GameObject c)
         {
 
         }
-        public virtual void LeaveField(GameObject c)
+        public void EnterField(GameObject c)
         {
-            RemoveField(c);
-            OnFieldLeave?.Invoke(c, this);
+            if (!fields.Contains(c))
+                OnEnterField(c);
+        }
+        public void LeaveField(GameObject c)
+        {
+            if (fields.Contains(c))
+                OnLeaveField(c);
         }
         public void Glue(PhysicsObject po)
         {
