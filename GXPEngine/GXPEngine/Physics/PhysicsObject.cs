@@ -84,6 +84,17 @@ namespace GXPEngine.Physics
                 float freemoveTime = Time.deltaTimeS / substeps;
                 int iterations = 0;
 
+                //check for fields
+                for (int i = fields.Count - 1; i >= 0; i--)
+                {
+                    if (collider.GetCollisionInfo(fields[i].collider) == null)
+                        LeaveField(fields[i]);
+                    else
+                        OnFieldRemain(fields[i]);
+                }
+
+                if (dependant) return;
+
                 //CalculateAcceleration();
                 while (freemoveTime > 0)
                 {
@@ -93,6 +104,15 @@ namespace GXPEngine.Physics
                     
                     //if there is no collider, object becomes a ghost (no collision check)
                     if (collider == null) return;
+
+                    //check for fields
+                    for (int i = fields.Count - 1; i >= 0; i--)
+                    {
+                        if (collider.GetCollisionInfo(fields[i].collider) == null)
+                            LeaveField(fields[i]);
+                        else
+                            OnFieldRemain(fields[i]);
+                    }
 
                     //resolving collision
                     foreach (PhysicsObject other in collection)
@@ -283,9 +303,9 @@ namespace GXPEngine.Physics
         {
             foreach(PhysicsObject po in collection)
             {
-                if (po.dependant) continue;
                 for (int i=0; i<substeps; i++)
                     po.PhysicsUpdate();
+                
             }
         }
         public void Disable()
